@@ -1,7 +1,13 @@
 {:paths ["src"]
- :deps {org.clojure/clojure {:mvn/version "1.10.3"}
-         aleph {:mvn/version "0.4.6"}
-         metosin/reitit {:mvn/version "0.5.15"}
-         metosin/muuntaja {:mvn/version "0.6.8"}
-         mount/mount {:mvn/version "0.1.16"}}  
-}
+ :deps {;org.clojure/clojure {:mvn/version "1.10.3"}
+        org.clojure/clojurescript {:mvn/version "1.10.758"}
+        aleph/aleph {:mvn/version "0.4.6"}
+        metosin/reitit {:mvn/version "0.5.15"}
+        metosin/muuntaja {:mvn/version "0.6.8"}
+        mount/mount {:mvn/version "0.1.16"}}
+ :aliases
+ {:uberjar
+  {:replace-deps
+   {com.github.seancorfield/depstar {:mvn/version "2.1.303"}}
+   :exec-fn      hf.depstar/uberjar
+   :exec-args    {:aot false}}}}

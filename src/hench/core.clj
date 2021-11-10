@@ -1,12 +1,12 @@
 (ns hench.core
-  (:require [aleph.http :as http] 
+  (:require [aleph.http :as http]
             [reitit.ring :as ring]
             [muuntaja.core :as m]
             [reitit.middleware :as middleware]
             [reitit.ring.middleware.muuntaja :as muuntaja]
             [mount.core :as mount]
-  )
-)
+            [hench.space :refer :all]
+            [hench.food :refer :all]))
 
 (defn get-battlesnake-handler
   "Customization, latency checks and ping"
@@ -16,83 +16,65 @@
           :author "hbl206"
           :color "#61EB42"
           :head "evil"
-          :tail "hook",
+          :tail "hook"
           :version "0.0.1"}})
-
-(defn random-move
-"A random move, shouting s"
-  [moves]
-  (if (= moves {}) 
-        "up"          
-        (rand-nth (mapv #(name %) (keys moves)))))
-
-(defn avoid-walls
-"Avoids the walls of the board"
-  [body-params moves]
-(let [xmax (- (-> body-params :board :width) 1)
-      ymax (- (-> body-params :board :height) 1)
-      xhead (-> body-params :you :head :x)
-      yhead (-> body-params :you :head :y)]
-(cond-> moves
-  (= xmax xhead) (dissoc :right)
-  (= ymax yhead) (dissoc :up)
-  (= 0 xhead) (dissoc :left)
-  (= 0 yhead) (dissoc :down))))
-
-(defn avoid-self-direct-hits
-"Avoids colliding with itself on the next move"
- [body-params moves]
-(let [body (-> body-params :you :body)
-      head (-> body-params :you :head)]
-  (cond-> moves
-   (some #(= (update head :x inc) %) body) (dissoc :right)
-   (some #(= (update head :x dec) %) body) (dissoc :left)
-   (some #(= (update head :y inc) %) body) (dissoc :up)
-   (some #(= (update head :y dec) %) body) (dissoc :down)
-  )))
 
 (defn new-game-handler
   [req]
   ;(clojure.pprint/pprint (:body-params req)) ;;for debugging
+  (clojure.pprint/pprint "A new game has started!")
   {:status 200 :body {}})
 
 (defn move-handler
   [req]
   (let [body-params (:body-params req)]
-  (clojure.pprint/pprint (-> body-params :you :head :x))
-  (clojure.pprint/pprint (-> body-params :you :head :y))
-  {:body {:move (->> {:up 0 :down 0 :right 0 :left 0}
-                      (avoid-walls body-params)
-                      (avoid-self-direct-hits body-params)
-                      (random-move))
-          :shout "Omae wa mo shinde iru!"}}))
+  ;(clojure.pprint/pprint (-> body-params :you :head :x))
+  ;(clojure.pprint/pprint (-> body-params :you :head :y))
+    {:body {:move (->> {:up 1 :down 1 :right 1 :left 1}
+                       (avoid-walls body-params)
+                       (avoid-self-direct-hits body-params)
+                       (avoid-other-snakes body-params)
+                       (avoid-self-loop body-params)
+                       (avoid-loop-with-walls body-params)
+                       (avoid-hazards body-params)
+                       (avoid-small-surfaces body-params) ;trop lent!! peut améliorer en ne regardant ça que quand une danger case détecte qqchose
+                       (eat body-params)
+                       (follow-tail body-params)
+                       (recenter body-params)
+                       (avoid-borders body-params)
+                       (optionality body-params)
+                      ;(fear body-params)
+                       (choose-move body-params))
+            :shout "Omae wa mo shinde iru!"}}))
 
 (defn end-game-handler
   [req]
-  ;(clojure.pprint/pprint (:body-params req)) ;;for debugging
-  {:status 200 :body {}})
+  (let [snake (first (-> req :body-params :board :snakes))]
+    (clojure.pprint/pprint "A game has stopped!")
+    (println (str (:name snake) " WON!"))
+    {:status 200 :body {}}))
 
 (def app
   (ring/ring-handler
-    (ring/router
-     [["/" {:get get-battlesnake-handler
-            :middleware [:content]}]
-      ["/start" {:post new-game-handler
-                 :middleware [:content]}]
-      ["/move" {:post move-handler
+   (ring/router
+    [["/" {:get get-battlesnake-handler
+           :middleware [:content]}]
+     ["/start" {:post new-game-handler
                 :middleware [:content]}]
-      ["/end" {:post end-game-handler
-               :middleware [:content]}]]
+     ["/move" {:post move-handler
+               :middleware [:content]}]
+     ["/end" {:post end-game-handler
+              :middleware [:content]}]]
       ;; router data affecting all routes
-      {::middleware/registry {:content muuntaja/format-middleware}
-       :data {:muuntaja  m/instance}})))
+    {::middleware/registry {:content muuntaja/format-middleware}
+     :data {:muuntaja  m/instance}})))
 
-(mount/defstate server 
+(mount/defstate server
   :start (http/start-server #'app {:port 8123})
   :stop (.close server))
 
 (defn -main [& _]
-  (mount/start)) 
+  (mount/start))
 
 
 (comment
@@ -100,4 +82,3 @@
   (app {:request-method :post :uri "/start"})
   (app {:request-method :post :uri "/move"})
   (app {:request-method :post :uri "/end"}))
-
