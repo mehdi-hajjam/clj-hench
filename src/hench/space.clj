@@ -67,11 +67,13 @@
 
 (defn probabilise-movements
   [head obstacles f moves]
-  (cond-> moves
-    (some #(= (update head :x inc) %) obstacles) (update :right #(* f %))
-    (some #(= (update head :x dec) %) obstacles) (update :left #(* f %))
-    (some #(= (update head :y inc) %) obstacles) (update :up #(* f %))
-    (some #(= (update head :y dec) %) obstacles) (update :down #(* f %))))
+  (let [new-moves (cond-> moves
+                    (some #(= (update head :x inc) %) obstacles) (update :right #(* f %))
+                    (some #(= (update head :x dec) %) obstacles) (update :left #(* f %))
+                    (some #(= (update head :y inc) %) obstacles) (update :up #(* f %))
+                    (some #(= (update head :y dec) %) obstacles) (update :down #(* f %)))]
+    (println new-moves)
+    new-moves))
 
 
 (defn random-move

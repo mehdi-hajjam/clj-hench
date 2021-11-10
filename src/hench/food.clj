@@ -291,7 +291,9 @@
                       (filterv #(= xmax (:x %)) free)
                       (filterv #(= ymin (:y %)) free)
                       (filterv #(= ymax (:y %)) free)))]
-    (space/probabilise-movements head borders 0.68 moves)))
+    (cond 
+      (hazard? head hazards) moves
+      :else (space/probabilise-movements head borders 0.68 moves))))
 
 (defn grade-case
   "Returns a value of degree that a case gives another case. The order is important if a case is many things!!"
@@ -335,7 +337,8 @@
       :else moves)))
 
 (defn fear
-  "Favours getting further from larger opponents deemed to close (4). Works by favouring the largest min distance achieved from immobile heads."
+  "Discourages getting into the chull made with larger opponents deemed to close (4).
+   0.22 carefully crafted to fit other parameters."
   [body-params moves]
   (println "FEAR")
   (let [me (-> body-params :you)
@@ -345,11 +348,8 @@
         heads (mapv #(:head %) others)
         distances (mapv #(sd me %) heads)]
     (cond
-      (some #(>= 4 %) distances)
-      (do (println "distances: " distances)
-          (let [pheads (space/project-head me)
-                min-ds (mapv #(apply min (d-to-others % others)) pheads)
-                max (apply max min-ds)
-                i (.indexOf min-ds max)]
-            (space/probabilise-movements head [(nth pheads i)] 2.1 moves)))
+      (some #(>= 4 %) distances) (let [dangers (filterv #(>= 4 (sd me %)) heads)
+                                       chulls (mapv #(space/convex-hull {:body [head %]}) dangers)
+                                       total (vec (apply concat chulls))]
+                                   (space/probabilise-movements head total 0.22 moves))
       :else moves)))

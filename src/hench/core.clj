@@ -43,7 +43,7 @@
                        (recenter body-params)
                        (avoid-borders body-params)
                        (optionality body-params)
-                      ;(fear body-params)
+                       (fear body-params)
                        (choose-move body-params))
             :shout "Omae wa mo shinde iru!"}}))
 
