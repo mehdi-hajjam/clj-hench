@@ -344,7 +344,7 @@
   (let [me (-> body-params :you)
         head (:head me)
         length (:length me)
-        others (filterv #(>= (:length %) length) (space/other-snakes body-params))
+        others (filterv #(> (:length %) length) (space/other-snakes body-params))
         heads (mapv #(:head %) others)
         distances (mapv #(sd me %) heads)]
     (cond
