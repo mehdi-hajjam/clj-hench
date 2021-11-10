@@ -180,7 +180,8 @@
       (= foods []) moves
       #_(or (> 70 my-health)
             (<= my-length (apply max snakes-length)))
-      (> 63 my-health)
+      (or (> 63 my-health)
+          (<= my-length (apply min snakes-length)))
       (let [food (first foods)
             head (-> body-params :you :head)
             chull (space/convex-hull {:body [head food]})]
