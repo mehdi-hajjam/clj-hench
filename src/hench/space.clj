@@ -467,10 +467,6 @@
   (and (= 1 (Math/abs (- (:x c1) (:x c2)))
           (= 1 (Math/abs (- (:y c1) (:y c2)))))))
 
-(defn touch-snake?
-  "Returns true if s1 touches another snake s2 with some other part of its body than its head"
-  [s1 s2])
-
 (defn indices [pred coll]
   (keep-indexed #(when (pred %2) %1) coll))
 

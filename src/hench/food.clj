@@ -181,7 +181,8 @@
       #_(or (> 70 my-health)
             (<= my-length (apply max snakes-length)))
       (or (> 63 my-health)
-          (<= my-length (apply min snakes-length)))
+          (<= my-length (apply min snakes-length))
+          (<= my-length (- (apply max snakes-length) 2))) ;last clause not to be distanced too much by larger snake
       (let [food (first foods)
             head (-> body-params :you :head)
             chull (space/convex-hull {:body [head food]})]
@@ -373,3 +374,40 @@
                                        total (vec (apply concat chulls))]
                                    (space/probabilise-movements head total 0.22 moves))
       :else moves)))
+
+(defn free?
+  "Returns true if c is free, false otherwise"
+  [c obstacles hazards]
+  (not (or
+        (some #(= c %) hazards)
+        (some #(= c %) obstacles))))
+
+(defn free-cases
+  "Returns free cases next to c"
+  [c all-obstacles hazards]
+  (let [all-squares [(update c :x inc)
+                     (update c :x dec)
+                     (update c :y inc)
+                     (update c :y dec)]
+        all-free-squares (filterv #(free? % all-obstacles hazards) all-squares)]
+    all-free-squares))
+
+(defn find-closest-free-case
+  "Favours the chull of head closest-free-case"
+  [body-params moves]
+  (let [me (-> body-params :you)
+        body (-> me :body)
+        head (-> me :head)
+        hazards (hazard body-params)
+        all-obst (space/all-obstacles body-params me)
+        ]
+    (loop [body (vec (rest body))]
+      (cond
+        (not (hazard? head hazards)) moves
+        (= [] body) moves
+        (= [] (free-cases (first body) all-obst hazards)) (recur (vec (rest body)))
+        :else (let [f (first (free-cases (first body) all-obst hazards))
+                    chull (space/convex-hull {:body [head f]})]
+                (space/probabilise-movements head chull 2.55 moves)
+                )
+        ))))
