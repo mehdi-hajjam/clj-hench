@@ -337,6 +337,25 @@
             (space/probabilise-movements head bests 3.14 moves)))
       :else moves)))
 
+(defn forbidden-part
+  "Returns the forbidden part of a chull for FEAR"
+  [chull]
+  (let [nbx (count (distinct (mapv #(:x %) chull)))
+        nby (count (distinct (mapv #(:y %) chull)))]
+    (cond
+      (or (= nbx 1)
+          (= nby 1)) [] ; it's not a problem if it's a line
+      (= nbx 4) (let [maxx (apply max (mapv #(:x %) chull))
+                      minx (apply min (mapv #(:x %) chull))]
+                  (filterv #(> maxx (:x %) minx) chull)) ;this is the 2 by 4 case
+      (= nby 4) (let [maxy (apply max (mapv #(:y %) chull))
+                      miny (apply min (mapv #(:y %) chull))]
+                  (filterv #(> maxy (:y %) miny) chull))
+      :else chull ;this is the 3x3 case
+      )
+    )
+  )
+
 (defn fear
   "Discourages getting into the chull made with larger opponents deemed to close (4).
    0.22 carefully crafted to fit other parameters."
@@ -350,7 +369,7 @@
         distances (mapv #(sd me %) heads)]
     (cond
       (some #(>= 4 %) distances) (let [dangers (filterv #(>= 4 (sd me %)) heads)
-                                       chulls (mapv #(space/convex-hull {:body [head %]}) dangers)
+                                       chulls (mapv #(forbidden-part (space/convex-hull {:body [head %]})) dangers)
                                        total (vec (apply concat chulls))]
                                    (space/probabilise-movements head total 0.22 moves))
       :else moves)))
