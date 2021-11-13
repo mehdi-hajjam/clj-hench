@@ -532,6 +532,13 @@
                        (first (perpendicular direction))
                        (into [] (concat forbidden res))))))))
 
+(defn contains-tail
+  "Returns true if surface contains snake's tail"
+  [body-params surface]
+  (let [me (-> body-params :you)
+        tail (last (:body me))]
+    (some #(close? % tail) surface)))
+
 (defn avoid-small-surfaces
   "Avoids surfaces smaller than snake (don't put 0 as it still is better than a wall!)"
   [body-params moves]
@@ -541,10 +548,14 @@
         length (:length me)
         all-obs (all-obstacles body-params me)]
     (cond-> moves
-      (> length (count (surface (update head :x inc) me all-obs))) (update :right #(* 0.009 %))
-      (> length (count (surface (update head :x dec) me all-obs))) (update :left #(* 0.009 %))
-      (> length (count (surface (update head :y inc) me all-obs))) (update :up #(* 0.009 %))
-      (> length (count (surface (update head :y dec) me all-obs))) (update :down #(* 0.009 %)))))
+      (and (> length (count (surface (update head :x inc) me all-obs)))
+           (not (contains-tail body-params (surface (update head :x inc) me all-obs)))) (update :right #(* 0.009 %))
+      (and (> length (count (surface (update head :x dec) me all-obs)))
+           (not (contains-tail body-params (surface (update head :x dec) me all-obs)))) (update :left #(* 0.009 %))
+      (and (> length (count (surface (update head :y inc) me all-obs)))
+           (not (contains-tail body-params (surface (update head :y inc) me all-obs)))) (update :up #(* 0.009 %))
+      (and (> length (count (surface (update head :y dec) me all-obs)))
+           (not (contains-tail body-params (surface (update head :y dec) me all-obs)))) (update :down #(* 0.009 %)))))
 
 
 
