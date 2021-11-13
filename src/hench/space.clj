@@ -557,6 +557,20 @@
       (and (> length (count (surface (update head :y dec) me all-obs)))
            (not (contains-tail body-params (surface (update head :y dec) me all-obs)))) (update :down #(* 0.009 %)))))
 
+(defn favour-straight-line
+  "Favours going on a straight line over turning when two moves have same probability.
+   It helps to have a way back for my snake"
+  [body-params moves]
+  (let [values (vec (vals moves))
+        maxv (apply max values)]
+    (cond
+      (= 1 (count (filterv #(= maxv %) values))) moves
+      :else (let [me (-> body-params :you)
+                  head (-> me :head)
+                  neck (neck (-> me :body))
+                  diff (substract head neck)
+                  straight (add head diff)]
+              (probabilise-movements head straight 1.1 moves)))))
 
 
 

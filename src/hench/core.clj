@@ -45,6 +45,7 @@
                        (optionality body-params)
                        (fear body-params)
                        (find-closest-free-case body-params)
+                       (favour-straight-line body-params)
                        (choose-move body-params))
             :shout "Omae wa mo shinde iru!"}}))
 
