@@ -318,24 +318,35 @@
         grades (mapv #(grade-case % all-obst hazards) all-squares)]
     (reduce + grades)))
 
+(defn min-d-to-others
+  "returns the min distance to heads of others"
+  [my-head others-heads]
+  (apply min (mapv #(d my-head %) others-heads)))
+
 (defn optionality
-  "Favours largest degree of freedom of next case when distance to a larger snake is less or equal to 4 (seems the right distance). Coeff chosen to be peculiar and beat follow tail even on hazard case (3.14*0.5 > 1.4)"
+  "Favours largest degree of freedom of next case when distance to a larger snake is less or equal to 4 (seems the right distance). 
+   Coeff chosen to be peculiar and beat follow tail even on hazard case (3.14*0.5 > 1.4)
+   To be applied when there is no way to get further away from the opponent"
   [body-params moves]
   (println "OPTIONALITY")
   (let [me (-> body-params :you)
         head (:head me)
         length (:length me)
-        others (filterv #(>= (:length %) length) (space/other-snakes body-params))
+        others (filterv #(> (:length %) (+ 1 length)) (space/other-snakes body-params))
         heads (mapv #(:head %) others)
         distances (mapv #(sd me %) heads)]
     (cond
       (some #(>= 4 %) distances)
-      (do (println "️ DANGER OF LARGER SNAKE ️")
-          (let [pheads (space/project-head me)
-                degrees (mapv #(degree body-params %) pheads)
-                maxd (apply max degrees)
-                bests (filterv #(= maxd (degree body-params %)) pheads)]
-            (space/probabilise-movements head bests 3.14 moves)))
+      (let [pheads (space/project-head me)
+            degrees (mapv #(degree body-params %) pheads)
+            maxd (apply max degrees)
+            bests (filterv #(= maxd (degree body-params %)) pheads)
+            maxmind (apply max (mapv #(min-d-to-others % heads) pheads))]
+        (cond
+              ;4 because I'm not using their projected heads
+          (>= 4 maxmind) (do (println "TOO CLOSE TO LARGER SNAKES")
+                             (space/probabilise-movements head bests 3.14 moves))
+          :else moves))
       :else moves)))
 
 (defn forbidden-part
@@ -358,7 +369,7 @@
   )
 
 (defn fear
-  "Discourages getting into the chull made with larger opponents deemed to close (4).
+  "Discourages getting into the chull made with larger opponents deemed too close (4).
    0.22 carefully crafted to fit other parameters."
   [body-params moves]
   (println "FEAR")
