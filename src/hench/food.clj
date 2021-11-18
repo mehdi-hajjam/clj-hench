@@ -272,6 +272,31 @@
         (space/probabilise-movements head chull 3 moves))
       :else moves)))
 
+(defn border?
+  "Returns true if c is in the border"
+  [body-params c]
+  (let [height (-> body-params :board :height)
+        width (-> body-params :board :width)
+        hazards (-> body-params :board :hazards)
+        board (vec (for [x (vec (range 0 width))
+                         y (vec (range 0 height))]
+                     {:x x :y y}))
+        head (-> body-params :you :head)
+        free (filterv #(not (hazard? % hazards)) board)
+        xmin (apply min (mapv #(:x %) free))
+        xmax (apply max (mapv #(:x %) free))
+        ymin (apply min (mapv #(:y %) free))
+        ymax (apply max (mapv #(:y %) free))
+        borders (vec (concat
+                      (filterv #(= xmin (:x %)) free)
+                      (filterv #(= xmax (:x %)) free)
+                      (filterv #(= ymin (:y %)) free)
+                      (filterv #(= ymax (:y %)) free)))]
+    (cond
+      (some #(= c %) borders) true
+      :else false)))
+
+
 (defn avoid-borders
   "Avoids borders to not get cornered by the please snake. The coefficient used (0.68) has to be better than 0.66, the one for the hazard, otherwise the snake doesn't go the health-optimal way. It has to be smaller than 5*1.4/10 as well."
   [body-params moves]
@@ -380,7 +405,10 @@
         heads (mapv #(:head %) others)
         distances (mapv #(sd me %) heads)]
     (cond
-      (some #(>= 4 %) distances) (let [dangers (filterv #(>= 4 (sd me %)) heads)
+      (and (some #(>= 4 %) distances)
+           (not (or (border? body-params head)
+                    (hazard? head (hazard body-params)))))
+      (let [dangers (filterv #(>= 4 (sd me %)) heads)
                                        chulls (mapv #(forbidden-part (space/convex-hull {:body [head %]})) dangers)
                                        total (vec (apply concat chulls))]
                                    (space/probabilise-movements head total 0.22 moves))
