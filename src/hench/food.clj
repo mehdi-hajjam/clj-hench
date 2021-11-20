@@ -181,8 +181,9 @@
       #_(or (> 70 my-health)
             (<= my-length (apply max snakes-length)))
       (or (> 63 my-health)
-          (<= my-length (apply min snakes-length))
-          (<= my-length (- (apply max snakes-length) 2))) ;last clause not to be distanced too much by larger snake
+          (<= my-length (+ 1 (apply max snakes-length)))
+          ;(<= my-length (- (apply max snakes-length) 2))
+          ) ;last clause not to be distanced too much by larger snake
       (let [food (first foods)
             head (-> body-params :you :head)
             chull (space/convex-hull {:body [head food]})]
@@ -434,6 +435,7 @@
 (defn find-closest-free-case
   "Favours the chull of head closest-free-case"
   [body-params moves]
+  (println "FIND-CLOSEST-FREE-CASE")
   (let [me (-> body-params :you)
         body (-> me :body)
         head (-> me :head)

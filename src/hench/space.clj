@@ -546,7 +546,10 @@
   (let [me (-> body-params :you)
         head (:head me)
         length (:length me)
-        all-obs (all-obstacles body-params me)]
+        obs (all-obstacles body-params me)
+        snakes (other-snakes body-params)
+        pheads (mapv #(project-head %) snakes) ;i need to take smaller snakes' heads into account
+        all-obs (vec (concat obs (vec (apply concat pheads))))]
     (cond-> moves
       (and (> length (count (surface (update head :x inc) me all-obs)))
            (not (contains-tail body-params (surface (update head :x inc) me all-obs)))) (update :right #(* 0.009 %))
@@ -570,7 +573,7 @@
                   neck (neck (-> me :body))
                   diff (substract head neck)
                   straight (add head diff)]
-              (probabilise-movements head straight 1.1 moves)))))
+              (probabilise-movements head [straight] 1.1 moves)))))
 
 
 
