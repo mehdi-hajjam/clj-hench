@@ -255,11 +255,14 @@
     (barycentre free)))
 
 (defn recenter
-  "Pushes the snake back to the barycentre of no hazard food or free space on the board if there's none of these. Does that when I am hungry or head in hazard. 3 so that recenter * hazard * best degree less than eat on food"
+  "Pushes the snake back to the barycentre of no hazard food or free space on the board if there's none of these. Does that when I am hungry or head in hazard. 
+   3 so that recenter * hazard * best degree less than eat on food"
   [body-params moves]
   (println "RECENTER")
   (let [hazards (hazard body-params)
         foods (food body-params)
+        snakes (space/other-snakes body-params)
+        snakes-length (mapv #(:length %) snakes)
         free-food (filterv #(not (hazard? % hazards)) foods)
         target (if (= [] free-food)
                  (free-space-barycentre body-params)
@@ -269,7 +272,8 @@
         my-health (-> me :health)
         my-length (-> me :length)]
     (cond
-      (or (> 45 my-health) ;I am hungry
+      (or (> 63 my-health) ;I am hungry
+          (<= my-length (+ 1 (apply max snakes-length))) ;hungry coz not large enough
           (hazard? head hazards)) ;My head is on hazards
       (let [chull (space/convex-hull {:body [head target]})]
         (space/probabilise-movements head chull 3 moves))
