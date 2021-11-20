@@ -413,7 +413,7 @@
         distances (mapv #(sd me %) heads)]
     (cond
       (and (some #(>= 4 %) distances)
-           (not (or (border? body-params head)
+           (not (or false #_(border? body-params head)
                     (hazard? head (hazard body-params)))))
       (let [dangers (filterv #(>= 4 (sd me %)) heads)
                                        chulls (mapv #(forbidden-part (space/convex-hull {:body [head %]})) dangers)

@@ -548,7 +548,7 @@
         length (:length me)
         obs (all-obstacles body-params me)
         snakes (other-snakes body-params)
-        pheads (mapv #(project-head %) snakes) ;i need to take smaller snakes' heads into account
+        pheads [] #_(mapv #(project-head %) snakes) ;i need to take smaller snakes' heads into account
         all-obs (vec (concat obs (vec (apply concat pheads))))]
     (cond-> moves
       (and (> length (count (surface (update head :x inc) me all-obs)))
