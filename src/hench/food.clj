@@ -455,6 +455,6 @@
         (= [] (free-cases (first body) all-obst hazards)) (recur (vec (rest body)))
         :else (let [f (first (free-cases (first body) all-obst hazards))
                     chull (space/convex-hull {:body [head f]})]
-                (space/probabilise-movements head chull 2.55 moves)
+                (space/probabilise-movements head chull 1.55 moves)
                 )
         ))))
