@@ -97,12 +97,14 @@
 
 (defn hd
   "Health distance, ie taking hazards into account.
-  It is equal to sd*1 + 14*(min hazard in x + min hazard in y - 1) -1*dirac(head is on a hazard case) when there are no obstacles in the convex hull"
+  It is equal to sd*1 + 14*(min hazard in x + min hazard in y - 1) -1*dirac(head is on a hazard case) when there are no obstacles in the convex hull
+   Adding own body to hazards, see https://play.battlesnake.com/g/528bfb5d-a390-413d-83d1-a0bd1620484b/ move 178"
   [s c hazards]
   (let [head (-> s :head)
+        hazards+body (vec (concat hazards (:body s)))
         chull (space/convex-hull {:body [head c]})
-        in-x (min-hazard-in-x chull hazards)
-        in-y (min-hazard-in-y chull hazards)
+        in-x (min-hazard-in-x chull hazards+body)
+        in-y (min-hazard-in-y chull hazards+body)
         temp-res (+ (sd s c)
                     (* (+ in-x in-y) 14))]
                     ;(println "in-x: " in-x)
