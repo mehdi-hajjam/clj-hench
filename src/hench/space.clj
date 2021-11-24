@@ -1,5 +1,6 @@
 (ns hench.space
-  (:require clojure.set))
+  (:require clojure.set
+            [hench.utils :refer :all]))
 
 (def sample {:game {:id "game-00fe20da-94ad-11ea-bb37"
                     :ruleset {:name "standard"
@@ -55,27 +56,6 @@
                    :shout "why are we shouting??"
                    :squad ""}})
 
-
-
-(defn restrict-movements
-  [head obstacles moves]
-  (cond-> moves
-    (some #(= (update head :x inc) %) obstacles) (dissoc :right)
-    (some #(= (update head :x dec) %) obstacles) (dissoc :left)
-    (some #(= (update head :y inc) %) obstacles) (dissoc :up)
-    (some #(= (update head :y dec) %) obstacles) (dissoc :down)))
-
-(defn probabilise-movements
-  [head obstacles f moves]
-  (let [new-moves (cond-> moves
-                    (some #(= (update head :x inc) %) obstacles) (update :right #(* f %))
-                    (some #(= (update head :x dec) %) obstacles) (update :left #(* f %))
-                    (some #(= (update head :y inc) %) obstacles) (update :up #(* f %))
-                    (some #(= (update head :y dec) %) obstacles) (update :down #(* f %)))]
-    (println new-moves)
-    new-moves))
-
-
 (defn random-move
   "A random move"
   [moves]
@@ -129,26 +109,6 @@
         head (-> body-params :you :head)]
     (probabilise-movements head body 0 moves)))
 
-(defn project-head
-  "Returns a vector of all the potential head locations of snake s"
-  [s]
-  (let [body (:body s)
-        head (:head s)
-        neck (nth body 1) ;the square before the head
-        all-squares [(update head :x inc)
-                     (update head :x dec)
-                     (update head :y inc)
-                     (update head :y dec)] ;all the squares around the head
-        ]
-    (vec (remove #(= % neck) all-squares))))
-
-(defn other-snakes
-  "Returns only the other snakes (I shouldn't project my own head!)"
-  [body-params]
-  (let [snakes (-> body-params :board :snakes)
-        me (-> body-params :you)]
-    (filterv #(not= me %) snakes)))
-
 (defn avoid-other-snakes
   "Avoids direct hits with other snakes"
   [body-params moves]
@@ -167,47 +127,6 @@
     (->> moves
          (probabilise-movements head all-bodies 0)
          (probabilise-movements head projected-heads 0.1))))
-
-(defn add
-  "Vectorial addition"
-  [c1 c2]
-  {:x (+ (:x c1) (:x c2)) :y (+ (:y c1) (:y c2))})
-
-(defn substract
-  "Vectorial substraction"
-  [c1 c2]
-  {:x (- (:x c1) (:x c2)) :y (- (:y c1) (:y c2))})
-
-(defn obstacles
-  "Returns all the obstacles on the board game in one vector : namely all the other snakes's projected bodies (ie no tail but all projected heads"
-  [body-params s]
-  (let [all-snakes (-> body-params :board :snakes)
-        snakes (vec (remove #(= s %) all-snakes))
-        length (-> s :length)
-        head (-> s :head)
-        projected-heads
-        (into [] (apply concat
-                        (mapv #(if (< (:length %) length)
-                                 []
-                                 (project-head %)) snakes))) ;only project heads if the snake is more healthy or equally healthy
-        all-bodies (into [] (apply concat (mapv #(vec (butlast (:body %))) snakes))) ;the tail is ok - corner case to be added if the head is close to food though
-        ]
-    (into [] (concat all-bodies projected-heads))))
-
-(defn head
-  "Returns the head of the snake"
-  [body]
-  (first body))
-
-(defn neck
-  "Returns the neck of the snake"
-  [body]
-  (second body))
-
-(defn tail
-  "Returns the tail of the snake"
-  [body]
-  (last body))
 
 (defn elbow?
   "Returns true if n is the index in body of an elbow, false otherwise"
@@ -252,11 +171,6 @@
   (and (not= c neck)
        (close? head c)))
 
-(defn head<->body?
-  "Returns true if head is adjacent to body (accounting for the neck obv)"
-  [body]
-  (some #(adjacent? (head body) (neck body) %) (vec (rest (rest body)))))
-
 (defn inverse
   "Returns the inverse of a vector, or a point"
   [{:keys [x y]}]
@@ -282,18 +196,6 @@
     (and (> (count danger-cases) 1)
          (not= #{} (clojure.set/intersection (set danger-cases)
                                              (set body))))))
-
-(defn convex-hull
-  "Returns the convex-hull of a snake"
-  [s]
-  (let [body (:body s)
-        xmin (apply min (mapv #(:x %) body))
-        ymin (apply min (mapv #(:y %) body))
-        xmax (apply max (mapv #(:x %) body))
-        ymax (apply max (mapv #(:y %) body))]
-    (vec (for [x (vec (range xmin (+ xmax 1)))
-               y (vec (range ymin (+ ymax 1)))]
-           {:x x :y y}))))
 
 (defn snake?
   "Returns true if the case is part of you"
@@ -330,45 +232,6 @@
   [c obstacles]
   (and (bounded-in-x? c obstacles)
        (bounded-in-y? c obstacles)))
-
-(defn make-wall
-  "Returns a vector of the cells of the wall"
-  [string height width]
-  (cond
-    (= string "top") (mapv (fn [a] {:x a :y height}) (range -1 (+ width 1)))
-    (= string "down") (mapv (fn [a] {:x a :y -1}) (range -1 (+ width 1)))
-    (= string "left") (mapv (fn [a] {:x -1 :y a}) (range -1 (+ height 1)))
-    (= string "right") (mapv (fn [a] {:x width :y a}) (range -1 (+ height 1)))))
-
-(defn all-walls
-  "Returns all the walls of a game"
-  [height width]
-  (into [] (apply concat (mapv #(make-wall % height width) ["top" "down" "left" "right"]))))
-
-(defn all-obstacles
-  "Returns all the obstacles including the walls"
-  [body-params s]
-  (into [] (concat (into [] (butlast (:body s)))
-                   (obstacles body-params s)
-                   (all-walls (-> body-params :board :height)
-                              (-> body-params :board :width)))))
-
-(defn concatv
-  [v1 v2]
-  (into [] (concat v1 v2)))
-
-(defn touched-walls
-  "Returns the walls (vector of cells) touched by snake s.
- The coordinates might be negative."
-  [subbody board]
-  (let [h (:height board)
-        w (:width board)
-        b subbody]
-    (cond->> []
-      (some #(= 0 (:x %)) b) (concatv (make-wall "left" h w))
-      (some #(= (- w 1) (:x %)) b) (concatv (make-wall "right" h w))
-      (some #(= 0 (:y %)) b) (concatv (make-wall "down" h w))
-      (some #(= (- h 1) (:y %)) b) (concatv (make-wall "top" h w)))))
 
 (defn avoid-self-loop
   "Anticipates self-loops and helps avoid them"
@@ -575,7 +438,173 @@
                   straight (add head diff)]
               (probabilise-movements head [straight] 1.1 moves)))))
 
+(defn safe-snake?
+  "Check that no part of the snake are on a hazard case."
+  [body-params]
+  (let [s (-> body-params :you)
+        hazards (-> body-params :board :hazards)]
+    (not (some #(hazard? % hazards) (:body s)))))
 
+(defn free-space
+  "returns the proportion of free space on the board"
+  [body-params]
+  (let [snakes  (into [] (apply concat (mapv #(:body %) (-> body-params :board :snakes))))
+        hazards (-> body-params :board :hazards)
+        width (-> body-params :board :width)
+        height (-> body-params :board :height)]
+    (- 1 (/ (+ (count snakes) (count hazards))
+            (* width height)))))
+
+(defn follow-tail
+  "Promote x1.4 the possible head projections that decrease the most the distance to the tail. 1-0.7=0.3 < 0.33 = (/40 121) ie 4 lines of hazards. 1.4*0.7 < 1 so that rotation on borders are prohibited if avoidable"
+  [body-params moves]
+;; (println "safe-snake?: " (safe-snake? (-> body-params :you)))
+  (cond
+    (< (/ 88 121) (free-space body-params)) moves
+    (safe-snake? body-params)
+    (let [s (-> body-params :you)
+          tail (last (-> s :body))
+          head (-> s :head)
+          heads (project-head s)
+          scores (mapv #(d % tail) heads)
+          mins (apply min scores)
+          bests (filterv #(= mins (d % tail)) heads)]
+      (println "FOLLOW-TAIL")
+      (probabilise-movements head bests 1.4 moves))
+    :else moves))
+
+(defn avoid-borders
+  "Avoids borders to not get cornered by the please snake. The coefficient used (0.68) has to be better than 0.66, the one for the hazard, otherwise the snake doesn't go the health-optimal way. It has to be smaller than 5*1.4/10 as well."
+  [body-params moves]
+  (println "AVOID BORDERS")
+  (let [height (-> body-params :board :height)
+        width (-> body-params :board :width)
+        hazards (-> body-params :board :hazards)
+        board (vec (for [x (vec (range 0 width))
+                         y (vec (range 0 height))]
+                     {:x x :y y}))
+        head (-> body-params :you :head)
+        free (filterv #(not (hazard? % hazards)) board)
+        xmin (apply min (mapv #(:x %) free))
+        xmax (apply max (mapv #(:x %) free))
+        ymin (apply min (mapv #(:y %) free))
+        ymax (apply max (mapv #(:y %) free))
+        borders (vec (concat
+                      (filterv #(= xmin (:x %)) free)
+                      (filterv #(= xmax (:x %)) free)
+                      (filterv #(= ymin (:y %)) free)
+                      (filterv #(= ymax (:y %)) free)))]
+    (cond
+      (hazard? head hazards) moves
+      :else (probabilise-movements head borders 0.68 moves))))
+
+(defn grade-case
+  "Returns a value of degree that a case gives another case. The order is important if a case is many things!!"
+  [c obstacles hazards]
+  (cond
+    (some #(= c %) obstacles) 0
+    (hazard? c hazards) 0.4 ;worse than 0.5 because 2 hazards shouldn't be better than just one free case (true only coupled with fear)
+    :else 1))
+
+(defn degree
+  "Returns the degree of freedom of a case"
+  [body-params c]
+  (let [me (-> body-params :you)
+        hazards (hazard body-params)
+        all-squares [(update c :x inc)
+                     (update c :x dec)
+                     (update c :y inc)
+                     (update c :y dec)]
+        all-obst (all-obstacles body-params me)
+        grades (mapv #(grade-case % all-obst hazards) all-squares)]
+    (reduce + grades)))
+
+(defn min-d-to-others
+  "returns the min distance to heads of others"
+  [my-head others-heads]
+  (apply min (mapv #(d my-head %) others-heads)))
+
+(defn optionality
+  "Favours largest degree of freedom of next case when distance to a larger snake is less or equal to 4 (seems the right distance). 
+   Coeff chosen to be peculiar and beat follow tail even on hazard case (3.14*0.5 > 1.4)
+   To be applied when there is no way to get further away from the opponent"
+  [body-params moves]
+  (println "OPTIONALITY")
+  (let [me (-> body-params :you)
+        head (:head me)
+        length (:length me)
+        others (filterv #(> (:length %) (+ 1 length)) (other-snakes body-params))
+        heads (mapv #(:head %) others)
+        distances (mapv #(sd me %) heads)]
+    (cond
+      (some #(>= 4 %) distances)
+      (let [pheads (project-head me)
+            degrees (mapv #(degree body-params %) pheads)
+            maxd (apply max degrees)
+            bests (filterv #(= maxd (degree body-params %)) pheads)
+            maxmind (apply max (mapv #(min-d-to-others % heads) pheads))]
+        (cond
+              ;4 because I'm not using their projected heads
+          (>= 4 maxmind) (do (println "TOO CLOSE TO LARGER SNAKES")
+                             (probabilise-movements head bests 3.14 moves))
+          :else moves))
+      :else moves)))
+
+(defn forbidden-part
+  "Returns the forbidden part of a chull for FEAR"
+  [chull]
+  (let [nbx (count (distinct (mapv #(:x %) chull)))
+        nby (count (distinct (mapv #(:y %) chull)))]
+    (cond
+      (or (= nbx 1)
+          (= nby 1)) [] ; it's not a problem if it's a line
+      (= nbx 4) (let [maxx (apply max (mapv #(:x %) chull))
+                      minx (apply min (mapv #(:x %) chull))]
+                  (filterv #(> maxx (:x %) minx) chull)) ;this is the 2 by 4 case
+      (= nby 4) (let [maxy (apply max (mapv #(:y %) chull))
+                      miny (apply min (mapv #(:y %) chull))]
+                  (filterv #(> maxy (:y %) miny) chull))
+      :else chull ;this is the 3x3 case
+      )))
+
+(defn fear
+  "Discourages getting into the chull made with larger opponents deemed too close (4).
+   0.22 carefully crafted to fit other parameters."
+  [body-params moves]
+  (println "FEAR")
+  (let [me (-> body-params :you)
+        head (:head me)
+        length (:length me)
+        others (filterv #(> (:length %) length) (other-snakes body-params))
+        heads (mapv #(:head %) others)
+        distances (mapv #(sd me %) heads)]
+    (cond
+      (and (some #(>= 4 %) distances)
+           (not (or false #_(border? body-params head)
+                    (hazard? head (hazard body-params)))))
+      (let [dangers (filterv #(>= 4 (sd me %)) heads)
+            chulls (mapv #(forbidden-part (convex-hull {:body [head %]})) dangers)
+            total (vec (apply concat chulls))]
+        (probabilise-movements head total 0.22 moves))
+      :else moves)))
+
+(defn find-closest-free-case
+  "Favours the chull of head closest-free-case"
+  [body-params moves]
+  (println "FIND-CLOSEST-FREE-CASE")
+  (let [me (-> body-params :you)
+        body (-> me :body)
+        head (-> me :head)
+        hazards (hazard body-params)
+        all-obst (all-obstacles body-params me)]
+    (loop [body (vec (rest body))]
+      (cond
+        (not (hazard? head hazards)) moves
+        (= [] body) moves
+        (= [] (free-cases (first body) all-obst hazards)) (recur (vec (rest body)))
+        :else (let [f (first (free-cases (first body) all-obst hazards))
+                    chull (convex-hull {:body [head f]})]
+                (probabilise-movements head chull 1.55 moves))))))
 
 
 
