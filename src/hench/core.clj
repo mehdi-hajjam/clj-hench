@@ -31,17 +31,17 @@
   ;(clojure.pprint/pprint (-> body-params :you :head :x))
   ;(clojure.pprint/pprint (-> body-params :you :head :y))
     {:body {:move (->> {:up 1 :down 1 :right 1 :left 1}
-                       (avoid-walls body-params)
+                       #_(avoid-walls body-params) ;I don't want to avoid these anymore
                        (avoid-self-direct-hits body-params)
                        (avoid-other-snakes body-params)
                        (avoid-self-loop body-params)
-                       (avoid-loop-with-walls body-params)
+                       #_(avoid-loop-with-walls body-params) ;This is not a thing anymore
                        (avoid-hazards body-params)
                        (avoid-small-surfaces body-params) ;trop lent!! peut améliorer en ne regardant ça que quand une danger case détecte qqchose
                        (eat body-params)
                        (follow-tail body-params)
-                       (recenter body-params)
-                       (avoid-borders body-params)
+                       #_(recenter body-params) ;The sauce is near the centre first
+                       #_(avoid-borders body-params) ;This is not a thing anymore
                        (optionality body-params)
                        (fear body-params)
                        (find-closest-free-case body-params)
