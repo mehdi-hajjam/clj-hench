@@ -1,11 +1,11 @@
 ; This is the Calva evaluation results output window.
-; TIPS: The keyboard shortcut `ctrl+alt+c o` shows and focuses this window
+; TIPS: The keyboard shortcut `ctrl+alt+o o` shows and focuses this window
 ;   when connected to a REPL session.
 ; Please see https://calva.io/output/ for more info.
 ; Happy coding! ♥️
 
 ; Jacking in...
-; Starting Jack-in Terminal: clojure -Sdeps '{:deps {nrepl/nrepl {:mvn/version,"0.8.3"},cider/cider-nrepl {:mvn/version,"0.26.0"}}}'  -m nrepl.cmdline --middleware "[cider.nrepl/cider-middleware]"
+; Starting Jack-in Terminal: clojure -Sdeps '{:deps {nrepl/nrepl {:mvn/version,"0.9.0"},cider/cider-nrepl {:mvn/version,"0.27.4"}}}' -M -m nrepl.cmdline --middleware "[cider.nrepl/cider-middleware]"
 ; Hooking up nREPL sessions...
 ; Connected session: clj
 ; TIPS: 
@@ -17,6 +17,660 @@
 ;   - Clojure lines in stack traces are peekable and clickable.
 clj꞉user꞉>  ; Use `alt+enter` to evaluate
 ; Jack-in done.
-clj꞉user꞉> (vals {:x 1 :y 2})
-(1 2)
-clj꞉user꞉> 
+clj꞉user꞉> (vec (concat [1 2] [3 4]))
+[1 2 3 4]
+clj꞉user꞉> (vec 1 2 3)
+; Execution error (ArityException) at hench.core/eval7591 (REPL:22).
+; Wrong number of args (3) passed to: clojure.core/vec
+clj꞉user꞉> (vec '1 '2 '3)
+; Execution error (ArityException) at hench.core/eval7593 (REPL:25).
+; Wrong number of args (3) passed to: clojure.core/vec
+clj꞉user꞉> (into [] '(1 2 3))
+[1 2 3]
+clj꞉hench.core꞉> 
+; Evaluating file: space.clj
+; Syntax error compiling at (src/hench/space.clj:110:5).
+; Unable to resolve symbol: probabilise-movements in this context
+; Evaluation of file space.clj failed: class clojure.lang.Compiler$CompilerException
+
+clj꞉hench.core꞉> 
+clj꞉hench.space꞉> sample
+{:game {:id "game-00fe20da-94ad-11ea-bb37", :ruleset {:name "standard", :version "v.1.2.3"}, :timeout 500},
+ :turn 14,
+ :board
+ {:height 11,
+  :width 11,
+  :food [{:x 0, :y 2} {:x 2, :y 0} {:x 5, :y 5} {:x 9, :y 0} {:x 2, :y 6}],
+  :hazards [{:x 0, :y 3} {:x 0, :y 1} {:x 3, :y 2}],
+  :snakes
+  [{:shout "why are we shouting??",
+    :squad "",
+    :name "My Snake",
+    :head {:x 0, :y 1},
+    :id "snake-508e96ac-94ad-11ea-bb37",
+    :latency "111",
+    :length 5,
+    :health 54,
+    :body [{:x 0, :y 1} {:x 1, :y 1} {:x 2, :y 1} {:x 2, :y 0} {:x 3, :y 0}]}
+   {:shout "I'm not really sure...",
+    :squad "",
+    :name "Another Snake",
+    :head {:x 5, :y 4},
+    :id "snake-b67f4906-94ae-11ea-bb37",
+    :latency "222",
+    :length 4,
+    :health 56,
+    :body [{:x 5, :y 4} {:x 5, :y 3} {:x 6, :y 3} {:x 6, :y 2}]}]},
+ :you
+ {:shout "why are we shouting??",
+  :squad "",
+  :name "My Snake",
+  :head {:x 0, :y 1},
+  :id "snake-508e96ac-94ad-11ea-bb37",
+  :latency "111",
+  :length 5,
+  :health 54,
+  :body [{:x 0, :y 1} {:x 1, :y 1} {:x 2, :y 1} {:x 2, :y 0} {:x 3, :y 0}]}}
+clj꞉hench.space꞉> (wrapped-mode sample)
+; Syntax error compiling at (.calva/output-window/output.calva-repl:74:19).
+; Unable to resolve symbol: wrapped-mode in this context
+clj꞉hench.space꞉> 
+; Evaluating file: space.clj
+; Syntax error compiling at (src/hench/space.clj:110:5).
+; Unable to resolve symbol: probabilise-movements in this context
+; Evaluation of file space.clj failed: class clojure.lang.Compiler$CompilerException
+
+clj꞉hench.space꞉> 
+clj꞉hench.space꞉> 
+; Evaluating file: space.clj
+; Syntax error compiling at (src/hench/space.clj:110:5).
+; Unable to resolve symbol: probabilise-movements in this context
+; Evaluation of file space.clj failed: class clojure.lang.Compiler$CompilerException
+
+clj꞉hench.space꞉> 
+clj꞉hench.space꞉> (wrapped)
+; Evaluating file: utils.clj
+#'hench.utils/touched-walls
+clj꞉hench.utils꞉> 
+; Evaluating file: space.clj
+#'hench.space/wrapped-mode
+clj꞉hench.space꞉> (wrapped-mode sample)
+{:game {:id "game-00fe20da-94ad-11ea-bb37", :ruleset {:name "standard", :version "v.1.2.3"}, :timeout 500},
+ :turn 14,
+ :board
+ {:height 11,
+  :width 11,
+  :food [{:x 0, :y 2} {:x 2, :y 0} {:x 5, :y 5} {:x 9, :y 0} {:x 2, :y 6}],
+  :hazards [{:x 0, :y 3} {:x 0, :y 1} {:x 3, :y 2}],
+  :snakes
+  [{:shout "why are we shouting??",
+    :squad "",
+    :name "My Snake",
+    :head {:x 0, :y 1},
+    :id "snake-508e96ac-94ad-11ea-bb37",
+    :latency "111",
+    :length 5,
+    :health 54,
+    :body [{:x 0, :y 1} {:x 1, :y 1} {:x 2, :y 1} {:x 2, :y 0} {:x 3, :y 0}]}
+   {:shout "I'm not really sure...",
+    :squad "",
+    :name "Another Snake",
+    :head {:x 5, :y 4},
+    :id "snake-b67f4906-94ae-11ea-bb37",
+    :latency "222",
+    :length 4,
+    :health 56,
+    :body [{:x 5, :y 4} {:x 5, :y 3} {:x 6, :y 3} {:x 6, :y 2}]}]},
+ :you
+ {:shout "why are we shouting??",
+  :squad "",
+  :name "My Snake",
+  :head {:x 0, :y 1},
+  :id "snake-508e96ac-94ad-11ea-bb37",
+  :latency "111",
+  :length 5,
+  :health 54,
+  :body [{:x 0, :y 1} {:x 1, :y 1} {:x 2, :y 1} {:x 2, :y 0} {:x 3, :y 0}]},
+ :food []}
+clj꞉hench.space꞉> 
+; Evaluating file: space.clj
+#'hench.space/wrapped-mode
+clj꞉hench.space꞉> 
+(wrapped-mode sample)
+{:game {:id "game-00fe20da-94ad-11ea-bb37", :ruleset {:name "standard", :version "v.1.2.3"}, :timeout 500},
+ :turn 14,
+ :board
+ {:height 11,
+  :width 11,
+  :food
+  [[{:x 0, :y 2} {:x 11, :y 2} {:x -11, :y 2} {:x 0, :y 13} {:x 0, :y -9}]
+   [{:x 2, :y 0} {:x 13, :y 0} {:x -9, :y 0} {:x 2, :y 11} {:x 2, :y -11}]
+   [{:x 5, :y 5} {:x 16, :y 5} {:x -6, :y 5} {:x 5, :y 16} {:x 5, :y -6}]
+   [{:x 9, :y 0} {:x 20, :y 0} {:x -2, :y 0} {:x 9, :y 11} {:x 9, :y -11}]
+   [{:x 2, :y 6} {:x 13, :y 6} {:x -9, :y 6} {:x 2, :y 17} {:x 2, :y -5}]],
+  :hazards [{:x 0, :y 3} {:x 0, :y 1} {:x 3, :y 2}],
+  :snakes
+  [{:shout "why are we shouting??",
+    :squad "",
+    :name "My Snake",
+    :head {:x 0, :y 1},
+    :id "snake-508e96ac-94ad-11ea-bb37",
+    :latency "111",
+    :length 5,
+    :health 54,
+    :body [{:x 0, :y 1} {:x 1, :y 1} {:x 2, :y 1} {:x 2, :y 0} {:x 3, :y 0}]}
+   {:shout "I'm not really sure...",
+    :squad "",
+    :name "Another Snake",
+    :head {:x 5, :y 4},
+    :id "snake-b67f4906-94ae-11ea-bb37",
+    :latency "222",
+    :length 4,
+    :health 56,
+    :body [{:x 5, :y 4} {:x 5, :y 3} {:x 6, :y 3} {:x 6, :y 2}]}]},
+ :you
+ {:shout "why are we shouting??",
+  :squad "",
+  :name "My Snake",
+  :head {:x 0, :y 1},
+  :id "snake-508e96ac-94ad-11ea-bb37",
+  :latency "111",
+  :length 5,
+  :health 54,
+  :body [{:x 0, :y 1} {:x 1, :y 1} {:x 2, :y 1} {:x 2, :y 0} {:x 3, :y 0}]}}
+clj꞉hench.space꞉> 
+; Evaluating file: space.clj
+#'hench.space/wrapped-mode
+clj꞉hench.space꞉> 
+(wrapped-mode sample)
+{:game {:id "game-00fe20da-94ad-11ea-bb37", :ruleset {:name "standard", :version "v.1.2.3"}, :timeout 500},
+ :turn 14,
+ :board
+ {:height 11,
+  :width 11,
+  :food
+  [[{:x 0, :y 2} {:x 11, :y 2} {:x -11, :y 2} {:x 0, :y 13} {:x 0, :y -9}]
+   [{:x 2, :y 0} {:x 13, :y 0} {:x -9, :y 0} {:x 2, :y 11} {:x 2, :y -11}]
+   [{:x 5, :y 5} {:x 16, :y 5} {:x -6, :y 5} {:x 5, :y 16} {:x 5, :y -6}]
+   [{:x 9, :y 0} {:x 20, :y 0} {:x -2, :y 0} {:x 9, :y 11} {:x 9, :y -11}]
+   [{:x 2, :y 6} {:x 13, :y 6} {:x -9, :y 6} {:x 2, :y 17} {:x 2, :y -5}]],
+  :hazards
+  [[{:x 0, :y 3} {:x 11, :y 3} {:x -11, :y 3} {:x 0, :y 14} {:x 0, :y -8}]
+   [{:x 0, :y 1} {:x 11, :y 1} {:x -11, :y 1} {:x 0, :y 12} {:x 0, :y -10}]
+   [{:x 3, :y 2} {:x 14, :y 2} {:x -8, :y 2} {:x 3, :y 13} {:x 3, :y -9}]],
+  :snakes
+  [{:shout "why are we shouting??",
+    :squad "",
+    :name "My Snake",
+    :head {:x 0, :y 1},
+    :id "snake-508e96ac-94ad-11ea-bb37",
+    :latency "111",
+    :length 5,
+    :health 54,
+    :body [{:x 0, :y 1} {:x 1, :y 1} {:x 2, :y 1} {:x 2, :y 0} {:x 3, :y 0}]}
+   {:shout "I'm not really sure...",
+    :squad "",
+    :name "Another Snake",
+    :head {:x 5, :y 4},
+    :id "snake-b67f4906-94ae-11ea-bb37",
+    :latency "222",
+    :length 4,
+    :health 56,
+    :body [{:x 5, :y 4} {:x 5, :y 3} {:x 6, :y 3} {:x 6, :y 2}]}]},
+ :you
+ {:shout "why are we shouting??",
+  :squad "",
+  :name "My Snake",
+  :head {:x 0, :y 1},
+  :id "snake-508e96ac-94ad-11ea-bb37",
+  :latency "111",
+  :length 5,
+  :health 54,
+  :body [{:x 0, :y 1} {:x 1, :y 1} {:x 2, :y 1} {:x 2, :y 0} {:x 3, :y 0}]}}
+clj꞉hench.space꞉> 
+; Evaluating file: space.clj
+#'hench.space/wrapped-mode
+clj꞉hench.space꞉> 
+(wrapped-mode sample)
+{:board {:food [], :hazards [], :you {:body []}}}
+clj꞉hench.space꞉> sample
+{:game {:id "game-00fe20da-94ad-11ea-bb37", :ruleset {:name "standard", :version "v.1.2.3"}, :timeout 500},
+ :turn 14,
+ :board
+ {:height 11,
+  :width 11,
+  :food [{:x 0, :y 2} {:x 2, :y 0} {:x 5, :y 5} {:x 9, :y 0} {:x 2, :y 6}],
+  :hazards [{:x 0, :y 3} {:x 0, :y 1} {:x 3, :y 2}],
+  :snakes
+  [{:shout "why are we shouting??",
+    :squad "",
+    :name "My Snake",
+    :head {:x 0, :y 1},
+    :id "snake-508e96ac-94ad-11ea-bb37",
+    :latency "111",
+    :length 5,
+    :health 54,
+    :body [{:x 0, :y 1} {:x 1, :y 1} {:x 2, :y 1} {:x 2, :y 0} {:x 3, :y 0}]}
+   {:shout "I'm not really sure...",
+    :squad "",
+    :name "Another Snake",
+    :head {:x 5, :y 4},
+    :id "snake-b67f4906-94ae-11ea-bb37",
+    :latency "222",
+    :length 4,
+    :health 56,
+    :body [{:x 5, :y 4} {:x 5, :y 3} {:x 6, :y 3} {:x 6, :y 2}]}]},
+ :you
+ {:shout "why are we shouting??",
+  :squad "",
+  :name "My Snake",
+  :head {:x 0, :y 1},
+  :id "snake-508e96ac-94ad-11ea-bb37",
+  :latency "111",
+  :length 5,
+  :health 54,
+  :body [{:x 0, :y 1} {:x 1, :y 1} {:x 2, :y 1} {:x 2, :y 0} {:x 3, :y 0}]}}
+clj꞉hench.space꞉> 
+; Evaluating file: space.clj
+#'hench.space/wrapped-mode
+clj꞉hench.space꞉> 
+(wrapped-mode sample)
+{:game {:id "game-00fe20da-94ad-11ea-bb37", :ruleset {:name "standard", :version "v.1.2.3"}, :timeout 500},
+ :turn 14,
+ :board
+ {:height 11,
+  :width 11,
+  :food
+  [[{:x 0, :y 2} {:x 11, :y 2} {:x -11, :y 2} {:x 0, :y 13} {:x 0, :y -9}]
+   [{:x 2, :y 0} {:x 13, :y 0} {:x -9, :y 0} {:x 2, :y 11} {:x 2, :y -11}]
+   [{:x 5, :y 5} {:x 16, :y 5} {:x -6, :y 5} {:x 5, :y 16} {:x 5, :y -6}]
+   [{:x 9, :y 0} {:x 20, :y 0} {:x -2, :y 0} {:x 9, :y 11} {:x 9, :y -11}]
+   [{:x 2, :y 6} {:x 13, :y 6} {:x -9, :y 6} {:x 2, :y 17} {:x 2, :y -5}]],
+  :hazards
+  [[{:x 0, :y 3} {:x 11, :y 3} {:x -11, :y 3} {:x 0, :y 14} {:x 0, :y -8}]
+   [{:x 0, :y 1} {:x 11, :y 1} {:x -11, :y 1} {:x 0, :y 12} {:x 0, :y -10}]
+   [{:x 3, :y 2} {:x 14, :y 2} {:x -8, :y 2} {:x 3, :y 13} {:x 3, :y -9}]],
+  :snakes
+  [{:shout "why are we shouting??",
+    :squad "",
+    :name "My Snake",
+    :head {:x 0, :y 1},
+    :id "snake-508e96ac-94ad-11ea-bb37",
+    :latency "111",
+    :length 5,
+    :health 54,
+    :body [{:x 0, :y 1} {:x 1, :y 1} {:x 2, :y 1} {:x 2, :y 0} {:x 3, :y 0}]}
+   {:shout "I'm not really sure...",
+    :squad "",
+    :name "Another Snake",
+    :head {:x 5, :y 4},
+    :id "snake-b67f4906-94ae-11ea-bb37",
+    :latency "222",
+    :length 4,
+    :health 56,
+    :body [{:x 5, :y 4} {:x 5, :y 3} {:x 6, :y 3} {:x 6, :y 2}]}],
+  :you {:body []}},
+ :you
+ {:shout "why are we shouting??",
+  :squad "",
+  :name "My Snake",
+  :head {:x 0, :y 1},
+  :id "snake-508e96ac-94ad-11ea-bb37",
+  :latency "111",
+  :length 5,
+  :health 54,
+  :body [{:x 0, :y 1} {:x 1, :y 1} {:x 2, :y 1} {:x 2, :y 0} {:x 3, :y 0}]}}
+clj꞉hench.space꞉> sampl
+; Syntax error compiling at (.calva/output-window/output.calva-repl:0:0).
+; Unable to resolve symbol: sampl in this context
+clj꞉hench.space꞉> sample
+{:game {:id "game-00fe20da-94ad-11ea-bb37", :ruleset {:name "standard", :version "v.1.2.3"}, :timeout 500},
+ :turn 14,
+ :board
+ {:height 11,
+  :width 11,
+  :food [{:x 0, :y 2} {:x 2, :y 0} {:x 5, :y 5} {:x 9, :y 0} {:x 2, :y 6}],
+  :hazards [{:x 0, :y 3} {:x 0, :y 1} {:x 3, :y 2}],
+  :snakes
+  [{:shout "why are we shouting??",
+    :squad "",
+    :name "My Snake",
+    :head {:x 0, :y 1},
+    :id "snake-508e96ac-94ad-11ea-bb37",
+    :latency "111",
+    :length 5,
+    :health 54,
+    :body [{:x 0, :y 1} {:x 1, :y 1} {:x 2, :y 1} {:x 2, :y 0} {:x 3, :y 0}]}
+   {:shout "I'm not really sure...",
+    :squad "",
+    :name "Another Snake",
+    :head {:x 5, :y 4},
+    :id "snake-b67f4906-94ae-11ea-bb37",
+    :latency "222",
+    :length 4,
+    :health 56,
+    :body [{:x 5, :y 4} {:x 5, :y 3} {:x 6, :y 3} {:x 6, :y 2}]}]},
+ :you
+ {:shout "why are we shouting??",
+  :squad "",
+  :name "My Snake",
+  :head {:x 0, :y 1},
+  :id "snake-508e96ac-94ad-11ea-bb37",
+  :latency "111",
+  :length 5,
+  :health 54,
+  :body [{:x 0, :y 1} {:x 1, :y 1} {:x 2, :y 1} {:x 2, :y 0} {:x 3, :y 0}]}}
+clj꞉hench.space꞉> 
+; Evaluating file: space.clj
+#'hench.space/wrapped-mode
+clj꞉hench.space꞉> 
+(wrapped-mode sample)
+{:game {:id "game-00fe20da-94ad-11ea-bb37", :ruleset {:name "standard", :version "v.1.2.3"}, :timeout 500},
+ :turn 14,
+ :board
+ {:height 11,
+  :width 11,
+  :food
+  [[{:x 0, :y 2} {:x 11, :y 2} {:x -11, :y 2} {:x 0, :y 13} {:x 0, :y -9}]
+   [{:x 2, :y 0} {:x 13, :y 0} {:x -9, :y 0} {:x 2, :y 11} {:x 2, :y -11}]
+   [{:x 5, :y 5} {:x 16, :y 5} {:x -6, :y 5} {:x 5, :y 16} {:x 5, :y -6}]
+   [{:x 9, :y 0} {:x 20, :y 0} {:x -2, :y 0} {:x 9, :y 11} {:x 9, :y -11}]
+   [{:x 2, :y 6} {:x 13, :y 6} {:x -9, :y 6} {:x 2, :y 17} {:x 2, :y -5}]],
+  :hazards
+  [[{:x 0, :y 3} {:x 11, :y 3} {:x -11, :y 3} {:x 0, :y 14} {:x 0, :y -8}]
+   [{:x 0, :y 1} {:x 11, :y 1} {:x -11, :y 1} {:x 0, :y 12} {:x 0, :y -10}]
+   [{:x 3, :y 2} {:x 14, :y 2} {:x -8, :y 2} {:x 3, :y 13} {:x 3, :y -9}]],
+  :snakes
+  [{:shout "why are we shouting??",
+    :squad "",
+    :name "My Snake",
+    :head {:x 0, :y 1},
+    :id "snake-508e96ac-94ad-11ea-bb37",
+    :latency "111",
+    :length 5,
+    :health 54,
+    :body [{:x 0, :y 1} {:x 1, :y 1} {:x 2, :y 1} {:x 2, :y 0} {:x 3, :y 0}]}
+   {:shout "I'm not really sure...",
+    :squad "",
+    :name "Another Snake",
+    :head {:x 5, :y 4},
+    :id "snake-b67f4906-94ae-11ea-bb37",
+    :latency "222",
+    :length 4,
+    :health 56,
+    :body [{:x 5, :y 4} {:x 5, :y 3} {:x 6, :y 3} {:x 6, :y 2}]}]},
+ :you
+ {:shout "why are we shouting??",
+  :squad "",
+  :name "My Snake",
+  :head {:x 0, :y 1},
+  :id "snake-508e96ac-94ad-11ea-bb37",
+  :latency "111",
+  :length 5,
+  :health 54,
+  :body
+  [[{:x 0, :y 1} {:x 11, :y 1} {:x -11, :y 1} {:x 0, :y 12} {:x 0, :y -10}]
+   [{:x 1, :y 1} {:x 12, :y 1} {:x -10, :y 1} {:x 1, :y 12} {:x 1, :y -10}]
+   [{:x 2, :y 1} {:x 13, :y 1} {:x -9, :y 1} {:x 2, :y 12} {:x 2, :y -10}]
+   [{:x 2, :y 0} {:x 13, :y 0} {:x -9, :y 0} {:x 2, :y 11} {:x 2, :y -11}]
+   [{:x 3, :y 0} {:x 14, :y 0} {:x -8, :y 0} {:x 3, :y 11} {:x 3, :y -11}]]}}
+clj꞉hench.space꞉> 
+; Evaluating file: space.clj
+#'hench.space/wrapped-mode
+clj꞉hench.space꞉> (update-snakes (:snakes (:board sample)))
+; Execution error (ArityException) at hench.space/eval10912 (REPL:420).
+; Wrong number of args (1) passed to: hench.space/update-snakes
+clj꞉hench.space꞉> 
+(update-snakes (:snakes (:board sample)) 11 11)
+; Execution error (ArityException) at hench.space/update-snakes (space.clj:628).
+; Wrong number of args (1) passed to: hench.space/wrap-multiply
+clj꞉hench.space꞉> 
+; Evaluating file: space.clj
+#'hench.space/wrapped-mode
+clj꞉hench.space꞉> 
+(update-snakes (:snakes (:board sample)) 11 11)
+; Execution error (IllegalArgumentException) at hench.space/update-snakes (space.clj:628).
+; Key must be integer
+clj꞉hench.space꞉> 
+; Evaluating file: space.clj
+#'hench.space/wrapped-mode
+clj꞉hench.space꞉> 
+(update-snake (first (:snakes (:board sample))) 11 11)
+; Execution error (NullPointerException) at hench.utils/add (utils.clj:54).
+; null
+clj꞉hench.space꞉> (first (:snakes (:board samples)))
+; Syntax error compiling at (.calva/output-window/output.calva-repl:441:35).
+; Unable to resolve symbol: samples in this context
+clj꞉hench.space꞉> (:board sample)
+{:height 11,
+ :width 11,
+ :food [{:x 0, :y 2} {:x 2, :y 0} {:x 5, :y 5} {:x 9, :y 0} {:x 2, :y 6}],
+ :hazards [{:x 0, :y 3} {:x 0, :y 1} {:x 3, :y 2}],
+ :snakes
+ [{:shout "why are we shouting??",
+   :squad "",
+   :name "My Snake",
+   :head {:x 0, :y 1},
+   :id "snake-508e96ac-94ad-11ea-bb37",
+   :latency "111",
+   :length 5,
+   :health 54,
+   :body [{:x 0, :y 1} {:x 1, :y 1} {:x 2, :y 1} {:x 2, :y 0} {:x 3, :y 0}]}
+  {:shout "I'm not really sure...",
+   :squad "",
+   :name "Another Snake",
+   :head {:x 5, :y 4},
+   :id "snake-b67f4906-94ae-11ea-bb37",
+   :latency "222",
+   :length 4,
+   :health 56,
+   :body [{:x 5, :y 4} {:x 5, :y 3} {:x 6, :y 3} {:x 6, :y 2}]}]}
+clj꞉hench.space꞉> 
+(first (:snakes (:board sample)))
+{:shout "why are we shouting??",
+ :squad "",
+ :name "My Snake",
+ :head {:x 0, :y 1},
+ :id "snake-508e96ac-94ad-11ea-bb37",
+ :latency "111",
+ :length 5,
+ :health 54,
+ :body [{:x 0, :y 1} {:x 1, :y 1} {:x 2, :y 1} {:x 2, :y 0} {:x 3, :y 0}]}
+clj꞉hench.space꞉> 
+(update-snake (first (:snakes (:board sample))) 11 11)
+; Execution error (NullPointerException) at hench.utils/add (utils.clj:54).
+; null
+clj꞉hench.space꞉> 
+; Evaluating file: space.clj
+#'hench.space/wrapped-mode
+clj꞉hench.space꞉> 
+(update-snake (first (:snakes (:board sample))) 11 11)
+; Execution error (NullPointerException) at hench.utils/add (utils.clj:54).
+; null
+clj꞉hench.space꞉> 
+; Evaluating file: space.clj
+#'hench.space/wrapped-mode
+clj꞉hench.space꞉> 
+(update-snake (first (:snakes (:board sample))) 11 11)
+; Execution error (NullPointerException) at hench.utils/add (utils.clj:54).
+; null
+clj꞉hench.space꞉> 
+; Evaluating file: space.clj
+#'hench.space/wrapped-mode
+clj꞉hench.space꞉> 
+(update-snake (first (:snakes (:board sample))) 11 11)
+; Execution error (NullPointerException) at (REPL:1).
+; null
+clj꞉hench.space꞉> (wrapped-mode sample)
+{:game {:id "game-00fe20da-94ad-11ea-bb37", :ruleset {:name "standard", :version "v.1.2.3"}, :timeout 500},
+ :turn 14,
+ :board
+ {:height 11,
+  :width 11,
+  :food
+  [[{:x 0, :y 2} {:x 11, :y 2} {:x -11, :y 2} {:x 0, :y 13} {:x 0, :y -9}]
+   [{:x 2, :y 0} {:x 13, :y 0} {:x -9, :y 0} {:x 2, :y 11} {:x 2, :y -11}]
+   [{:x 5, :y 5} {:x 16, :y 5} {:x -6, :y 5} {:x 5, :y 16} {:x 5, :y -6}]
+   [{:x 9, :y 0} {:x 20, :y 0} {:x -2, :y 0} {:x 9, :y 11} {:x 9, :y -11}]
+   [{:x 2, :y 6} {:x 13, :y 6} {:x -9, :y 6} {:x 2, :y 17} {:x 2, :y -5}]],
+  :hazards
+  [[{:x 0, :y 3} {:x 11, :y 3} {:x -11, :y 3} {:x 0, :y 14} {:x 0, :y -8}]
+   [{:x 0, :y 1} {:x 11, :y 1} {:x -11, :y 1} {:x 0, :y 12} {:x 0, :y -10}]
+   [{:x 3, :y 2} {:x 14, :y 2} {:x -8, :y 2} {:x 3, :y 13} {:x 3, :y -9}]],
+  :snakes
+  [{:shout "why are we shouting??",
+    :squad "",
+    :name "My Snake",
+    :head {:x 0, :y 1},
+    :id "snake-508e96ac-94ad-11ea-bb37",
+    :latency "111",
+    :length 5,
+    :health 54,
+    :body [{:x 0, :y 1} {:x 1, :y 1} {:x 2, :y 1} {:x 2, :y 0} {:x 3, :y 0}]}
+   {:shout "I'm not really sure...",
+    :squad "",
+    :name "Another Snake",
+    :head {:x 5, :y 4},
+    :id "snake-b67f4906-94ae-11ea-bb37",
+    :latency "222",
+    :length 4,
+    :health 56,
+    :body [{:x 5, :y 4} {:x 5, :y 3} {:x 6, :y 3} {:x 6, :y 2}]}]},
+ :you
+ {:shout "why are we shouting??",
+  :squad "",
+  :name "My Snake",
+  :head {:x 0, :y 1},
+  :id "snake-508e96ac-94ad-11ea-bb37",
+  :latency "111",
+  :length 5,
+  :health 54,
+  :body
+  [[{:x 0, :y 1} {:x 11, :y 1} {:x -11, :y 1} {:x 0, :y 12} {:x 0, :y -10}]
+   [{:x 1, :y 1} {:x 12, :y 1} {:x -10, :y 1} {:x 1, :y 12} {:x 1, :y -10}]
+   [{:x 2, :y 1} {:x 13, :y 1} {:x -9, :y 1} {:x 2, :y 12} {:x 2, :y -10}]
+   [{:x 2, :y 0} {:x 13, :y 0} {:x -9, :y 0} {:x 2, :y 11} {:x 2, :y -11}]
+   [{:x 3, :y 0} {:x 14, :y 0} {:x -8, :y 0} {:x 3, :y 11} {:x 3, :y -11}]]}}
+clj꞉hench.space꞉> sample
+{:game {:id "game-00fe20da-94ad-11ea-bb37", :ruleset {:name "standard", :version "v.1.2.3"}, :timeout 500},
+ :turn 14,
+ :board
+ {:height 11,
+  :width 11,
+  :food [{:x 0, :y 2} {:x 2, :y 0} {:x 5, :y 5} {:x 9, :y 0} {:x 2, :y 6}],
+  :hazards [{:x 0, :y 3} {:x 0, :y 1} {:x 3, :y 2}],
+  :snakes
+  [{:shout "why are we shouting??",
+    :squad "",
+    :name "My Snake",
+    :head {:x 0, :y 1},
+    :id "snake-508e96ac-94ad-11ea-bb37",
+    :latency "111",
+    :length 5,
+    :health 54,
+    :body [{:x 0, :y 1} {:x 1, :y 1} {:x 2, :y 1} {:x 2, :y 0} {:x 3, :y 0}]}
+   {:shout "I'm not really sure...",
+    :squad "",
+    :name "Another Snake",
+    :head {:x 5, :y 4},
+    :id "snake-b67f4906-94ae-11ea-bb37",
+    :latency "222",
+    :length 4,
+    :health 56,
+    :body [{:x 5, :y 4} {:x 5, :y 3} {:x 6, :y 3} {:x 6, :y 2}]}]},
+ :you
+ {:shout "why are we shouting??",
+  :squad "",
+  :name "My Snake",
+  :head {:x 0, :y 1},
+  :id "snake-508e96ac-94ad-11ea-bb37",
+  :latency "111",
+  :length 5,
+  :health 54,
+  :body [{:x 0, :y 1} {:x 1, :y 1} {:x 2, :y 1} {:x 2, :y 0} {:x 3, :y 0}]}}
+clj꞉hench.space꞉> (update-in {:shout "I'm not really sure...",
+                              :squad "",
+                              :name "Another Snake",
+                              :head {:x 5, :y 4},
+                              :id "snake-b67f4906-94ae-11ea-bb37",
+                              :latency "222",
+                              :length 4,
+                              :health 56,
+                              :body [{:x 5, :y 4} {:x 5, :y 3} {:x 6, :y 3} {:x 6, :y 2}]} [:body] #(wrap-multiply % 11 11))
+{:shout "I'm not really sure...",
+ :squad "",
+ :name "Another Snake",
+ :head {:x 5, :y 4},
+ :id "snake-b67f4906-94ae-11ea-bb37",
+ :latency "222",
+ :length 4,
+ :health 56,
+ :body
+ [[{:x 5, :y 4} {:x 16, :y 4} {:x -6, :y 4} {:x 5, :y 15} {:x 5, :y -7}]
+  [{:x 5, :y 3} {:x 16, :y 3} {:x -6, :y 3} {:x 5, :y 14} {:x 5, :y -8}]
+  [{:x 6, :y 3} {:x 17, :y 3} {:x -5, :y 3} {:x 6, :y 14} {:x 6, :y -8}]
+  [{:x 6, :y 2} {:x 17, :y 2} {:x -5, :y 2} {:x 6, :y 13} {:x 6, :y -9}]]}
+clj꞉hench.space꞉> 
+; Evaluating file: space.clj
+#'hench.space/wrapped-mode
+clj꞉hench.space꞉> 
+(wrapped-mode sample)
+{:game {:id "game-00fe20da-94ad-11ea-bb37", :ruleset {:name "standard", :version "v.1.2.3"}, :timeout 500},
+ :turn 14,
+ :board
+ {:height 11,
+  :width 11,
+  :food
+  [[{:x 0, :y 2} {:x 11, :y 2} {:x -11, :y 2} {:x 0, :y 13} {:x 0, :y -9}]
+   [{:x 2, :y 0} {:x 13, :y 0} {:x -9, :y 0} {:x 2, :y 11} {:x 2, :y -11}]
+   [{:x 5, :y 5} {:x 16, :y 5} {:x -6, :y 5} {:x 5, :y 16} {:x 5, :y -6}]
+   [{:x 9, :y 0} {:x 20, :y 0} {:x -2, :y 0} {:x 9, :y 11} {:x 9, :y -11}]
+   [{:x 2, :y 6} {:x 13, :y 6} {:x -9, :y 6} {:x 2, :y 17} {:x 2, :y -5}]],
+  :hazards
+  [[{:x 0, :y 3} {:x 11, :y 3} {:x -11, :y 3} {:x 0, :y 14} {:x 0, :y -8}]
+   [{:x 0, :y 1} {:x 11, :y 1} {:x -11, :y 1} {:x 0, :y 12} {:x 0, :y -10}]
+   [{:x 3, :y 2} {:x 14, :y 2} {:x -8, :y 2} {:x 3, :y 13} {:x 3, :y -9}]],
+  :snakes
+  [{:shout "why are we shouting??",
+    :squad "",
+    :name "My Snake",
+    :head {:x 0, :y 1},
+    :id "snake-508e96ac-94ad-11ea-bb37",
+    :latency "111",
+    :length 5,
+    :health 54,
+    :body
+    [[{:x 0, :y 1} {:x 11, :y 1} {:x -11, :y 1} {:x 0, :y 12} {:x 0, :y -10}]
+     [{:x 1, :y 1} {:x 12, :y 1} {:x -10, :y 1} {:x 1, :y 12} {:x 1, :y -10}]
+     [{:x 2, :y 1} {:x 13, :y 1} {:x -9, :y 1} {:x 2, :y 12} {:x 2, :y -10}]
+     [{:x 2, :y 0} {:x 13, :y 0} {:x -9, :y 0} {:x 2, :y 11} {:x 2, :y -11}]
+     [{:x 3, :y 0} {:x 14, :y 0} {:x -8, :y 0} {:x 3, :y 11} {:x 3, :y -11}]]}
+   {:shout "I'm not really sure...",
+    :squad "",
+    :name "Another Snake",
+    :head {:x 5, :y 4},
+    :id "snake-b67f4906-94ae-11ea-bb37",
+    :latency "222",
+    :length 4,
+    :health 56,
+    :body
+    [[{:x 5, :y 4} {:x 16, :y 4} {:x -6, :y 4} {:x 5, :y 15} {:x 5, :y -7}]
+     [{:x 5, :y 3} {:x 16, :y 3} {:x -6, :y 3} {:x 5, :y 14} {:x 5, :y -8}]
+     [{:x 6, :y 3} {:x 17, :y 3} {:x -5, :y 3} {:x 6, :y 14} {:x 6, :y -8}]
+     [{:x 6, :y 2} {:x 17, :y 2} {:x -5, :y 2} {:x 6, :y 13} {:x 6, :y -9}]]}]},
+ :you
+ {:shout "why are we shouting??",
+  :squad "",
+  :name "My Snake",
+  :head {:x 0, :y 1},
+  :id "snake-508e96ac-94ad-11ea-bb37",
+  :latency "111",
+  :length 5,
+  :health 54,
+  :body
+  [[{:x 0, :y 1} {:x 11, :y 1} {:x -11, :y 1} {:x 0, :y 12} {:x 0, :y -10}]
+   [{:x 1, :y 1} {:x 12, :y 1} {:x -10, :y 1} {:x 1, :y 12} {:x 1, :y -10}]
+   [{:x 2, :y 1} {:x 13, :y 1} {:x -9, :y 1} {:x 2, :y 12} {:x 2, :y -10}]
+   [{:x 2, :y 0} {:x 13, :y 0} {:x -9, :y 0} {:x 2, :y 11} {:x 2, :y -11}]
+   [{:x 3, :y 0} {:x 14, :y 0} {:x -8, :y 0} {:x 3, :y 11} {:x 3, :y -11}]]}}
+clj꞉hench.space꞉> 

@@ -27,7 +27,8 @@
 
 (defn move-handler
   [req]
-  (let [body-params (:body-params req)]
+  (let [b-p (:body-params req)
+        body-params (wrapped-mode b-p)]
   ;(clojure.pprint/pprint (-> body-params :you :head :x))
   ;(clojure.pprint/pprint (-> body-params :you :head :y))
     {:body {:move (->> {:up 1 :down 1 :right 1 :left 1}

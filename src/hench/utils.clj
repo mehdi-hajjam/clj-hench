@@ -13,6 +13,16 @@
   [c hazards]
   (some #(= c %) hazards))
 
+(defn add
+  "Vectorial addition"
+  [c1 c2]
+  {:x (+ (:x c1) (:x c2)) :y (+ (:y c1) (:y c2))})
+
+(defn substract
+  "Vectorial substraction"
+  [c1 c2]
+  {:x (- (:x c1) (:x c2)) :y (- (:y c1) (:y c2))})
+
 (defn head
   "Returns the head of the snake"
   [body]
@@ -32,12 +42,39 @@
   "Returns only the other snakes (I shouldn't project my own head!)"
   [body-params]
   (let [snakes (-> body-params :board :snakes)
-        me (-> body-params :you)]
-    (filterv #(not= me %) snakes)))
+        me (-> body-params :you)
+        myID (:id me)]
+    (filterv #(not= myID (:id %)) snakes)))
+
+(defn multiply-points
+  "Creates the points' doppelgangers in all 4 directions"
+  [p width height]
+  [p
+   (add p {:x width :y 0})
+   (substract p {:x width :y 0})
+   (add p {:x 0 :y height})
+   (substract p {:x 0 :y height})])
+
+(defn wrap-multiply
+  "Duplicates points in the grid in all 4 directions"
+  [v width height]
+  (mapv #(multiply-points % width height) v))
+
+(defn update-snake
+  "Updates the snakes bodies and heads under :snakes"
+  [snake width height]
+  (-> snake
+      (update-in [:body] #(wrap-multiply % width height))))
+
+(defn update-snakes
+  "Updates all snakes"
+  [snakes width height]
+  (mapv #(update-snake % width height) snakes))
 
 (defn project-head
-  "Returns a vector of all the potential head locations of snake s"
-  [s]
+  "Returns a vector of all the potential head locations of snake s.
+   Needs to take into account head doppelgangers as head is not a vector in a snake map"
+  [s w h]
   (let [body (:body s)
         head (:head s)
         neck (nth body 1) ;the square before the head
@@ -46,17 +83,7 @@
                      (update head :y inc)
                      (update head :y dec)] ;all the squares around the head
         ]
-    (vec (remove #(= % neck) all-squares))))
-
-(defn add
-  "Vectorial addition"
-  [c1 c2]
-  {:x (+ (:x c1) (:x c2)) :y (+ (:y c1) (:y c2))})
-
-(defn substract
-  "Vectorial substraction"
-  [c1 c2]
-  {:x (- (:x c1) (:x c2)) :y (- (:y c1) (:y c2))})
+    (wrap-multiply (vec (remove #(= % neck) all-squares)) w h)))
 
 (defn obstacles
   "Returns all the obstacles on the board game in one vector : namely all the other snakes's projected bodies (ie no tail but all projected heads"
@@ -65,11 +92,14 @@
         snakes (vec (remove #(= s %) all-snakes))
         length (-> s :length)
         head (-> s :head)
+        board (:board body-params)
+        width (:width board)
+        height (:height board)
         projected-heads
         (into [] (apply concat
                         (mapv #(if (< (:length %) length)
                                  []
-                                 (project-head %)) snakes))) ;only project heads if the snake is more healthy or equally healthy
+                                 (project-head % width height)) snakes))) ;only project heads if the snake is more healthy or equally healthy
         all-bodies (into [] (apply concat (mapv #(vec (butlast (:body %))) snakes))) ;the tail is ok - corner case to be added if the head is close to food though
         ]
     (into [] (concat all-bodies projected-heads))))
@@ -107,8 +137,10 @@
                y (vec (range ymin (+ ymax 1)))]
            {:x x :y y}))))
 
+;; should be min of d and distance by warping
+
 (defn d
-  "Mathematical distance withiut obstacles"
+  "Mathematical distance without obstacles"
   [a b]
   (+ (Math/abs (- (:x a) (:x b)))
      (Math/abs (- (:y a) (:y b)))))

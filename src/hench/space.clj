@@ -116,11 +116,14 @@
   (let [snakes (other-snakes body-params)
         my-length (-> body-params :you :length)
         head (-> body-params :you :head)
+        board (:board body-params)
+        width (:width board)
+        height (:height board)
         projected-heads
         (into [] (apply concat
                         (mapv #(if (< (:length %) my-length)
                                  []
-                                 (project-head %)) snakes))) ;only project heads if the snake is more healthy or equally healthy
+                                 (project-head % width height)) snakes))) ;only project heads if the snake is more healthy or equally healthy
         all-bodies (into [] (apply concat (mapv #(vec (butlast (:body %))) snakes))) ;the tail is ok - corner case to be added if the head is close to food though
         ]
       ;(println "projected-heads: " projected-heads)
@@ -465,7 +468,10 @@
     (let [s (-> body-params :you)
           tail (last (-> s :body))
           head (-> s :head)
-          heads (project-head s)
+          board (:board body-params)
+          width (:width board)
+          height (:height board)
+          heads (project-head s width height)
           scores (mapv #(d % tail) heads)
           mins (apply min scores)
           bests (filterv #(= mins (d % tail)) heads)]
@@ -530,7 +536,10 @@
    To be applied when there is no way to get further away from the opponent"
   [body-params moves]
   (println "OPTIONALITY")
-  (let [me (-> body-params :you)
+  (let [board (:board body-params)
+        width (:width board)
+        height (:height board)
+        me (-> body-params :you)
         head (:head me)
         length (:length me)
         others (filterv #(> (:length %) (+ 1 length)) (other-snakes body-params))
@@ -538,7 +547,7 @@
         distances (mapv #(sd me %) heads)]
     (cond
       (some #(>= 4 %) distances)
-      (let [pheads (project-head me)
+      (let [pheads (project-head me width height)
             degrees (mapv #(degree body-params %) pheads)
             maxd (apply max degrees)
             bests (filterv #(= maxd (degree body-params %)) pheads)
@@ -606,6 +615,14 @@
                     chull (convex-hull {:body [head f]})]
                 (probabilise-movements head chull 1.55 moves))))))
 
-
-
-
+(defn wrapped-mode
+  "Duplicates the board on each side, but not my snakes' head under the :you key"
+  [body-params]
+  (let [board (:board body-params)
+        width (:width board)
+        height (:height board)]
+    (-> body-params
+        (update-in [:board :food] #(wrap-multiply % width height))
+        (update-in [:board :hazards] #(wrap-multiply % width height))
+        (update-in [:you :body] #(wrap-multiply % width height))
+        (update-in [:board :snakes] #(update-snakes % width height)))))
