@@ -43,6 +43,7 @@
         head (-> s :head)
         obstacles (obstacles body-params s)
         other-snakes (other-snakes body-params)]
+    (println "obstacles: " obstacles)
     (vec (->> foods
               (filterv #(visible? head obstacles %))
               (filterv #(accessible? s hazards %))

@@ -58,7 +58,7 @@
 (defn wrap-multiply
   "Duplicates points in the grid in all 4 directions"
   [v width height]
-  (mapv #(multiply-points % width height) v))
+  (vec (apply concat (mapv #(multiply-points % width height) v))))
 
 (defn update-snake
   "Updates the snakes bodies and heads under :snakes"
@@ -89,7 +89,7 @@
   "Returns all the obstacles on the board game in one vector : namely all the other snakes's projected bodies (ie no tail but all projected heads"
   [body-params s]
   (let [all-snakes (-> body-params :board :snakes)
-        snakes (vec (remove #(= s %) all-snakes))
+        snakes (vec (remove #(= (:id s) (:id %)) all-snakes)) ; compare ids otherwise am now in troube since you and me in snakes are different by :ndbody key at least
         length (-> s :length)
         head (-> s :head)
         board (:board body-params)

@@ -105,9 +105,12 @@
   "Avoids colliding with itself on the next move"
   [body-params moves]
   (println "AVOID SELF DIRECT HITS")
-  (let [body (vec (butlast (-> body-params :you :body))) ;the tail is ok, hence butlast
-        head (-> body-params :you :head)]
-    (probabilise-movements head body 0 moves)))
+  (let [body (vec (butlast (-> body-params :you :ndbody))) ;the tail is ok, hence butlast
+        head (-> body-params :you :head)
+        board (:board body-params)
+        width (:width board)
+        height (:height board)]
+    (probabilise-movements head (wrap-multiply body width height) 0 moves)))
 
 (defn avoid-other-snakes
   "Avoids direct hits with other snakes"
@@ -191,10 +194,11 @@
 
 (defn self-danger?
   "Returns true if one of the danger-cases is you"
-  [s]
-  (let [body (:body s)
-        head (head body)
-        neck (neck body)
+  [body-params]
+  (let [body (-> body-params :you :body)
+        ndbody (-> body-params :you :ndbody)
+        head (-> body-params :you :head)
+        neck (neck ndbody)
         danger-cases (danger-cases head neck)]
     (and (> (count danger-cases) 1)
          (not= #{} (clojure.set/intersection (set danger-cases)
@@ -242,11 +246,12 @@
   (println "AVOID-SELF-LOOP")
   (let [s (-> body-params :you)
         body (-> s :body)
-        head (head body)
-        neck (neck body)]
+        ndbody (-> s :ndbody) ;non duplicated body
+        head (head ndbody)
+        neck (neck ndbody)]
   ;(println "self-danger: " (self-danger? s))
   ;(println "danger-cases (selfloop): " (danger-cases head neck))
-    (if (self-danger? s)
+    (if (self-danger? body-params)
       (let [chull (convex-hull s)
             not-snake (filterv #(not (snake? % s)) chull)
             danger-cases (danger-cases head neck)
@@ -616,12 +621,14 @@
                 (probabilise-movements head chull 1.55 moves))))))
 
 (defn wrapped-mode
-  "Duplicates the board on each side, but not my snakes' head under the :you key"
+  "Duplicates the board on each side of the initial board, but not any head. 
+   They are duplicated directly in the projected-head fn"
   [body-params]
   (let [board (:board body-params)
         width (:width board)
         height (:height board)]
     (-> body-params
+        (assoc-in [:you :ndbody] (-> body-params :you :body))
         (update-in [:board :food] #(wrap-multiply % width height))
         (update-in [:board :hazards] #(wrap-multiply % width height))
         (update-in [:you :body] #(wrap-multiply % width height))
