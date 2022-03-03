@@ -129,7 +129,7 @@
                                  (project-head % width height)) snakes))) ;only project heads if the snake is more healthy or equally healthy
         all-bodies (into [] (apply concat (mapv #(vec (butlast (:body %))) snakes))) ;the tail is ok - corner case to be added if the head is close to food though
         ]
-      ;(println "projected-heads: " projected-heads)
+      (println "projected-heads: " projected-heads)
     (->> moves
          (probabilise-movements head all-bodies 0)
          (probabilise-movements head projected-heads 0.1))))
@@ -477,9 +477,9 @@
           width (:width board)
           height (:height board)
           heads (project-head s width height)
-          scores (mapv #(d % tail) heads)
+          scores (mapv #(d % tail width height) heads)
           mins (apply min scores)
-          bests (filterv #(= mins (d % tail)) heads)]
+          bests (filterv #(= mins (d % tail width height)) heads)]
       (println "FOLLOW-TAIL")
       (probabilise-movements head bests 1.4 moves))
     :else moves))
@@ -532,8 +532,8 @@
 
 (defn min-d-to-others
   "returns the min distance to heads of others"
-  [my-head others-heads]
-  (apply min (mapv #(d my-head %) others-heads)))
+  [my-head others-heads w h]
+  (apply min (mapv #(d my-head % w h) others-heads)))
 
 (defn optionality
   "Favours largest degree of freedom of next case when distance to a larger snake is less or equal to 4 (seems the right distance). 
@@ -549,14 +549,14 @@
         length (:length me)
         others (filterv #(> (:length %) (+ 1 length)) (other-snakes body-params))
         heads (mapv #(:head %) others)
-        distances (mapv #(sd me %) heads)]
+        distances (mapv #(sd me % width height) heads)]
     (cond
       (some #(>= 4 %) distances)
       (let [pheads (project-head me width height)
             degrees (mapv #(degree body-params %) pheads)
             maxd (apply max degrees)
             bests (filterv #(= maxd (degree body-params %)) pheads)
-            maxmind (apply max (mapv #(min-d-to-others % heads) pheads))]
+            maxmind (apply max (mapv #(min-d-to-others % heads width height) pheads))]
         (cond
               ;4 because I'm not using their projected heads
           (>= 4 maxmind) (do (println "TOO CLOSE TO LARGER SNAKES")
@@ -587,16 +587,18 @@
   [body-params moves]
   (println "FEAR")
   (let [me (-> body-params :you)
+        w (-> body-params :board :width)
+        h (-> body-params :board :height)
         head (:head me)
         length (:length me)
         others (filterv #(> (:length %) length) (other-snakes body-params))
         heads (mapv #(:head %) others)
-        distances (mapv #(sd me %) heads)]
+        distances (mapv #(sd me % w h) heads)]
     (cond
       (and (some #(>= 4 %) distances)
            (not (or false #_(border? body-params head)
                     (hazard? head (hazard body-params)))))
-      (let [dangers (filterv #(>= 4 (sd me %)) heads)
+      (let [dangers (filterv #(>= 4 (sd me % w h)) heads)
             chulls (mapv #(forbidden-part (convex-hull {:body [head %]})) dangers)
             total (vec (apply concat chulls))]
         (probabilise-movements head total 0.22 moves))

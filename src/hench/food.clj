@@ -14,9 +14,9 @@
 
 (defn accessible?
   "Returns true if we have the health to reach food"
-  [s hazards food]
+  [s hazards food w h]
   (let [health (-> s :health)
-        hdist (hd s food hazards)]
+        hdist (hd s food hazards w h)]
     (cond
       (<= hdist health) true
       :else false)))
@@ -24,10 +24,12 @@
 (defn am-i-closest?
   "Returns true if I am closest than all other snakes"
   [body-params s other-snakes hazards food]
-  (let [can-see (filterv #(visible? (:head %) (obstacles body-params %) food) other-snakes)
-        can-access (filterv #(accessible? % hazards food) can-see)
-        distances (mapv #(sd % food) can-access)
-        my-distance (sd s food)]
+  (let [w (-> body-params :board :width)
+        h (-> body-params :board :height)
+        can-see (filterv #(visible? (:head %) (obstacles body-params %) food) other-snakes)
+        can-access (filterv #(accessible? % hazards food w h) can-see)
+        distances (mapv #(sd % food w h) can-access)
+        my-distance (sd s food w h)]
     (cond
     ;corner case to treat : equal distance but I am longer is ok
       (= distances []) true
@@ -40,15 +42,17 @@
   (let [foods (food body-params)
         hazards (hazard body-params)
         s (-> body-params :you)
+        w (-> body-params :board :width)
+        h (-> body-params :board :height)
         head (-> s :head)
         obstacles (obstacles body-params s)
         other-snakes (other-snakes body-params)]
-    (println "obstacles: " obstacles)
+    ;(println "obstacles: " obstacles)
     (vec (->> foods
               (filterv #(visible? head obstacles %))
-              (filterv #(accessible? s hazards %))
+              (filterv #(accessible? s hazards % w h))
               (filterv #(am-i-closest? body-params s other-snakes hazards %))
-              (sort-by #(sd s %))))))
+              (sort-by #(sd s % w h))))))
 
 (defn eat
   "Drives the snake to eat"

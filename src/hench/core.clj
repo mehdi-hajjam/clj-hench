@@ -38,7 +38,7 @@
                        (avoid-self-loop body-params)
                        #_(avoid-loop-with-walls body-params) ;This is not a thing anymore
                        (avoid-hazards body-params)
-                       (avoid-small-surfaces body-params) ;trop lent!! peut améliorer en ne regardant ça que quand une danger case détecte qqchose
+                       #_(avoid-small-surfaces body-params) ;if you add it back you need to add a non nil all-walls to all-obstacles for some reasons, maybe caused by surface.
                        (eat body-params)
                        (follow-tail body-params)
                        #_(recenter body-params) ;The sauce is near the centre first

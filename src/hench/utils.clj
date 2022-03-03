@@ -49,11 +49,24 @@
 (defn multiply-points
   "Creates the points' doppelgangers in all 4 directions"
   [p width height]
-  [p
+  [; initial board
+   p
+   ; right
    (add p {:x width :y 0})
-   (substract p {:x width :y 0})
+   ; left
+   (add p {:x (- width) :y 0})
+   ; top
    (add p {:x 0 :y height})
-   (substract p {:x 0 :y height})])
+   ; bottom
+   (add p {:x 0 :y (- height)})
+   ; top right
+   (add p {:x width :y height})
+   ; top left
+   (add p {:x (- width) :y height})
+   ; bottom right
+   (add p {:x width :y (- height)})
+   ; bottom left
+   (add p {:x (- width) :y (- height)})])
 
 (defn wrap-multiply
   "Duplicates points in the grid in all 4 directions"
@@ -139,18 +152,50 @@
 
 ;; should be min of d and distance by warping
 
+;; need to replace 11 by w for xs and h for ys, everywhere where d is called
 (defn d
-  "Mathematical distance without obstacles"
-  [a b]
-  (+ (Math/abs (- (:x a) (:x b)))
-     (Math/abs (- (:y a) (:y b)))))
+  "Mathematical distance without obstacles.
+   Not symmetric. a is snake, b is food or target, w is board's width, h is board's height."
+  [a b w h]
+  #_(+ (Math/abs (- (:x a) (:x b)))
+             (Math/abs (- (:y a) (:y b))))
+  (apply min
+         [; initial board
+          (+ (Math/abs (- (:x a) (:x b)))
+             (Math/abs (- (:y a) (:y b)))) 
+          ; to the right
+          (+ (Math/abs (- (:x a) (+ (:x b) w)))
+             (Math/abs (- (:y a) (:y b)))) 
+          ; to the left
+          (+ (Math/abs (- (:x a) (- (:x b) w)))
+             (Math/abs (- (:y a) (:y b)))) 
+          ; to the top
+          (+ (Math/abs (- (:x a) (:x b)))
+             (Math/abs (- (:y a) (+ (:y b) h))))
+         ; to the bottom 
+          (+ (Math/abs (- (:x a) (:x b)))
+             (Math/abs (- (:y a) (- (:y b) h))))
+         ; to the top right 
+          (+ (Math/abs (- (:x a) (+ (:x b) w)))
+             (Math/abs (- (:y a) (+ (:y b) h))))
+         ; to the top left 
+          (+ (Math/abs (- (:x a) (- (:x b) w)))
+             (Math/abs (- (:y a) (+ (:y b) h)))) 
+          ; to the bottom right
+          (+ (Math/abs (- (:x a) (+ (:x b) w)))
+             (Math/abs (- (:y a) (- (:y b) h)))) 
+          ; to the bottom left
+          (+ (Math/abs (- (:x a) (- (:x b) w)))
+             (Math/abs (- (:y a) (- (:y b) h)))) 
+          ]
+         ))
 
 (defn sd
   "Snake distance to a point without obstacles"
-  [s c]
+  [s c w h]
   (let [head (-> s :head)
         neck (second (-> s :body))
-        d (d head c)]
+        d (d head c w h)]
     (cond
       (and (= (:x c) (:x head) (:x neck))
            (< (Math/abs (- (:x c) (:x neck)))
@@ -203,13 +248,13 @@
   "Health distance, ie taking hazards into account.
   It is equal to sd*1 + 14*(min hazard in x + min hazard in y - 1) -1*dirac(head is on a hazard case) when there are no obstacles in the convex hull
    Adding own body to hazards, see https://play.battlesnake.com/g/528bfb5d-a390-413d-83d1-a0bd1620484b/ move 178"
-  [s c hazards]
+  [s c hazards w h]
   (let [head (-> s :head)
         hazards+body (vec (concat hazards (:body s)))
         chull (convex-hull {:body [head c]})
         in-x (min-hazard-in-x chull hazards+body)
         in-y (min-hazard-in-y chull hazards+body)
-        temp-res (+ (sd s c)
+        temp-res (+ (sd s c w h)
                     (* (+ in-x in-y) 14))]
                     ;(println "in-x: " in-x)
                     ;(println "in-y: " in-y)
@@ -293,7 +338,7 @@
   [body-params s]
   (into [] (concat (into [] (butlast (:body s)))
                    (obstacles body-params s)
-                   (all-walls (-> body-params :board :height)
+                   #_(all-walls (-> body-params :board :height)
                               (-> body-params :board :width)))))
 
 (defn concatv
