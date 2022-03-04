@@ -48,3 +48,263 @@ clj꞉hench.food꞉> 
 clj꞉hench.food꞉> (mod (dec 0) 4)
 3
 clj꞉hench.food꞉> 
+; Evaluating file: space.clj
+; Syntax error compiling at (src/hench/space.clj:392:15).
+; Unable to resolve symbol: not-obstacle? in this context
+; Evaluation of file space.clj failed: class clojure.lang.Compiler$CompilerException
+
+clj꞉hench.food꞉> 
+clj꞉hench.space꞉> 
+; Evaluating file: utils.clj
+#'hench.utils/touched-walls
+clj꞉hench.utils꞉> 
+; Evaluating file: space.clj
+#'hench.space/wrapped-mode
+clj꞉hench.space꞉> (expand-cases {:x 0 :y 0} [] 11 11)
+; Execution error (NullPointerException) at hench.space/expand-case$fn (space.clj:388).
+; null
+clj꞉hench.space꞉> (update {:x 0 :y 0} :x #(mod (inc %) 11))
+{:x 1, :y 0}
+clj꞉hench.space꞉> (not-obstacle? {:x 0 :y 0} [])
+true
+clj꞉hench.space꞉> 
+(expand-case {:x 0 :y 0} [] 11 11)
+[{:x 1, :y 0} {:x 10, :y 0} {:x 0, :y 1} {:x 0, :y 10}]
+clj꞉hench.space꞉> (expand-cases [{:x 0 :y 0} {:x 1 :y 0}] [{:x 0 :y 0} {:x 1 :y 0}] 11 11)
+[{:x 10, :y 0} {:x 0, :y 1} {:x 0, :y 10} {:x 2, :y 0} {:x 1, :y 1} {:x 1, :y 10}]
+clj꞉hench.space꞉> 
+(expand-cases [{:x 0 :y 0} {:x 1 :y 0}] [{:x 0 :y 0} {:x 1 :y 0} {:x 1, :y 10}] 11 11)
+[{:x 10, :y 0} {:x 0, :y 1} {:x 0, :y 10} {:x 2, :y 0} {:x 1, :y 1}]
+clj꞉hench.space꞉> (surface {:x 5 :y 5} {:you sample} [] 11 11)
+; Execution error (ArityException) at hench.space/eval12200 (REPL:78).
+; Wrong number of args (5) passed to: hench.space/surface
+clj꞉hench.space꞉> 
+; Evaluating file: space.clj
+#'hench.space/wrapped-mode
+clj꞉hench.space꞉> 
+; Evaluating file: utils.clj
+#'hench.utils/touched-walls
+clj꞉hench.utils꞉> 
+; Evaluating file: space.clj
+#'hench.space/wrapped-mode
+clj꞉hench.space꞉> 
+(surface {:x 5 :y 5} {:you sample} [] 11 11)
+; Execution error (NullPointerException) at hench.space/surface (space.clj:412).
+; null
+clj꞉hench.space꞉> 
+(surface {:x 10 :y 1} {:you sample} [] 11 11)
+; Execution error (NullPointerException) at hench.space/surface (space.clj:412).
+; null
+clj꞉hench.space꞉> 
+; Evaluating file: space.clj
+#'hench.space/wrapped-mode
+clj꞉hench.space꞉> 
+(surface {:x 10 :y 1} {:you sample} [] 11 11)
+expc:  [{:x 0, :y 1} {:x 9, :y 1} {:x 10, :y 2} {:x 10, :y 0}]
+; Execution error (NullPointerException) at (REPL:1).
+; null
+clj꞉hench.space꞉> (:length (:you sample))
+5
+clj꞉hench.space꞉> (concat [{:x 10 :y 1}] [{:x 0, :y 1} {:x 9, :y 1} {:x 10, :y 2} {:x 10, :y 0}])
+({:x 10, :y 1} {:x 0, :y 1} {:x 9, :y 1} {:x 10, :y 2} {:x 10, :y 0})
+clj꞉hench.space꞉> 
+(vec (concat [{:x 10 :y 1}] [{:x 0, :y 1} {:x 9, :y 1} {:x 10, :y 2} {:x 10, :y 0}]))
+[{:x 10, :y 1} {:x 0, :y 1} {:x 9, :y 1} {:x 10, :y 2} {:x 10, :y 0}]
+clj꞉hench.space꞉> 
+
+clj꞉hench.space꞉> 
+(surface {:x 10 :y 1} {:you sample} [] 11 11)
+expc:  [{:x 0, :y 1} {:x 9, :y 1} {:x 10, :y 2} {:x 10, :y 0}]
+; Execution error (NullPointerException) at (REPL:1).
+; null
+clj꞉hench.space꞉> 
+
+clj꞉hench.space꞉> 
+(surface {:x 10 :y 1} {:you sample} [] 11 11)
+expc:  [{:x 0, :y 1} {:x 9, :y 1} {:x 10, :y 2} {:x 10, :y 0}]
+; Execution error (NullPointerException) at (REPL:1).
+; null
+clj꞉hench.space꞉> 
+
+clj꞉hench.space꞉> 
+; Evaluating file: space.clj
+#'hench.space/wrapped-mode
+clj꞉hench.space꞉> 
+(surface {:x 10 :y 1} {:you sample} [] 11 11)
+expc:  [{:x 0, :y 1} {:x 9, :y 1} {:x 10, :y 2} {:x 10, :y 0}]
+; Execution error (NullPointerException) at (REPL:1).
+; null
+clj꞉hench.space꞉> 
+; Evaluating file: space.clj
+#'hench.space/wrapped-mode
+clj꞉hench.space꞉> 
+(surface {:x 10 :y 1} {:you sample} [] 11 11)
+expc:  [{:x 0, :y 1} {:x 9, :y 1} {:x 10, :y 2} {:x 10, :y 0}]
+; Execution error (NullPointerException) at (REPL:1).
+; null
+clj꞉hench.space꞉> 
+(surface {:x 10 :y 1} {:you sample} (:body (:you sample)) 11 11)
+expc:  [{:x 9, :y 1} {:x 10, :y 2} {:x 10, :y 0}]
+; Execution error (NullPointerException) at (REPL:1).
+; null
+clj꞉hench.space꞉> 
+; Evaluating file: space.clj
+#'hench.space/wrapped-mode
+clj꞉hench.space꞉> 
+(surface {:x 10 :y 1} {:you sample} (:body (:you sample)) 11 11)
+here?
+expc:  [{:x 9, :y 1} {:x 10, :y 2} {:x 10, :y 0}]
+; Execution error (NullPointerException) at (REPL:1).
+; null
+clj꞉hench.space꞉> 
+; Evaluating file: space.clj
+#'hench.space/wrapped-mode
+clj꞉hench.space꞉> 
+(surface {:x 10 :y 1} {:you sample} (:body (:you sample)) 11 11)
+expc:  [{:x 9, :y 1} {:x 10, :y 2} {:x 10, :y 0}]
+conc:  [{:x 0, :y 1} {:x 1, :y 1} {:x 2, :y 1} {:x 2, :y 0} {:x 3, :y 0} {:x 10, :y 1} {:x 9, :y 1} {:x 10, :y 2} {:x 10, :y 0}]
+forbidden:  [{:x 0, :y 1} {:x 1, :y 1} {:x 2, :y 1} {:x 2, :y 0} {:x 3, :y 0} {:x 10, :y 1}]
+; Execution error (NullPointerException) at (REPL:1).
+; null
+clj꞉hench.space꞉> 
+; Evaluating file: utils.clj
+#'hench.utils/touched-walls
+clj꞉hench.utils꞉> 
+; Evaluating file: space.clj
+#'hench.space/wrapped-mode
+clj꞉hench.space꞉> 
+(surface {:x 10 :y 1} {:you sample} (:body (:you sample)) 11 11)
+expc:  [{:x 9, :y 1} {:x 10, :y 2} {:x 10, :y 0}]
+conc:  [{:x 0, :y 1} {:x 1, :y 1} {:x 2, :y 1} {:x 2, :y 0} {:x 3, :y 0} {:x 10, :y 1} {:x 9, :y 1} {:x 10, :y 2} {:x 10, :y 0}]
+forbidden:  [{:x 0, :y 1} {:x 1, :y 1} {:x 2, :y 1} {:x 2, :y 0} {:x 3, :y 0} {:x 10, :y 1}]
+; Execution error (NullPointerException) at (REPL:1).
+; null
+clj꞉hench.space꞉> 
+; Evaluating file: space.clj
+#'hench.space/wrapped-mode
+clj꞉hench.space꞉> 
+(surface {:x 10 :y 1} {:you sample} (:body (:you sample)) 11 11)
+expcases for v:  [{:x 10, :y 1}]
+expc:  [{:x 9, :y 1} {:x 10, :y 2} {:x 10, :y 0}]
+conc:  [{:x 0, :y 1} {:x 1, :y 1} {:x 2, :y 1} {:x 2, :y 0} {:x 3, :y 0} {:x 10, :y 1} {:x 9, :y 1} {:x 10, :y 2} {:x 10, :y 0}]
+forbidden:  [{:x 0, :y 1} {:x 1, :y 1} {:x 2, :y 1} {:x 2, :y 0} {:x 3, :y 0} {:x 10, :y 1}]
+; Execution error (NullPointerException) at (REPL:1).
+; null
+clj꞉hench.space꞉> 
+; Evaluating file: space.clj
+#'hench.space/wrapped-mode
+clj꞉hench.space꞉> 
+(surface {:x 10 :y 1} {:you sample} (:body (:you sample)) 11 11)
+expcases for v:  [{:x 10, :y 1}]
+expc:  [{:x 9, :y 1} {:x 10, :y 2} {:x 10, :y 0}]
+conc:  [{:x 0, :y 1} {:x 1, :y 1} {:x 2, :y 1} {:x 2, :y 0} {:x 3, :y 0} {:x 10, :y 1} {:x 9, :y 1} {:x 10, :y 2} {:x 10, :y 0}]
+forbidden:  [{:x 0, :y 1} {:x 1, :y 1} {:x 2, :y 1} {:x 2, :y 0} {:x 3, :y 0} {:x 10, :y 1}]
+; Execution error (NullPointerException) at (REPL:1).
+; null
+clj꞉hench.space꞉> 
+; Evaluating file: space.clj
+#'hench.space/wrapped-mode
+clj꞉hench.space꞉> 
+(surface {:x 10 :y 1} {:you sample} (:body (:you sample)) 11 11)
+1
+clj꞉hench.space꞉> 
+; Evaluating file: space.clj
+#'hench.space/wrapped-mode
+clj꞉hench.space꞉> 
+(surface {:x 10 :y 1} {:you sample} (:body (:you sample)) 11 11)
+expcases for v:  [{:x 10, :y 1}]
+expc:  [{:x 9, :y 1} {:x 10, :y 2} {:x 10, :y 0}]
+conc:  [{:x 0, :y 1} {:x 1, :y 1} {:x 2, :y 1} {:x 2, :y 0} {:x 3, :y 0} {:x 10, :y 1} {:x 9, :y 1} {:x 10, :y 2} {:x 10, :y 0}]
+forbidden:  [{:x 0, :y 1} {:x 1, :y 1} {:x 2, :y 1} {:x 2, :y 0} {:x 3, :y 0} {:x 10, :y 1}]
+; Execution error (NullPointerException) at (REPL:1).
+; null
+clj꞉hench.space꞉> 
+; Evaluating file: space.clj
+#'hench.space/wrapped-mode
+clj꞉hench.space꞉> 
+(surface {:x 10 :y 1} {:you sample} (:body (:you sample)) 11 11)
+expcases for v:  [{:x 10, :y 1}]
+expc:  [{:x 9, :y 1} {:x 10, :y 2} {:x 10, :y 0}]
+conc:  [{:x 0, :y 1} {:x 1, :y 1} {:x 2, :y 1} {:x 2, :y 0} {:x 3, :y 0} {:x 10, :y 1} {:x 9, :y 1} {:x 10, :y 2} {:x 10, :y 0}]
+forbidden:  [{:x 0, :y 1} {:x 1, :y 1} {:x 2, :y 1} {:x 2, :y 0} {:x 3, :y 0} {:x 10, :y 1}]
+count v:  1
+l:  nil
+; Execution error (NullPointerException) at (REPL:1).
+; null
+clj꞉hench.space꞉> (:you sample)
+{:shout "why are we shouting??",
+ :squad "",
+ :name "My Snake",
+ :head {:x 0, :y 1},
+ :id "snake-508e96ac-94ad-11ea-bb37",
+ :latency "111",
+ :length 5,
+ :health 54,
+ :body [{:x 0, :y 1} {:x 1, :y 1} {:x 2, :y 1} {:x 2, :y 0} {:x 3, :y 0}]}
+clj꞉hench.space꞉> 
+(:length (:you sample))
+5
+clj꞉hench.space꞉> 
+; Evaluating file: space.clj
+#'hench.space/wrapped-mode
+clj꞉hench.space꞉> 
+(surface {:x 10 :y 1} {:you sample} (:body (:you sample)) 11 11)
+expcases for v:  [{:x 10, :y 1}]
+expc:  [{:x 9, :y 1} {:x 10, :y 2} {:x 10, :y 0}]
+conc:  [{:x 0, :y 1} {:x 1, :y 1} {:x 2, :y 1} {:x 2, :y 0} {:x 3, :y 0} {:x 10, :y 1} {:x 9, :y 1} {:x 10, :y 2} {:x 10, :y 0}]
+forbidden:  [{:x 0, :y 1} {:x 1, :y 1} {:x 2, :y 1} {:x 2, :y 0} {:x 3, :y 0} {:x 10, :y 1}]
+count v:  1
+l:  nil
+length s:  nil
+; Execution error (NullPointerException) at (REPL:1).
+; null
+clj꞉hench.space꞉> 
+(surface {:x 10 :y 1} (:you sample) (:body (:you sample)) 11 11)
+expcases for v:  [{:x 10, :y 1}]
+expc:  [{:x 9, :y 1} {:x 10, :y 2} {:x 10, :y 0}]
+conc:  [{:x 0, :y 1} {:x 1, :y 1} {:x 2, :y 1} {:x 2, :y 0} {:x 3, :y 0} {:x 10, :y 1} {:x 9, :y 1} {:x 10, :y 2} {:x 10, :y 0}]
+forbidden:  [{:x 0, :y 1} {:x 1, :y 1} {:x 2, :y 1} {:x 2, :y 0} {:x 3, :y 0} {:x 10, :y 1}]
+count v:  1
+l:  5
+length s:  5
+expcases for v:  [{:x 9, :y 1} {:x 10, :y 2} {:x 10, :y 0}]
+expc:  [{:x 8, :y 1} {:x 9, :y 2} {:x 9, :y 0} {:x 0, :y 2} {:x 10, :y 3} {:x 0, :y 0} {:x 10, :y 10}]
+conc:  [{:x 0, :y 1} {:x 1, :y 1} {:x 2, :y 1} {:x 2, :y 0} {:x 3, :y 0} {:x 10, :y 1} {:x 9, :y 1} {:x 10, :y 2} {:x 10, :y 0} {:x 8, :y 1} {:x 9, :y 2} {:x 9, :y 0} {:x 0, :y 2} {:x 10, :y 3} {:x 0, :y 0} {:x 10, :y 10}]
+forbidden:  [{:x 0, :y 1} {:x 1, :y 1} {:x 2, :y 1} {:x 2, :y 0} {:x 3, :y 0} {:x 10, :y 1} {:x 9, :y 1} {:x 10, :y 2} {:x 10, :y 0}]
+count v:  3
+l:  5
+length s:  5
+expcases for v:  [{:x 8, :y 1} {:x 9, :y 2} {:x 9, :y 0} {:x 0, :y 2} {:x 10, :y 3} {:x 0, :y 0} {:x 10, :y 10}]
+expc:  [{:x 7, :y 1} {:x 8, :y 2} {:x 8, :y 0} {:x 9, :y 3} {:x 9, :y 10} {:x 1, :y 2} {:x 0, :y 3} {:x 10, :y 4} {:x 1, :y 0} {:x 0, :y 10} {:x 10, :y 9}]
+conc:  [{:x 0, :y 1} {:x 1, :y 1} {:x 2, :y 1} {:x 2, :y 0} {:x 3, :y 0} {:x 10, :y 1} {:x 9, :y 1} {:x 10, :y 2} {:x 10, :y 0} {:x 8, :y 1} {:x 9, :y 2} {:x 9, :y 0} {:x 0, :y 2} {:x 10, :y 3} {:x 0, :y 0} {:x 10, :y 10} {:x 7, :y 1} {:x 8, :y 2} {:x 8, :y 0} {:x 9, :y 3} {:x 9, :y 10} {:x 1, :y 2} {:x 0, :y 3} {:x 10, :y 4} {:x 1, :y 0} {:x 0, :y 10} {:x 10, :y 9}]
+forbidden:  [{:x 0, :y 1} {:x 1, :y 1} {:x 2, :y 1} {:x 2, :y 0} {:x 3, :y 0} {:x 10, :y 1} {:x 9, :y 1} {:x 10, :y 2} {:x 10, :y 0} {:x 8, :y 1} {:x 9, :y 2} {:x 9, :y 0} {:x 0, :y 2} {:x 10, :y 3} {:x 0, :y 0} {:x 10, :y 10}]
+count v:  7
+l:  5
+length s:  5
+[{:x 8, :y 1} {:x 9, :y 2} {:x 9, :y 0} {:x 0, :y 2} {:x 10, :y 3} {:x 0, :y 0} {:x 10, :y 10}]
+clj꞉hench.space꞉> 
+; Evaluating file: space.clj
+#'hench.space/wrapped-mode
+clj꞉hench.space꞉> 
+(surface {:x 10 :y 1} (:you sample) (:body (:you sample)) 11 11)
+[{:x 8, :y 1} {:x 9, :y 2} {:x 9, :y 0} {:x 0, :y 2} {:x 10, :y 3} {:x 0, :y 0} {:x 10, :y 10}]
+clj꞉hench.space꞉> 
+; Evaluating file: space.clj
+#'hench.space/wrapped-mode
+clj꞉hench.space꞉> 
+(surface {:x 10 :y 1} (:you sample) (:body (:you sample)) 11 11)
+[{:x 10, :y 1}
+ {:x 9, :y 1}
+ {:x 10, :y 2}
+ {:x 10, :y 0}
+ {:x 8, :y 1}
+ {:x 9, :y 2}
+ {:x 9, :y 0}
+ {:x 0, :y 2}
+ {:x 10, :y 3}
+ {:x 0, :y 0}
+ {:x 10, :y 10}]
+clj꞉hench.space꞉> 
+; Evaluating file: space.clj
+#'hench.space/wrapped-mode
+clj꞉hench.space꞉> 

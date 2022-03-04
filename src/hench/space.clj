@@ -382,7 +382,41 @@
     (= 0 (:y direction)) [{:x 0 :y 1} {:x 0 :y -1}]
     :else "Please enter a reduced direction (one with a coordinate equal to 0"))
 
+(defn expand-case
+  "Returns the cases next to c that are not obstacles"
+  [c obs w h]
+  (let [res [(update c :x #(mod (inc %) w))
+             (update c :x #(mod (dec %) w))
+             (update c :y #(mod (inc %) h))
+             (update c :y #(mod (dec %) h))]]
+    (filterv #(not-obstacle? % obs) res)))
+
+(defn expand-cases
+  "Returns the unique cases next to all cs of v that are not obstacles"
+  [v obs w h]
+  (vec (distinct (apply concat (mapv #(expand-case % obs w h) v)))))
+
 (defn surface
+  "Returns the cases that are reachable from c, and only length s + 1 if there are more."
+  [c s obstacles w h]
+  (let [l (:length s)]
+    (if (some #(= c %) obstacles)
+      []
+      (loop [v [c]
+             forbidden (conj obstacles c)
+             res [c]]
+        (let [expc (expand-cases v forbidden w h)]
+          (cond
+             ; if I have enough, return the ones already found
+            (> (count res) l) res
+             ; if I can't find new ones, return the ones already found
+            (= expc []) res
+          ; otherwise, iterate with a new v and forbidden augmented of new v
+            :else (recur expc
+                         (vec (concat forbidden expc))
+                         (vec (concat res expc)))))))))
+
+#_(defn surface
   "Returns the vector of cases reachable from c"
   [c s obstacles]
   (if (some #(= c %) obstacles)
@@ -420,20 +454,15 @@
         head (:head me)
         length (:length me)
         all-obs (all-obstacles body-params me)]
-    (println "surface1: " (surface (update head :x #(mod (inc %) w)) me all-obs))
-    (println "surface2: " (surface (update head :x #(mod (dec %) w)) me all-obs))
-    (println "surface3: " (surface (update head :y #(mod (inc %) h)) me all-obs))
-    (println "surface4: " (surface (update head :y #(mod (dec %) h)) me all-obs))
-    moves
-    #_(cond-> moves
-      (and (> length (count (surface (update head :x #(mod (inc %) w)) me all-obs)))
-           (not (contains-tail body-params (surface (update head :x #(mod (inc %) w)) me all-obs)))) (update :right #(* 0.009 %))
-      (and (> length (count (surface (update head :x #(mod (dec %) w)) me all-obs)))
-           (not (contains-tail body-params (surface (update head :x #(mod (dec %) w)) me all-obs)))) (update :left #(* 0.009 %))
-      (and (> length (count (surface (update head :y #(mod (inc %) h)) me all-obs)))
-           (not (contains-tail body-params (surface (update head :y #(mod (inc %) h)) me all-obs)))) (update :up #(* 0.009 %))
-      (and (> length (count (surface (update head :y #(mod (dec %) h)) me all-obs)))
-           (not (contains-tail body-params (surface (update head :y #(mod (dec %) h)) me all-obs)))) (update :down #(* 0.009 %)))))
+    (cond-> moves
+      (and (> length (count (surface (update head :x #(mod (inc %) w)) me all-obs w h)))
+           (not (contains-tail body-params (surface (update head :x #(mod (inc %) w)) me all-obs w h)))) (update :right #(* 0.009 %))
+      (and (> length (count (surface (update head :x #(mod (dec %) w)) me all-obs w h)))
+           (not (contains-tail body-params (surface (update head :x #(mod (dec %) w)) me all-obs w h)))) (update :left #(* 0.009 %))
+      (and (> length (count (surface (update head :y #(mod (inc %) h)) me all-obs w h)))
+           (not (contains-tail body-params (surface (update head :y #(mod (inc %) h)) me all-obs w h)))) (update :up #(* 0.009 %))
+      (and (> length (count (surface (update head :y #(mod (dec %) h)) me all-obs w h)))
+           (not (contains-tail body-params (surface (update head :y #(mod (dec %) h)) me all-obs w h)))) (update :down #(* 0.009 %)))))
 
 (defn favour-straight-line
   "Favours going on a straight line over turning when two moves have same probability.

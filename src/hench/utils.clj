@@ -117,6 +117,10 @@
         ]
     (into [] (concat all-bodies projected-heads))))
 
+(defn not-obstacle?
+  [c obs]
+  (not (some #(= c %) obs)))
+
 (defn remove-point
   "remove-point removes point p from vector v and returns the new v"
   [p v]
