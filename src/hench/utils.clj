@@ -15,13 +15,13 @@
 
 (defn add
   "Vectorial addition"
-  [c1 c2]
-  {:x (+ (:x c1) (:x c2)) :y (+ (:y c1) (:y c2))})
+  [c1 c2 w h]
+  {:x (mod (+ (:x c1) (:x c2)) w) :y (mod (+ (:y c1) (:y c2)) h)})
 
 (defn substract
   "Vectorial substraction"
-  [c1 c2]
-  {:x (- (:x c1) (:x c2)) :y (- (:y c1) (:y c2))})
+  [c1 c2 w h]
+  {:x (mod (- (:x c1) (:x c2)) w) :y (mod (- (:y c1) (:y c2)) h)})
 
 (defn head
   "Returns the head of the snake"
@@ -52,21 +52,21 @@
   [; initial board
    p
    ; right
-   (add p {:x width :y 0})
+   (add p {:x width :y 0} width height)
    ; left
-   (add p {:x (- width) :y 0})
+   (add p {:x (- width) :y 0} width height)
    ; top
-   (add p {:x 0 :y height})
+   (add p {:x 0 :y height} width height)
    ; bottom
-   (add p {:x 0 :y (- height)})
+   (add p {:x 0 :y (- height)} width height)
    ; top right
-   (add p {:x width :y height})
+   (add p {:x width :y height} width height)
    ; top left
-   (add p {:x (- width) :y height})
+   (add p {:x (- width) :y height} width height)
    ; bottom right
-   (add p {:x width :y (- height)})
+   (add p {:x width :y (- height)} width height)
    ; bottom left
-   (add p {:x (- width) :y (- height)})])
+   (add p {:x (- width) :y (- height)} width height)])
 
 (defn wrap-multiply
   "Duplicates points in the grid in all 4 directions"
@@ -96,7 +96,7 @@
                      (update head :y inc)
                      (update head :y dec)] ;all the squares around the head
         ]
-    (wrap-multiply (vec (remove #(= % neck) all-squares)) w h)))
+    (vec (remove #(= % neck) all-squares))))
 
 (defn obstacles
   "Returns all the obstacles on the board game in one vector : namely all the other snakes's projected bodies (ie no tail but all projected heads"

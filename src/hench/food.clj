@@ -10,9 +10,7 @@
                                (set obstacles)))]
     (cond
       (= intersection []) true
-      :else (do
-             (println "not visible: " food) 
-              false))))
+      :else false)))
 
 (defn accessible?
   "Returns true if we have the health to reach food"
@@ -21,9 +19,7 @@
         hdist (hd s food hazards w h)]
     (cond
       (<= hdist health) true
-      :else (do 
-              (println "not accessible: " food)
-              false))))
+      :else false)))
 
 (defn am-i-closest?
   "Returns true if I am closest than all other snakes"
@@ -38,9 +34,7 @@
     ;corner case to treat : equal distance but I am longer is ok
       (= distances []) true
       (< my-distance (apply min distances)) true
-      :else (do 
-              (println "am not closest to: " food)
-              false))))
+      :else false)))
 
 (defn food-to-eat
   "Returns a sorted vector of the food that I can eat, from closest to farthest"
@@ -53,7 +47,7 @@
         head (-> s :head)
         obstacles (obstacles body-params s)
         other-snakes (other-snakes body-params)]
-    ;(println "obstacles: " obstacles)
+    (println "fte/obstacles: " obstacles)
     (vec (->> foods
               (filterv #(visible? head obstacles %))
               (filterv #(accessible? s hazards % w h))

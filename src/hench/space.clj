@@ -112,12 +112,12 @@
   "Avoids colliding with itself on the next move"
   [body-params moves]
   (println "AVOID SELF DIRECT HITS")
-  (let [body (vec (butlast (-> body-params :you :ndbody))) ;the tail is ok, hence butlast
+  (let [body (vec (butlast (-> body-params :you :body))) ;the tail is ok, hence butlast
         head (-> body-params :you :head)
         board (:board body-params)
         width (:width board)
         height (:height board)]
-    (probabilise-movements head (wrap-multiply body width height) 0 moves)))
+    (probabilise-movements head body #_(wrap-multiply body width height) 0 moves)))
 
 (defn avoid-other-snakes
   "Avoids direct hits with other snakes"
@@ -158,7 +158,7 @@
         body (:body s)]
     (filterv #(elbow? % body) (range 1 (+ (count trunk) 1)))))
 
-(defn direction
+#_(defn direction
   "Returns the direction of the elbow, run through from head to tail"
   [elbow body]
   (substract (nth body (+ elbow 1)) (nth body elbow)))
@@ -191,12 +191,12 @@
 
 (defn danger-cases
   "Returns a vector of the three danger cases"
-  [head neck]
-  (let [diff (substract head neck)
+  [head neck w h]
+  (let [diff (substract head neck w h)
         ortho (inverse diff)
-        front (add head diff)
-        c1 (add front ortho)
-        c2 (substract front ortho)]
+        front (add head diff w h)
+        c1 (add front ortho w h)
+        c2 (substract front ortho w h)]
     (vec (distinct [c1 front c2]))))
 
 (defn self-danger?
@@ -206,7 +206,9 @@
         ndbody (-> body-params :you :ndbody)
         head (-> body-params :you :head)
         neck (neck ndbody)
-        danger-cases (danger-cases head neck)]
+        w (-> body-params :board :width)
+        h (-> body-params :board :height)
+        danger-cases (danger-cases head neck w h)]
     (and (> (count danger-cases) 1)
          (not= #{} (clojure.set/intersection (set danger-cases)
                                              (set body))))))
@@ -253,15 +255,16 @@
   (println "AVOID-SELF-LOOP")
   (let [s (-> body-params :you)
         body (-> s :body)
-        ndbody (-> s :ndbody) ;non duplicated body
-        head (head ndbody)
-        neck (neck ndbody)]
+        head (head body)
+        neck (neck body)
+        w (-> body-params :board :width)
+        h (-> body-params :board :height)]
   ;(println "self-danger: " (self-danger? s))
   ;(println "danger-cases (selfloop): " (danger-cases head neck))
     (if (self-danger? body-params)
       (let [chull (convex-hull s)
             not-snake (filterv #(not (snake? % s)) chull)
-            danger-cases (danger-cases head neck)
+            danger-cases (danger-cases head neck w h)
             vi (mapv #(.indexOf body %) danger-cases)
             i (apply max (filterv pos? vi)) ;closest to tail, using pos? is fine as head (0) is never a danger case
             subbody (subvec body 0 (+ i 1))
@@ -272,7 +275,7 @@
         (probabilise-movements head bounded 0.009 moves))
       moves)))
 
-(defn wall-danger?
+#_(defn wall-danger?
   "Returns true if the face is facing a wall"
   [s board]
   (let [head (head (-> s :body))
@@ -302,7 +305,7 @@
   (let [body (-> s :body)]
     (filterv #(next-to-wall % board) body)))
 
-(defn avoid-loop-with-walls
+#_(defn avoid-loop-with-walls
   "Anticipates loops with walls"
   [body-params moves]
   (println "AVOID LOOP WITH WALLS")
@@ -358,7 +361,7 @@
       (= i nil) false
       :else (nth snakes i))))
 
-(defn get-segment
+#_(defn get-segment
   "Returns the vector of free cases from c in the direction of vector (et son sens) until a forbidden case is reached"
   [c direction forbidden]
   (loop [c (add c direction)
@@ -375,7 +378,7 @@
       (update-in [:x] #(* -1 %))
       (update-in [:y] #(* -1 %))))
 
-(defn get-line
+#_(defn get-line
   "Applies get-segment but in both directions"
   [c direction forbidden]
   (into [] (concat (get-segment c direction forbidden)
@@ -476,14 +479,16 @@
    It helps to have a way back for my snake"
   [body-params moves]
   (let [values (vec (vals moves))
-        maxv (apply max values)]
+        maxv (apply max values)
+        w (-> body-params :board :width)
+        h (-> body-params :board :height)]
     (cond
       (= 1 (count (filterv #(= maxv %) values))) moves
       :else (let [me (-> body-params :you)
                   head (-> me :head)
                   neck (neck (-> me :body))
-                  diff (substract head neck)
-                  straight (add head diff)]
+                  diff (substract head neck w h)
+                  straight (add head diff w h)]
               (probabilise-movements head [straight] 1.1 moves)))))
 
 (defn safe-snake?

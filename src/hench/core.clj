@@ -27,16 +27,14 @@
 
 (defn move-handler
   [req]
-  (let [b-p (:body-params req)
-        body-params (wrapped-mode b-p)]
-  ;(clojure.pprint/pprint (-> body-params :you :head :x))
-  ;(clojure.pprint/pprint (-> body-params :you :head :y))
+  (let [body-params (:body-params req)
+        #_#_body-params (wrapped-mode b-p)]
     {:body {:move (->> {:up 1 :down 1 :right 1 :left 1}
                        (begin-turn body-params)
                        #_(avoid-walls body-params) ;I don't want to avoid these anymore
                        (avoid-self-direct-hits body-params)
                        (avoid-other-snakes body-params)
-                       (avoid-self-loop body-params)
+                       #_(avoid-self-loop body-params) ; keeps on crashing, at danger-cases in self-danger. May be redundant with avoid small surfaces.
                        #_(avoid-loop-with-walls body-params) ;This is not a thing anymore
                        (avoid-hazards body-params)
                        (avoid-small-surfaces body-params) ;if you add it back you need to add a non nil all-walls to all-obstacles for some reasons, maybe caused by surface.
