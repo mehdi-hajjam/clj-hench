@@ -75,12 +75,19 @@
       :else (recur (vec (rest ks))
                    res))))
 
+(defn begin-turn
+  "Print useful stuff"
+  [body-params moves]
+  (clojure.pprint/pprint "*********************************")
+  (clojure.pprint/pprint (str "TURN " (:turn body-params)))
+  (clojure.pprint/pprint (str "health: " (-> body-params :you :health)))
+  moves
+  )
+
 (defn choose-move
   "The best scoring move - if many, a random pick"
   [body-params moves]
   (println "CHOOSE MOVE")
-  (clojure.pprint/pprint (str "turn: " (:turn body-params) " " moves))
-  (clojure.pprint/pprint (str "health: " (-> body-params :you :health)))
   (if (= moves {})
     "up"
     (let [max (apply max (vals moves))
@@ -637,8 +644,36 @@
         (probabilise-movements head total 0.22 moves))
       :else moves)))
 
+(defn ext-hazard-border
+  "Returns the cases of the external border of hazards"
+  [body-params]
+  (let [w (-> body-params :board :width)
+        h (-> body-params :board :height)
+        hazards (-> body-params :board :hazards)]
+    (vec (apply concat (mapv #(expand-case % hazards w h) hazards)))))
+
 (defn find-closest-free-case
-  "Favours the chull of head closest-free-case"
+  "Favours the chull of [head closest-free-case].
+   I don't think I need to worry about the neck in the chull thing since we use sd"
+  [body-params moves]
+  (println "FIND-CLOSEST-FREE-CASE")
+  (let [me (-> body-params :you)
+        head (-> me :head)
+        w (-> body-params :board :width)
+        h (-> body-params :board :height)
+        hazards (hazard body-params)]
+    (cond
+      (not (hazard? head hazards)) moves
+      :else
+      (let [obstacles (all-obstacles body-params me)
+            hborder (ext-hazard-border body-params)
+            free-hborder (filterv #(not-obstacle? % obstacles) hborder)
+            closest-free-cell (first (sort-by #(sd me % w h) free-hborder))
+            chull (convex-hull {:body [head closest-free-cell]})]
+        (probabilise-movements head chull 1.55 moves)))))
+
+#_(defn find-closest-free-case
+  "Favours the chull of [head closest-free-case]"
   [body-params moves]
   (println "FIND-CLOSEST-FREE-CASE")
   (let [me (-> body-params :you)
@@ -646,7 +681,8 @@
         head (-> me :head)
         hazards (hazard body-params)
         all-obst (all-obstacles body-params me)]
-    (loop [body (vec (rest body))]
+    (loop [body body #_(vec (rest body)) ; that changes because now head can enter the sauce and still be next to the exit
+           ]
       (cond
         (not (hazard? head hazards)) moves
         (= [] body) moves

@@ -32,6 +32,7 @@
   ;(clojure.pprint/pprint (-> body-params :you :head :x))
   ;(clojure.pprint/pprint (-> body-params :you :head :y))
     {:body {:move (->> {:up 1 :down 1 :right 1 :left 1}
+                       (begin-turn body-params)
                        #_(avoid-walls body-params) ;I don't want to avoid these anymore
                        (avoid-self-direct-hits body-params)
                        (avoid-other-snakes body-params)
