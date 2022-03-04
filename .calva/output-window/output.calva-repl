@@ -37,4 +37,14 @@ clj꞉hench.space꞉> - a
 clj꞉hench.space꞉> 
 (- a)
 -1
-clj꞉hench.space꞉> 
+clj꞉hench.space꞉> (mod 5 4)
+1
+clj꞉hench.food꞉> 
+(mod (inc 4) 4)
+1
+clj꞉hench.food꞉> 
+(mod (inc 3) 4)
+0
+clj꞉hench.food꞉> (mod (dec 0) 4)
+3
+clj꞉hench.food꞉> 

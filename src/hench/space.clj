@@ -415,21 +415,25 @@
   [body-params moves]
   (println "AVOID-SMALL-SURFACES")
   (let [me (-> body-params :you)
+        w (-> body-params :board :width)
+        h (-> body-params :board :height)
         head (:head me)
         length (:length me)
-        obs (all-obstacles body-params me)
-        snakes (other-snakes body-params)
-        pheads [] #_(mapv #(project-head %) snakes) ;i need to take smaller snakes' heads into account
-        all-obs (vec (concat obs (vec (apply concat pheads))))]
-    (cond-> moves
-      (and (> length (count (surface (update head :x inc) me all-obs)))
-           (not (contains-tail body-params (surface (update head :x inc) me all-obs)))) (update :right #(* 0.009 %))
-      (and (> length (count (surface (update head :x dec) me all-obs)))
-           (not (contains-tail body-params (surface (update head :x dec) me all-obs)))) (update :left #(* 0.009 %))
-      (and (> length (count (surface (update head :y inc) me all-obs)))
-           (not (contains-tail body-params (surface (update head :y inc) me all-obs)))) (update :up #(* 0.009 %))
-      (and (> length (count (surface (update head :y dec) me all-obs)))
-           (not (contains-tail body-params (surface (update head :y dec) me all-obs)))) (update :down #(* 0.009 %)))))
+        all-obs (all-obstacles body-params me)]
+    (println "surface1: " (surface (update head :x #(mod (inc %) w)) me all-obs))
+    (println "surface2: " (surface (update head :x #(mod (dec %) w)) me all-obs))
+    (println "surface3: " (surface (update head :y #(mod (inc %) h)) me all-obs))
+    (println "surface4: " (surface (update head :y #(mod (dec %) h)) me all-obs))
+    moves
+    #_(cond-> moves
+      (and (> length (count (surface (update head :x #(mod (inc %) w)) me all-obs)))
+           (not (contains-tail body-params (surface (update head :x #(mod (inc %) w)) me all-obs)))) (update :right #(* 0.009 %))
+      (and (> length (count (surface (update head :x #(mod (dec %) w)) me all-obs)))
+           (not (contains-tail body-params (surface (update head :x #(mod (dec %) w)) me all-obs)))) (update :left #(* 0.009 %))
+      (and (> length (count (surface (update head :y #(mod (inc %) h)) me all-obs)))
+           (not (contains-tail body-params (surface (update head :y #(mod (inc %) h)) me all-obs)))) (update :up #(* 0.009 %))
+      (and (> length (count (surface (update head :y #(mod (dec %) h)) me all-obs)))
+           (not (contains-tail body-params (surface (update head :y #(mod (dec %) h)) me all-obs)))) (update :down #(* 0.009 %)))))
 
 (defn favour-straight-line
   "Favours going on a straight line over turning when two moves have same probability.

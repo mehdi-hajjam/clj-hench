@@ -263,11 +263,6 @@
       (hazard? head hazards) (- 14)
       (hazard? c hazards) (- 14))))
 
-(defn d-to-others
-  ""
-  [head others]
-  (mapv #(d head (:head %)) others))
-
 (defn border?
   "Returns true if c is in the border"
   [body-params c]
@@ -337,7 +332,7 @@
   "Returns all the obstacles including the walls"
   [body-params s]
   (into [] (concat (into [] (butlast (:body s)))
-                   (obstacles body-params s)
+                   (obstacles body-params s) ;all the other snake's projected bodies
                    #_(all-walls (-> body-params :board :height)
                               (-> body-params :board :width)))))
 
