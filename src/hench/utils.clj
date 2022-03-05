@@ -91,10 +91,10 @@
   (let [body (:body s)
         head (:head s)
         neck (nth body 1) ;the square before the head
-        all-squares [(update head :x inc)
-                     (update head :x dec)
-                     (update head :y inc)
-                     (update head :y dec)] ;all the squares around the head
+        all-squares [(update head :x #(mod (inc %) w))
+                     (update head :x #(mod (dec %) w))
+                     (update head :y #(mod (inc %) h))
+                     (update head :y #(mod (dec %) h))] ;all the squares around the head
         ]
     (vec (remove #(= % neck) all-squares))))
 
@@ -143,6 +143,30 @@
                      (into [] (rest c)))))))
 
 (defn convex-hull
+  "Returns the convex-hull of a snake"
+  [s]
+  (let [body (:body s)
+        xmin (apply min (mapv #(:x %) body))
+        ymin (apply min (mapv #(:y %) body))
+        xmax (apply max (mapv #(:x %) body))
+        ymax (apply max (mapv #(:y %) body))
+        xdirect (- xmax xmin)
+        xindirect (- (+ xmin 11) xmax)
+        ydirect (- ymax ymin)
+        yindirect (- (+ ymin 11) ymax)
+        xstart (if (> xdirect xindirect) xmax xmin)
+        xend (if (> xdirect xindirect) (+ xmin 11 1) (+ xmax 1))
+        ystart (if (> ydirect yindirect) ymax ymin)
+        yend (if (> ydirect yindirect) (+ ymin 11 1) (+ ymax 1))]
+    (println "xstart: " xstart)
+    (println "xend: " xend)
+    (println "ystart: " ystart)
+    (println "yend: " yend)
+    (vec (for [x (vec (range xstart xend))
+               y (vec (range ystart yend))]
+           {:x (mod x 11) :y (mod y 11)}))))
+
+#_(defn convex-hull
   "Returns the convex-hull of a snake"
   [s]
   (let [body (:body s)
@@ -309,12 +333,12 @@
     all-free-squares))
 
 (defn probabilise-movements
-  [head obstacles f moves]
+  [head obstacles f moves w h]
   (let [new-moves (cond-> moves
-                    (some #(= (update head :x inc) %) obstacles) (update :right #(* f %))
-                    (some #(= (update head :x dec) %) obstacles) (update :left #(* f %))
-                    (some #(= (update head :y inc) %) obstacles) (update :up #(* f %))
-                    (some #(= (update head :y dec) %) obstacles) (update :down #(* f %)))]
+                    (some #(= (update head :x (fn [a] (mod (inc a) w))) %) obstacles) (update :right #(* f %))
+                    (some #(= (update head :x (fn [a] (mod (dec a) w))) %) obstacles) (update :left #(* f %))
+                    (some #(= (update head :y (fn [a] (mod (inc a) h))) %) obstacles) (update :up #(* f %))
+                    (some #(= (update head :y (fn [a] (mod (dec a) h))) %) obstacles) (update :down #(* f %)))]
     (println new-moves)
     new-moves))
 

@@ -63,7 +63,9 @@
         snakes-length (mapv #(:length %) snakes)
         me (-> body-params :you)
         my-health (-> me :health)
-        my-length (-> me :length)]
+        my-length (-> me :length)
+        w (-> body-params :board :width)
+        h (-> body-params :board :height)]
     (println "foods: " foods)
     (cond
       (= foods []) moves
@@ -76,7 +78,7 @@
       (let [food (first foods)
             head (-> body-params :you :head)
             chull (convex-hull {:body [head food]})]
-        (probabilise-movements head chull 10 moves))
+        (probabilise-movements head chull 10 moves w h))
       :else moves)))
 
 (defn barycentre
@@ -122,11 +124,13 @@
         me (-> body-params :you)
         head (:head me)
         my-health (-> me :health)
-        my-length (-> me :length)]
+        my-length (-> me :length)
+        w (-> body-params :board :width)
+        h (-> body-params :board :height)]
     (cond
       (or (> 63 my-health) ;I am hungry
           (<= my-length (+ 1 (apply max snakes-length))) ;hungry coz not large enough
           (hazard? head hazards)) ;My head is on hazards
       (let [chull (convex-hull {:body [head target]})]
-        (probabilise-movements head chull 3 moves))
+        (probabilise-movements head chull 3 moves w h))
       :else moves)))

@@ -117,7 +117,7 @@
         board (:board body-params)
         width (:width board)
         height (:height board)]
-    (probabilise-movements head body #_(wrap-multiply body width height) 0 moves)))
+    (probabilise-movements head body #_(wrap-multiply body width height) 0 moves width height)))
 
 (defn avoid-other-snakes
   "Avoids direct hits with other snakes"
@@ -137,9 +137,9 @@
         all-bodies (into [] (apply concat (mapv #(vec (butlast (:body %))) snakes))) ;the tail is ok - corner case to be added if the head is close to food though
         ]
       (println "projected-heads: " projected-heads)
-    (->> moves
-         (probabilise-movements head all-bodies 0)
-         (probabilise-movements head projected-heads 0.1))))
+    (as-> moves m
+         (probabilise-movements head all-bodies 0 m width height)
+         (probabilise-movements head projected-heads 0.1 m width height))))
 
 (defn elbow?
   "Returns true if n is the index in body of an elbow, false otherwise"
@@ -272,7 +272,7 @@
           ;(println "subbody (selfloop): " subbody)
           ;(println "not-snake (selfloop): " not-snake)
           ;(println "bounded (selfloop): " bounded)
-        (probabilise-movements head bounded 0.009 moves))
+        (probabilise-movements head bounded 0.009 moves w h))
       moves)))
 
 #_(defn wall-danger?
@@ -337,10 +337,12 @@
   (println "AVOID HAZARDS")
   (let [hazards (-> body-params :board :hazards)
         health (-> body-params :you :health)
-        head (-> body-params :you :head)]
+        head (-> body-params :you :head)
+        w (-> body-params :board :width)
+        h (-> body-params :board :height)]
     (cond
-      (> 75.0 health) (probabilise-movements head hazards 0.66 moves)
-      :else (probabilise-movements head hazards 0.5 moves))))
+      (> 75.0 health) (probabilise-movements head hazards 0.66 moves w h)
+      :else (probabilise-movements head hazards 0.5 moves w h))))
 
 (defn diagonal?
   "Returns true if c1 and c2 are touching diagonally"
@@ -489,7 +491,7 @@
                   neck (neck (-> me :body))
                   diff (substract head neck w h)
                   straight (add head diff w h)]
-              (probabilise-movements head [straight] 1.1 moves)))))
+              (probabilise-movements head [straight] 1.1 moves w h)))))
 
 (defn safe-snake?
   "Check that no part of the snake are on a hazard case."
@@ -526,7 +528,7 @@
           mins (apply min scores)
           bests (filterv #(= mins (d % tail width height)) heads)]
       (println "FOLLOW-TAIL")
-      (probabilise-movements head bests 1.4 moves))
+      (probabilise-movements head bests 1.4 moves width height))
     :else moves))
 
 (defn avoid-borders
@@ -552,7 +554,7 @@
                       (filterv #(= ymax (:y %)) free)))]
     (cond
       (hazard? head hazards) moves
-      :else (probabilise-movements head borders 0.68 moves))))
+      :else (probabilise-movements head borders 0.68 moves width height))))
 
 (defn grade-case
   "Returns a value of degree that a case gives another case. The order is important if a case is many things!!"
@@ -605,7 +607,7 @@
         (cond
               ;4 because I'm not using their projected heads
           (>= 4 maxmind) (do (println "TOO CLOSE TO LARGER SNAKES")
-                             (probabilise-movements head bests 3.14 moves))
+                             (probabilise-movements head bests 3.14 moves width height))
           :else moves))
       :else moves)))
 
@@ -646,7 +648,7 @@
       (let [dangers (filterv #(>= 4 (sd me % w h)) heads)
             chulls (mapv #(forbidden-part (convex-hull {:body [head %]})) dangers)
             total (vec (apply concat chulls))]
-        (probabilise-movements head total 0.22 moves))
+        (probabilise-movements head total 0.22 moves w h))
       :else moves)))
 
 (defn ext-hazard-border
@@ -675,7 +677,7 @@
             free-hborder (filterv #(not-obstacle? % obstacles) hborder)
             closest-free-cell (first (sort-by #(sd me % w h) free-hborder))
             chull (convex-hull {:body [head closest-free-cell]})]
-        (probabilise-movements head chull 1.55 moves)))))
+        (probabilise-movements head chull 1.55 moves w h)))))
 
 #_(defn find-closest-free-case
   "Favours the chull of [head closest-free-case]"
