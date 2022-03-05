@@ -42,8 +42,8 @@
                        (follow-tail body-params)
                        #_(recenter body-params) ;The sauce is near the centre first
                        #_(avoid-borders body-params) ;This is not a thing anymore
-                       (optionality body-params)
-                       (fear body-params)
+                       #_(optionality body-params) ;Good base idea but not that way here
+                       #_(fear body-params) ;I don't think I should fear larger snakes anymore
                        (find-closest-free-case body-params)
                        (favour-straight-line body-params)
                        (choose-move body-params))

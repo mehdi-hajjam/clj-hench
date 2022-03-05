@@ -158,10 +158,6 @@
         xend (if (> xdirect xindirect) (+ xmin 11 1) (+ xmax 1))
         ystart (if (> ydirect yindirect) ymax ymin)
         yend (if (> ydirect yindirect) (+ ymin 11 1) (+ ymax 1))]
-    (println "xstart: " xstart)
-    (println "xend: " xend)
-    (println "ystart: " ystart)
-    (println "yend: " yend)
     (vec (for [x (vec (range xstart xend))
                y (vec (range ystart yend))]
            {:x (mod x 11) :y (mod y 11)}))))
