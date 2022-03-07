@@ -142,8 +142,49 @@
         :else (recur (remove-point (first c) v)
                      (into [] (rest c)))))))
 
+(defn included?
+  "Returns true if v is included in s, false otherwise"
+  [v s]
+  (= (count v)
+     (count (into [] (clojure.set/intersection
+                      (set v)
+                      (set s))))))
+
 (defn convex-hull
-  "Returns the convex-hull of a snake"
+  "Returns the convex hull of a vector of cells, ie the smallest of all
+   4 possible surfaces containing all points of v.
+   This one sort of works, but fails to capture the smallest possible surface containing all points
+   because I only consider min and max, whereas if I add a diagonal point, it should sometimes act as the max...
+   see (convex-hull [{:x 0 :y 0} {:x 2 :y 2} {:x 10 :y 10}]) for instance..."
+  [v]
+  (let [xmin (apply min (mapv #(:x %) v))
+        ymin (apply min (mapv #(:y %) v))
+        xmax (apply max (mapv #(:x %) v))
+        ymax (apply max (mapv #(:y %) v))
+        ;direct x and direct y
+        s1 (vec (for [x (vec (range xmin (+ xmax 1)))
+                      y (vec (range ymin (+ ymax 1)))]
+                  {:x (mod x 11) :y (mod y 11)}))
+        ;direct x and indirect y
+        s2 (vec (for [x (vec (range xmin (+ xmax 1)))
+                      y (vec (range ymax (+ ymin 11 1)))]
+                  {:x (mod x 11) :y (mod y 11)}))
+        ;indirect x and direct y
+        s3 (vec (for [x (vec (range xmax (+ xmin 11 1)))
+                      y (vec (range ymin (+ ymax 1)))]
+                  {:x (mod x 11) :y (mod y 11)}))
+        ;indirect x and indirect y
+        s4 (vec (for [x (vec (range xmax (+ xmin 11 1)))
+                      y (vec (range ymax (+ ymin 11 1)))]
+                  {:x (mod x 11) :y (mod y 11)}))]
+    (first (sort-by count (filterv #(included? v %) [s1 s2 s3 s4])))))
+
+#_(defn convex-hull
+  "Returns the convex-hull of a snake.
+   Actually it's been used for a snake but also and mostly for calculating
+   the envelope of 2 points. And now it only works well in this 2 point case, 
+   and not anymore if there are more than two points. I need to guarantee that convex-hull always
+   contains the whole body. If not, I need to correct that."
   [s]
   (let [body (:body s)
         xmin (apply min (mapv #(:x %) body))
@@ -162,21 +203,7 @@
                y (vec (range ystart yend))]
            {:x (mod x 11) :y (mod y 11)}))))
 
-#_(defn convex-hull
-  "Returns the convex-hull of a snake"
-  [s]
-  (let [body (:body s)
-        xmin (apply min (mapv #(:x %) body))
-        ymin (apply min (mapv #(:y %) body))
-        xmax (apply max (mapv #(:x %) body))
-        ymax (apply max (mapv #(:y %) body))]
-    (vec (for [x (vec (range xmin (+ xmax 1)))
-               y (vec (range ymin (+ ymax 1)))]
-           {:x x :y y}))))
 
-;; should be min of d and distance by warping
-
-;; need to replace 11 by w for xs and h for ys, everywhere where d is called
 (defn d
   "Mathematical distance without obstacles.
    Not symmetric. a is snake, b is food or target, w is board's width, h is board's height."

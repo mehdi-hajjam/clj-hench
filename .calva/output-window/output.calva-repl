@@ -475,3 +475,580 @@ yend:  11
  {:x 10, :y 9}
  {:x 10, :y 10}]
 clj꞉hench.utils꞉> 
+; Evaluating file: space.clj
+#'hench.space/wrapped-mode
+clj꞉hench.space꞉> (vec (apply concat (mapv #(expand-case % (convex-hull {:body [{:x 4 :y 4} {:x 10 :y 10}]}) 11 11) (convex-hull {:body [{:x 4 :y 4} {:x 10 :y 10}]}))))
+xstart:  10
+xend:  16
+ystart:  10
+yend:  16
+xstart:  10
+xend:  16
+ystart:  10
+yend:  16
+xstart:  10
+xend:  16
+ystart:  10
+yend:  16
+xstart:  10
+xend:  16
+ystart:  10
+yend:  16
+xstart:  10
+xend:  16
+ystart:  10
+yend:  16
+xstart:  10
+xend:  16
+ystart:  10
+yend:  16
+xstart:  10
+xend:  16
+ystart:  10
+yend:  16
+xstart:  10
+xend:  16
+ystart:  10
+yend:  16
+xstart:  10
+xend:  16
+ystart:  10
+yend:  16
+xstart:  10
+xend:  16
+ystart:  10
+yend:  16
+xstart:  10
+xend:  16
+ystart:  10
+yend:  16
+xstart:  10
+xend:  16
+ystart:  10
+yend:  16
+xstart:  10
+xend:  16
+ystart:  10
+yend:  16
+xstart:  10
+xend:  16
+ystart:  10
+yend:  16
+xstart:  10
+xend:  16
+ystart:  10
+yend:  16
+xstart:  10
+xend:  16
+ystart:  10
+yend:  16
+xstart:  10
+xend:  16
+ystart:  10
+yend:  16
+xstart:  10
+xend:  16
+ystart:  10
+yend:  16
+xstart:  10
+xend:  16
+ystart:  10
+yend:  16
+xstart:  10
+xend:  16
+ystart:  10
+yend:  16
+xstart:  10
+xend:  16
+ystart:  10
+yend:  16
+xstart:  10
+xend:  16
+ystart:  10
+yend:  16
+xstart:  10
+xend:  16
+ystart:  10
+yend:  16
+xstart:  10
+xend:  16
+ystart:  10
+yend:  16
+xstart:  10
+xend:  16
+ystart:  10
+yend:  16
+xstart:  10
+xend:  16
+ystart:  10
+yend:  16
+xstart:  10
+xend:  16
+ystart:  10
+yend:  16
+xstart:  10
+xend:  16
+ystart:  10
+yend:  16
+xstart:  10
+xend:  16
+ystart:  10
+yend:  16
+xstart:  10
+xend:  16
+ystart:  10
+yend:  16
+xstart:  10
+xend:  16
+ystart:  10
+yend:  16
+xstart:  10
+xend:  16
+ystart:  10
+yend:  16
+xstart:  10
+xend:  16
+ystart:  10
+yend:  16
+xstart:  10
+xend:  16
+ystart:  10
+yend:  16
+xstart:  10
+xend:  16
+ystart:  10
+yend:  16
+xstart:  10
+xend:  16
+ystart:  10
+yend:  16
+xstart:  10
+xend:  16
+ystart:  10
+yend:  16
+[{:x 9, :y 10}
+ {:x 10, :y 9}
+ {:x 9, :y 0}
+ {:x 9, :y 1}
+ {:x 9, :y 2}
+ {:x 9, :y 3}
+ {:x 9, :y 4}
+ {:x 10, :y 5}
+ {:x 0, :y 9}
+ {:x 0, :y 5}
+ {:x 1, :y 9}
+ {:x 1, :y 5}
+ {:x 2, :y 9}
+ {:x 2, :y 5}
+ {:x 3, :y 9}
+ {:x 3, :y 5}
+ {:x 5, :y 10}
+ {:x 4, :y 9}
+ {:x 5, :y 0}
+ {:x 5, :y 1}
+ {:x 5, :y 2}
+ {:x 5, :y 3}
+ {:x 5, :y 4}
+ {:x 4, :y 5}]
+clj꞉hench.space꞉> (convex-hull {:body [{:x 4 :y 4} {:x 10 :y 10}]})
+xstart:  10
+xend:  16
+ystart:  10
+yend:  16
+[{:x 10, :y 10}
+ {:x 10, :y 0}
+ {:x 10, :y 1}
+ {:x 10, :y 2}
+ {:x 10, :y 3}
+ {:x 10, :y 4}
+ {:x 0, :y 10}
+ {:x 0, :y 0}
+ {:x 0, :y 1}
+ {:x 0, :y 2}
+ {:x 0, :y 3}
+ {:x 0, :y 4}
+ {:x 1, :y 10}
+ {:x 1, :y 0}
+ {:x 1, :y 1}
+ {:x 1, :y 2}
+ {:x 1, :y 3}
+ {:x 1, :y 4}
+ {:x 2, :y 10}
+ {:x 2, :y 0}
+ {:x 2, :y 1}
+ {:x 2, :y 2}
+ {:x 2, :y 3}
+ {:x 2, :y 4}
+ {:x 3, :y 10}
+ {:x 3, :y 0}
+ {:x 3, :y 1}
+ {:x 3, :y 2}
+ {:x 3, :y 3}
+ {:x 3, :y 4}
+ {:x 4, :y 10}
+ {:x 4, :y 0}
+ {:x 4, :y 1}
+ {:x 4, :y 2}
+ {:x 4, :y 3}
+ {:x 4, :y 4}]
+clj꞉hench.space꞉> 
+; Evaluating file: utils.clj
+#'hench.utils/touched-walls
+clj꞉hench.utils꞉> 
+(convex-hull {:body [{:x 4 :y 4} {:x 10 :y 10}]})
+[{:x 10, :y 10}
+ {:x 10, :y 0}
+ {:x 10, :y 1}
+ {:x 10, :y 2}
+ {:x 10, :y 3}
+ {:x 10, :y 4}
+ {:x 0, :y 10}
+ {:x 0, :y 0}
+ {:x 0, :y 1}
+ {:x 0, :y 2}
+ {:x 0, :y 3}
+ {:x 0, :y 4}
+ {:x 1, :y 10}
+ {:x 1, :y 0}
+ {:x 1, :y 1}
+ {:x 1, :y 2}
+ {:x 1, :y 3}
+ {:x 1, :y 4}
+ {:x 2, :y 10}
+ {:x 2, :y 0}
+ {:x 2, :y 1}
+ {:x 2, :y 2}
+ {:x 2, :y 3}
+ {:x 2, :y 4}
+ {:x 3, :y 10}
+ {:x 3, :y 0}
+ {:x 3, :y 1}
+ {:x 3, :y 2}
+ {:x 3, :y 3}
+ {:x 3, :y 4}
+ {:x 4, :y 10}
+ {:x 4, :y 0}
+ {:x 4, :y 1}
+ {:x 4, :y 2}
+ {:x 4, :y 3}
+ {:x 4, :y 4}]
+clj꞉hench.utils꞉> 
+(convex-hull {:body [{:x 4 :y 4} {:x 5 :y 5} {:x 7 :y 7} {:x 10 :y 10}]})
+[{:x 10, :y 10}
+ {:x 10, :y 0}
+ {:x 10, :y 1}
+ {:x 10, :y 2}
+ {:x 10, :y 3}
+ {:x 10, :y 4}
+ {:x 0, :y 10}
+ {:x 0, :y 0}
+ {:x 0, :y 1}
+ {:x 0, :y 2}
+ {:x 0, :y 3}
+ {:x 0, :y 4}
+ {:x 1, :y 10}
+ {:x 1, :y 0}
+ {:x 1, :y 1}
+ {:x 1, :y 2}
+ {:x 1, :y 3}
+ {:x 1, :y 4}
+ {:x 2, :y 10}
+ {:x 2, :y 0}
+ {:x 2, :y 1}
+ {:x 2, :y 2}
+ {:x 2, :y 3}
+ {:x 2, :y 4}
+ {:x 3, :y 10}
+ {:x 3, :y 0}
+ {:x 3, :y 1}
+ {:x 3, :y 2}
+ {:x 3, :y 3}
+ {:x 3, :y 4}
+ {:x 4, :y 10}
+ {:x 4, :y 0}
+ {:x 4, :y 1}
+ {:x 4, :y 2}
+ {:x 4, :y 3}
+ {:x 4, :y 4}]
+clj꞉hench.utils꞉> 
+(vec (apply concat (mapv #(expand-case % (convex-hull {:body [{:x 4 :y 4} {:x 10 :y 10}]}) 11 11) (convex-hull {:body [{:x 4 :y 4} {:x 10 :y 10}]}))))
+; Syntax error compiling at (.calva/output-window/output.calva-repl:774:27).
+; Unable to resolve symbol: expand-case in this context
+clj꞉hench.utils꞉> (vec (for [x (vec (range 4 10))
+               y (vec (range 4 10))]
+           {:x (mod x 11) :y (mod y 11)}))
+[{:x 4, :y 4}
+ {:x 4, :y 5}
+ {:x 4, :y 6}
+ {:x 4, :y 7}
+ {:x 4, :y 8}
+ {:x 4, :y 9}
+ {:x 5, :y 4}
+ {:x 5, :y 5}
+ {:x 5, :y 6}
+ {:x 5, :y 7}
+ {:x 5, :y 8}
+ {:x 5, :y 9}
+ {:x 6, :y 4}
+ {:x 6, :y 5}
+ {:x 6, :y 6}
+ {:x 6, :y 7}
+ {:x 6, :y 8}
+ {:x 6, :y 9}
+ {:x 7, :y 4}
+ {:x 7, :y 5}
+ {:x 7, :y 6}
+ {:x 7, :y 7}
+ {:x 7, :y 8}
+ {:x 7, :y 9}
+ {:x 8, :y 4}
+ {:x 8, :y 5}
+ {:x 8, :y 6}
+ {:x 8, :y 7}
+ {:x 8, :y 8}
+ {:x 8, :y 9}
+ {:x 9, :y 4}
+ {:x 9, :y 5}
+ {:x 9, :y 6}
+ {:x 9, :y 7}
+ {:x 9, :y 8}
+ {:x 9, :y 9}]
+clj꞉hench.utils꞉> 
+(def haz (vec (for [x (vec (range 4 10))
+            y (vec (range 4 10))]
+        {:x (mod x 11) :y (mod y 11)})))
+#'hench.utils/haz
+clj꞉hench.utils꞉> 
+(vec (apply concat (mapv #(expand-case % haz 11 11) haz)))
+; Syntax error compiling at (.calva/output-window/output.calva-repl:822:27).
+; Unable to resolve symbol: expand-case in this context
+clj꞉hench.utils꞉> 
+; Evaluating file: space.clj
+#'hench.space/wrapped-mode
+clj꞉hench.space꞉> 
+(def haz (vec (for [x (vec (range 4 10))
+            y (vec (range 4 10))]
+        {:x (mod x 11) :y (mod y 11)})))
+; Syntax error (IllegalStateException) compiling def at (.calva/output-window/output.calva-repl:829:1).
+; haz already refers to: #'hench.utils/haz in namespace: hench.space
+clj꞉hench.space꞉> 
+(def haza (vec (for [x (vec (range 4 10))
+            y (vec (range 4 10))]
+        {:x (mod x 11) :y (mod y 11)})))
+#'hench.space/haza
+clj꞉hench.space꞉> 
+(vec (apply concat (mapv #(expand-case % haza 11 11) haza)))
+[{:x 3, :y 4}
+ {:x 4, :y 3}
+ {:x 3, :y 5}
+ {:x 3, :y 6}
+ {:x 3, :y 7}
+ {:x 3, :y 8}
+ {:x 3, :y 9}
+ {:x 4, :y 10}
+ {:x 5, :y 3}
+ {:x 5, :y 10}
+ {:x 6, :y 3}
+ {:x 6, :y 10}
+ {:x 7, :y 3}
+ {:x 7, :y 10}
+ {:x 8, :y 3}
+ {:x 8, :y 10}
+ {:x 10, :y 4}
+ {:x 9, :y 3}
+ {:x 10, :y 5}
+ {:x 10, :y 6}
+ {:x 10, :y 7}
+ {:x 10, :y 8}
+ {:x 10, :y 9}
+ {:x 9, :y 10}]
+clj꞉hench.space꞉> 
+(def haza (vec (for [x (vec (range 4 11))
+            y (vec (range 4 11))]
+        {:x (mod x 11) :y (mod y 11)})))
+#'hench.space/haza
+clj꞉hench.space꞉> 
+(vec (apply concat (mapv #(expand-case % haza 11 11) haza)))
+[{:x 3, :y 4}
+ {:x 4, :y 3}
+ {:x 3, :y 5}
+ {:x 3, :y 6}
+ {:x 3, :y 7}
+ {:x 3, :y 8}
+ {:x 3, :y 9}
+ {:x 3, :y 10}
+ {:x 4, :y 0}
+ {:x 5, :y 3}
+ {:x 5, :y 0}
+ {:x 6, :y 3}
+ {:x 6, :y 0}
+ {:x 7, :y 3}
+ {:x 7, :y 0}
+ {:x 8, :y 3}
+ {:x 8, :y 0}
+ {:x 9, :y 3}
+ {:x 9, :y 0}
+ {:x 0, :y 4}
+ {:x 10, :y 3}
+ {:x 0, :y 5}
+ {:x 0, :y 6}
+ {:x 0, :y 7}
+ {:x 0, :y 8}
+ {:x 0, :y 9}
+ {:x 0, :y 10}
+ {:x 10, :y 0}]
+clj꞉hench.space꞉> 
+(def hazaborder (vec (apply concat (mapv #(expand-case % haza 11 11) haza))))
+#'hench.space/hazaborder
+clj꞉hench.space꞉> 
+(def obs [{:x 0 :y 4}
+          {:x 0 :y 5}
+          {:x 0 :y 6}
+          {:x 0 :y 7}
+          {:x 0 :y 8}
+          {:x 0 :y 9}
+          {:x 0 :y 10}
+          {:x 8 :y 4}
+          {:x 9 :y 4}
+          {:x 10 :y 4}
+          ])
+#'hench.space/obs
+clj꞉hench.space꞉> 
+; Evaluating file: food.clj
+#'hench.food/recenter
+clj꞉hench.food꞉> 
+(def obs1 [{:x 0 :y 4}
+          {:x 0 :y 5}
+          {:x 0 :y 6}
+          {:x 0 :y 7}
+          {:x 0 :y 8}
+          {:x 0 :y 9}
+          {:x 0 :y 10}
+          {:x 8 :y 4}
+          {:x 9 :y 4}
+          {:x 10 :y 4}
+          ])
+#'hench.food/obs1
+clj꞉hench.food꞉> (visible? {:x 8 :y 5} obs1 {:x 10 :y 3})
+false
+clj꞉hench.food꞉> (sort-by count [1] [1 2 3] [1 2])
+; Execution error (ArityException) at hench.food/eval26173 (REPL:934).
+; Wrong number of args (4) passed to: clojure.core/sort-by
+clj꞉hench.food꞉> 
+(sort-by count [[1] [1 2 3] [1 2]])
+([1] [1 2] [1 2 3])
+clj꞉hench.food꞉> 
+(first (sort-by count [[1 0 2 2] [1 2 3] [1 2]]))
+[1 2]
+clj꞉hench.food꞉> 
+; Evaluating file: utils.clj
+#'hench.utils/touched-walls
+clj꞉hench.utils꞉> (convex-hull [{:x 0 :y 0} {:x 10 :y 10}])
+[{:x 10, :y 10} {:x 10, :y 0} {:x 0, :y 10} {:x 0, :y 0}]
+clj꞉hench.utils꞉> 
+(convex-hull [{:x 0 :y 0} {:x 5 :y 5} {:x 10 :y 10}])
+[{:x 0, :y 0}
+ {:x 0, :y 1}
+ {:x 0, :y 2}
+ {:x 0, :y 3}
+ {:x 0, :y 4}
+ {:x 0, :y 5}
+ {:x 0, :y 6}
+ {:x 0, :y 7}
+ {:x 0, :y 8}
+ {:x 0, :y 9}
+ {:x 0, :y 10}
+ {:x 1, :y 0}
+ {:x 1, :y 1}
+ {:x 1, :y 2}
+ {:x 1, :y 3}
+ {:x 1, :y 4}
+ {:x 1, :y 5}
+ {:x 1, :y 6}
+ {:x 1, :y 7}
+ {:x 1, :y 8}
+ {:x 1, :y 9}
+ {:x 1, :y 10}
+ {:x 2, :y 0}
+ {:x 2, :y 1}
+ {:x 2, :y 2}
+ {:x 2, :y 3}
+ {:x 2, :y 4}
+ {:x 2, :y 5}
+ {:x 2, :y 6}
+ {:x 2, :y 7}
+ {:x 2, :y 8}
+ {:x 2, :y 9}
+ {:x 2, :y 10}
+ {:x 3, :y 0}
+ {:x 3, :y 1}
+ {:x 3, :y 2}
+ {:x 3, :y 3}
+ {:x 3, :y 4}
+ {:x 3, :y 5}
+ {:x 3, :y 6}
+ {:x 3, :y 7}
+ {:x 3, :y 8}
+ {:x 3, :y 9}
+ {:x 3, :y 10}
+ {:x 4, :y 0}
+ {:x 4, :y 1}
+ {:x 4, :y 2}
+ {:x 4, :y 3}
+ {:x 4, :y 4}
+ {:x 4, :y 5}
+ ...]
+clj꞉hench.utils꞉> 
+(convex-hull [{:x 0 :y 0} {:x 2 :y 2} {:x 10 :y 10}])
+[{:x 0, :y 0}
+ {:x 0, :y 1}
+ {:x 0, :y 2}
+ {:x 0, :y 3}
+ {:x 0, :y 4}
+ {:x 0, :y 5}
+ {:x 0, :y 6}
+ {:x 0, :y 7}
+ {:x 0, :y 8}
+ {:x 0, :y 9}
+ {:x 0, :y 10}
+ {:x 1, :y 0}
+ {:x 1, :y 1}
+ {:x 1, :y 2}
+ {:x 1, :y 3}
+ {:x 1, :y 4}
+ {:x 1, :y 5}
+ {:x 1, :y 6}
+ {:x 1, :y 7}
+ {:x 1, :y 8}
+ {:x 1, :y 9}
+ {:x 1, :y 10}
+ {:x 2, :y 0}
+ {:x 2, :y 1}
+ {:x 2, :y 2}
+ {:x 2, :y 3}
+ {:x 2, :y 4}
+ {:x 2, :y 5}
+ {:x 2, :y 6}
+ {:x 2, :y 7}
+ {:x 2, :y 8}
+ {:x 2, :y 9}
+ {:x 2, :y 10}
+ {:x 3, :y 0}
+ {:x 3, :y 1}
+ {:x 3, :y 2}
+ {:x 3, :y 3}
+ {:x 3, :y 4}
+ {:x 3, :y 5}
+ {:x 3, :y 6}
+ {:x 3, :y 7}
+ {:x 3, :y 8}
+ {:x 3, :y 9}
+ {:x 3, :y 10}
+ {:x 4, :y 0}
+ {:x 4, :y 1}
+ {:x 4, :y 2}
+ {:x 4, :y 3}
+ {:x 4, :y 4}
+ {:x 4, :y 5}
+ ...]
+clj꞉hench.utils꞉> 
