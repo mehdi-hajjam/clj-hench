@@ -4,7 +4,7 @@
 (defn visible?
   "Returns true if food is visible from head"
   [head obstacles food]
-  (let [chull (convex-hull {:body [head food]})
+  (let [chull (convex-hull [head food])
         intersection (into [] (clojure.set/intersection
                                (set chull)
                                (set obstacles)))]
@@ -46,13 +46,21 @@
         h (-> body-params :board :height)
         head (-> s :head)
         obstacles (obstacles body-params s)
-        other-snakes (other-snakes body-params)]
-    (println "fte/obstacles: " obstacles)
-    (vec (->> foods
+        other-snakes (other-snakes body-params)
+        v&a (vec (->> foods
+                      (filterv #(visible? head obstacles %))
+                      (filterv #(accessible? s hazards % w h))
+                      (sort-by #(sd s % w h))))
+        v&a&c (vec (->> v&a
+                        (filterv #(am-i-closest? body-params s other-snakes hazards %))))]
+    #_(vec (->> foods
               (filterv #(visible? head obstacles %))
               (filterv #(accessible? s hazards % w h))
               (filterv #(am-i-closest? body-params s other-snakes hazards %))
-              (sort-by #(sd s % w h))))))
+              (sort-by #(sd s % w h))))
+    (cond
+      (= [] v&a&c) v&a
+      :else v&a&c)))
 
 (defn eat
   "Drives the snake to eat"
@@ -73,7 +81,7 @@
           (<= my-length (+ 1 (apply max snakes-length))))
       (let [food (first foods)
             head (-> body-params :you :head)
-            chull (convex-hull {:body [head food]})]
+            chull (convex-hull [head food])]
         (probabilise-movements head chull 10 moves w h))
       :else moves)))
 
@@ -127,6 +135,6 @@
       (or (> 63 my-health) ;I am hungry
           (<= my-length (+ 1 (apply max snakes-length))) ;hungry coz not large enough
           (hazard? head hazards)) ;My head is on hazards
-      (let [chull (convex-hull {:body [head target]})]
+      (let [chull (convex-hull [head target])]
         (probabilise-movements head chull 3 moves w h))
       :else moves)))

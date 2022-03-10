@@ -56,6 +56,54 @@
                    :shout "why are we shouting??"
                    :squad ""}})
 
+(def sample2 {:game {:id "game-00fe20da-94ad-11ea-bb37"
+                    :ruleset {:name "standard"
+                              :version "v.1.2.3"}
+                    :timeout 500}
+             :turn 14
+             :board {:height 11
+                     :width 11
+                     :food [{:x 0, :y 0}]
+                     :hazards [{:x 3, :y 3}
+                               {:x 3, :y 4}
+                               {:x 4, :y 3}]
+                     :snakes [{:id "snake-508e96ac-94ad-11ea-bb37"
+                               :name "My Snake"
+                               :health 6
+                               :body [{:x 3, :y 2}
+                                      {:x 4, :y 2}
+                                      {:x 5, :y 2}
+                                      {:x 6, :y 2}]
+                               :latency "111"
+                               :head {:x 3, :y 2}
+                               :length 4
+                               :shout "why are we shouting??"
+                               :squad ""}
+                              {:id "snake-b67f4906-94ae-11ea-bb37"
+                               :name "Another Snake"
+                               :health 56
+                               :body [{:x 5, :y 4}
+                                      {:x 5, :y 3}
+                                      {:x 6, :y 3}
+                                      {:x 6, :y 2}]
+                               :latency "222"
+                               :head {:x 5, :y 4}
+                               :length 4
+                               :shout "I'm not really sure..."
+                               :squad ""}]}
+             :you {:id "snake-508e96ac-94ad-11ea-bb37"
+                   :name "My Snake"
+                   :health 6
+                   :body [{:x 3, :y 2}
+                          {:x 4, :y 2}
+                          {:x 5, :y 2}
+                          {:x 6, :y 2}]
+                   :latency "111"
+                   :head {:x 3, :y 2}
+                   :length 4
+                   :shout "why are we shouting??"
+                   :squad ""}})
+
 (defn random-move
   "A random move"
   [moves]
@@ -93,20 +141,6 @@
     (let [max (apply max (vals moves))
           fmoves (filter-map moves max)]
       (random-move fmoves))))
-
-(defn avoid-walls
-  "Avoids direct hits to the walls of the board"
-  [body-params moves]
-  (println "AVOID WALLS")
-  (let [xmax (- (-> body-params :board :width) 1)
-        ymax (- (-> body-params :board :height) 1)
-        xhead (-> body-params :you :head :x)
-        yhead (-> body-params :you :head :y)]
-    (cond-> moves
-      (= xmax xhead) (update :right #(* % 0))
-      (= ymax yhead) (update :up #(* % 0))
-      (= 0 xhead) (update :left #(* % 0))
-      (= 0 yhead) (update :down #(* % 0)))))
 
 (defn avoid-self-direct-hits
   "Avoids colliding with itself on the next move"
@@ -248,88 +282,6 @@
   [c obstacles]
   (and (bounded-in-x? c obstacles)
        (bounded-in-y? c obstacles)))
-
-(defn avoid-self-loop
-  "Anticipates self-loops and helps avoid them"
-  [body-params moves]
-  (println "AVOID-SELF-LOOP")
-  (let [s (-> body-params :you)
-        body (-> s :body)
-        head (head body)
-        neck (neck body)
-        w (-> body-params :board :width)
-        h (-> body-params :board :height)]
-  ;(println "self-danger: " (self-danger? s))
-  ;(println "danger-cases (selfloop): " (danger-cases head neck))
-    (if (self-danger? body-params)
-      (let [chull (convex-hull s)
-            not-snake (filterv #(not (snake? % s)) chull)
-            danger-cases (danger-cases head neck w h)
-            vi (mapv #(.indexOf body %) danger-cases)
-            i (apply max (filterv pos? vi)) ;closest to tail, using pos? is fine as head (0) is never a danger case
-            subbody (subvec body 0 (+ i 1))
-            bounded (filterv #(bounded? % subbody) not-snake)]
-          ;(println "subbody (selfloop): " subbody)
-          ;(println "not-snake (selfloop): " not-snake)
-          ;(println "bounded (selfloop): " bounded)
-        (probabilise-movements head bounded 0.009 moves w h))
-      moves)))
-
-#_(defn wall-danger?
-  "Returns true if the face is facing a wall"
-  [s board]
-  (let [head (head (-> s :body))
-        neck (neck (-> s :body))
-        diff (substract head neck)
-        front (add head diff)
-        xmax (-> board :width)
-        ymax (-> board :height)]
-    (or (= (:x front) xmax)
-        (= (:y front) ymax)
-        (= (:x head) 0)
-        (= (:y head) 0))))
-
-(defn next-to-wall
-  "Returns true if c is next to a wall"
-  [c board]
-  (let [xmax (-> board :width)
-        ymax (-> board :height)]
-    (or (= (:x c) (- xmax 1))
-        (= (:x c) 0)
-        (= (:y c) (- ymax 1))
-        (= (:y c) 0))))
-
-(defn xray
-  "Filters the cells of body and keeps them if they are close to a wall"
-  [s board]
-  (let [body (-> s :body)]
-    (filterv #(next-to-wall % board) body)))
-
-#_(defn avoid-loop-with-walls
-  "Anticipates loops with walls"
-  [body-params moves]
-  (println "AVOID LOOP WITH WALLS")
-  (let [s (-> body-params :you)
-        body (-> s :body)
-        board (-> body-params :board)]
-  ;(println "wall-danger: " (wall-danger? s board))
-    (if (not (wall-danger? s board))
-      moves
-      (let [xray (xray s board)]
-      ;(println "xray: " xray)
-        (if (= [] xray)
-          moves
-          (let [l (last xray) ;the one closest to the tail
-                i (.indexOf body l)
-                subbody (subvec body 0 (+ i 1))
-                chull (convex-hull s)
-                not-snake (filterv #(not (snake? % s)) chull)
-                walls (touched-walls subbody board)
-                bounded (filterv #(bounded? % (vec (concat subbody walls))) not-snake)]
-          ;(println "subbody: " subbody)
-          ;(println "Wall loop danger true!")
-          ;(println "bounded (wallloop): " bounded)
-            (probabilise-movements (head body) bounded 0.8 moves)))))))
 
 (defn avoid-hazards
   "Avoids hazards as much as it makes sense"
@@ -628,29 +580,6 @@
       :else chull ;this is the 3x3 case
       )))
 
-(defn fear
-  "Discourages getting into the chull made with larger opponents deemed too close (4).
-   0.22 carefully crafted to fit other parameters."
-  [body-params moves]
-  (println "FEAR")
-  (let [me (-> body-params :you)
-        w (-> body-params :board :width)
-        h (-> body-params :board :height)
-        head (:head me)
-        length (:length me)
-        others (filterv #(> (:length %) length) (other-snakes body-params))
-        heads (mapv #(:head %) others)
-        distances (mapv #(sd me % w h) heads)]
-    (cond
-      (and (some #(>= 4 %) distances)
-           (not (or false #_(border? body-params head)
-                    (hazard? head (hazard body-params)))))
-      (let [dangers (filterv #(>= 4 (sd me % w h)) heads)
-            chulls (mapv #(forbidden-part (convex-hull {:body [head %]})) dangers)
-            total (vec (apply concat chulls))]
-        (probabilise-movements head total 0.22 moves w h))
-      :else moves)))
-
 (defn ext-hazard-border
   "Returns the cases of the external border of hazards"
   [body-params]
@@ -676,7 +605,7 @@
             hborder (ext-hazard-border body-params)
             free-hborder (filterv #(not-obstacle? % obstacles) hborder)
             closest-free-cell (first (sort-by #(sd me % w h) free-hborder))
-            chull (convex-hull {:body [head closest-free-cell]})]
+            chull (convex-hull [head closest-free-cell])]
         (probabilise-movements head chull 1.55 moves w h)))))
 
 #_(defn find-closest-free-case
@@ -695,7 +624,7 @@
         (= [] body) moves
         (= [] (free-cases (first body) all-obst hazards)) (recur (vec (rest body)))
         :else (let [f (first (free-cases (first body) all-obst hazards))
-                    chull (convex-hull {:body [head f]})]
+                    chull (convex-hull [head f])]
                 (probabilise-movements head chull 1.55 moves))))))
 
 (defn wrapped-mode

@@ -179,31 +179,6 @@
                   {:x (mod x 11) :y (mod y 11)}))]
     (first (sort-by count (filterv #(included? v %) [s1 s2 s3 s4])))))
 
-#_(defn convex-hull
-  "Returns the convex-hull of a snake.
-   Actually it's been used for a snake but also and mostly for calculating
-   the envelope of 2 points. And now it only works well in this 2 point case, 
-   and not anymore if there are more than two points. I need to guarantee that convex-hull always
-   contains the whole body. If not, I need to correct that."
-  [s]
-  (let [body (:body s)
-        xmin (apply min (mapv #(:x %) body))
-        ymin (apply min (mapv #(:y %) body))
-        xmax (apply max (mapv #(:x %) body))
-        ymax (apply max (mapv #(:y %) body))
-        xdirect (- xmax xmin)
-        xindirect (- (+ xmin 11) xmax)
-        ydirect (- ymax ymin)
-        yindirect (- (+ ymin 11) ymax)
-        xstart (if (> xdirect xindirect) xmax xmin)
-        xend (if (> xdirect xindirect) (+ xmin 11 1) (+ xmax 1))
-        ystart (if (> ydirect yindirect) ymax ymin)
-        yend (if (> ydirect yindirect) (+ ymin 11 1) (+ ymax 1))]
-    (vec (for [x (vec (range xstart xend))
-               y (vec (range ystart yend))]
-           {:x (mod x 11) :y (mod y 11)}))))
-
-
 (defn d
   "Mathematical distance without obstacles.
    Not symmetric. a is snake, b is food or target, w is board's width, h is board's height."
@@ -275,6 +250,22 @@
             :else (recur (+ x 1)
                          (min res c))))))))
 
+(defn max-hazard-in-x
+  "Returns the maximum number of cases in the x direction that are hazards"
+  [chull hazards]
+  (cond
+    (= chull []) 0
+    :else
+    (let [xmin (apply min (mapv #(:x %) chull))
+          xmax (apply max (mapv #(:x %) chull))]
+      (loop [x xmin
+             res 0]
+        (let [c (count (filterv #(hazard? % hazards) (filterv (fn [a] (= x (:x a))) chull)))]
+          (cond
+            (= x (+ xmax 1)) res
+            :else (recur (+ x 1)
+                         (max res c))))))))
+
 (defn min-hazard-in-y
   "Returns the minimum number of cases in the y direction that are hazards"
   [chull hazards]
@@ -283,34 +274,52 @@
     :else
     (let [ymin (apply min (mapv #(:y %) chull))
           ymax (apply max (mapv #(:y %) chull))]
-                ;(println "ymin: " ymin)
-                ;(println "ymax: " ymax)
       (loop [y ymin
-             res (count chull)]
+             res (count chull) ;this initial value doesn't matter as long as it's higher than c anyway
+             ]
         (let [c (count (filterv #(hazard? % hazards) (filterv (fn [a] (= y (:y a))) chull)))]
-                  ;(println "c: " c)
           (cond
             (= y (+ ymax 1)) res
             (= c 0) 0
             :else (recur (+ y 1)
                          (min res c))))))))
 
+(defn max-hazard-in-y
+  "Returns the maximum number of cases in the y direction that are hazards"
+  [chull hazards]
+  (cond
+    (= chull []) 0
+    :else
+    (let [ymin (apply min (mapv #(:y %) chull))
+          ymax (apply max (mapv #(:y %) chull))]
+      (loop [y ymin
+             res 0]
+        (let [c (count (filterv #(hazard? % hazards) (filterv (fn [a] (= y (:y a))) chull)))]
+          (cond
+            (= y (+ ymax 1)) res
+            :else (recur (+ y 1)
+                         (max res c))))))))
+
 (defn hd
   "Health distance, ie taking hazards into account.
-  It is equal to sd*1 + 14*(min hazard in x + min hazard in y - 1) -1*dirac(head is on a hazard case) when there are no obstacles in the convex hull
-   Adding own body to hazards, see https://play.battlesnake.com/g/528bfb5d-a390-413d-83d1-a0bd1620484b/ move 178"
+  Not sure I still need to add my own body to the hazards, but works for now.
+   Because of the shape of the sauce, the amount of cells in the sauce we travel
+   is (min (minx + maxy) (miny+maxx)) and then minus the usual 14pts in different cases"
   [s c hazards w h]
   (let [head (-> s :head)
-        hazards+body (vec (concat hazards (:body s)))
-        chull (convex-hull {:body [head c]})
-        in-x (min-hazard-in-x chull hazards+body)
-        in-y (min-hazard-in-y chull hazards+body)
-        temp-res (+ (sd s c w h)
-                    (* (+ in-x in-y) 14))]
-                    ;(println "in-x: " in-x)
-                    ;(println "in-y: " in-y)
+        hazards+body (vec (concat hazards (vec (rest (:body s)))))
+        chull (convex-hull [head c])
+        min-in-x (min-hazard-in-x chull hazards+body)
+        min-in-y (min-hazard-in-y chull hazards+body)
+        max-in-x (max-hazard-in-x chull hazards+body)
+        max-in-y (max-hazard-in-y chull hazards+body)
+        ddist (sd s c w h)
+        minsum (min (+ min-in-x max-in-y)
+                    (+ min-in-y max-in-x))
+        temp-res (+ ddist
+                    (* minsum 14))]
     (cond-> temp-res
-      (and (< 0 in-x) (< 0 in-y)) (- 14)
+      (and (< 0 min-in-x) (< 0 min-in-y)) (- 14)
       (hazard? head hazards) (- 14)
       (hazard? c hazards) (- 14))))
 
