@@ -364,21 +364,19 @@
   "Returns the cases that are reachable from c, and only length s + 1 if there are more."
   [c s obstacles w h]
   (let [l (:length s)]
-    (if (some #(= c %) obstacles)
-      []
-      (loop [v [c]
-             forbidden (conj obstacles c)
-             res [c]]
-        (let [expc (expand-cases v forbidden w h)]
-          (cond
+    (loop [v [c]
+           forbidden (conj obstacles c)
+           res [c]]
+      (let [expc (expand-cases v forbidden w h)]
+        (cond
              ; if I have enough, return the ones already found
-            (> (count res) l) res
+          (> (count res) l) res
              ; if I can't find new ones, return the ones already found
-            (= expc []) res
+          (= expc []) res
           ; otherwise, iterate with a new v and forbidden augmented of new v
-            :else (recur expc
-                         (vec (concat forbidden expc))
-                         (vec (concat res expc)))))))))
+          :else (recur expc
+                       (vec (concat forbidden expc))
+                       (vec (concat res expc))))))))
 
 #_(defn surface
   "Returns the vector of cases reachable from c"
