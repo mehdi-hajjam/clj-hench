@@ -58,3 +58,24 @@ clj꞉hench.path꞉> 
 (a* graph "A" "D" :distance cost)
 (("A" "B" "D") ("A" "B" "C" "D") ("A" "E" "D"))
 clj꞉hench.path꞉> 
+; Evaluating file: path.clj
+; Syntax error macroexpanding clojure.core/defn at (src/hench/path.clj:58:1).
+; :keys - failed: vector? at: [:fn-tail :arity-n :bodies :params] spec: :clojure.core.specs.alpha/param-list
+(:keys [x y]) - failed: Extra input at: [:fn-tail :arity-1 :params] spec: :clojure.core.specs.alpha/param-list
+; Evaluation of file path.clj failed: class clojure.lang.Compiler$CompilerException
+; Evaluating file: path.clj
+; Syntax error macroexpanding clojure.core/defn at (src/hench/path.clj:58:1).
+; :keys - failed: vector? at: [:fn-tail :arity-n :bodies :params] spec: :clojure.core.specs.alpha/param-list
+(:keys [x y]) - failed: Extra input at: [:fn-tail :arity-1 :params] spec: :clojure.core.specs.alpha/param-list
+; Evaluation of file path.clj failed: class clojure.lang.Compiler$CompilerException
+; Evaluating file: path.clj
+#'hench.path/n->c
+clj꞉hench.path꞉> (n->c "1 1")
+{:x "1", :y "1"}
+clj꞉hench.path꞉> 
+; Evaluating file: path.clj
+#'hench.path/n->c
+clj꞉hench.path꞉> 
+(n->c "1 1")
+{:x 1, :y 1}
+clj꞉hench.path꞉> 

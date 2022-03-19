@@ -1,4 +1,5 @@
-(ns hench.path)
+(ns hench.path
+  (:require [hench.utils :refer :all]))
 
 ;; from https://matthewdowney.github.io/astar-in-clojure-find-k-shortest-paths.html
 (declare a*-seq, next-a*-path, unseen?, step-factory, rpath, cmp-step)
@@ -53,3 +54,25 @@
       cmp)))
 
 ;;transforms board into graph
+
+(defn c->n 
+  "coordinates to name"
+  [{:keys [x y]}]
+  (str x " " y))
+
+(defn n->c
+  "name to coordinates"
+  [s]
+  (let [sp (clojure.string/split s #"\s+")]
+    {:x (read-string (first sp)) :y (read-string (second sp))}))
+
+#_(defn board->graph
+  [body-params]
+  (let [board (-> body-params :board)
+        width (-> board :width)
+        height (-> board :height)]
+    
+    
+    
+    )
+  )
