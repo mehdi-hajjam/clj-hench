@@ -18,3 +18,43 @@
 clj꞉user꞉>  ; Use `alt+enter` to evaluate
 ; Jack-in done.
 clj꞉user꞉> 
+; Evaluating file: path.clj
+#'hench.path/cmp-step
+clj꞉hench.path꞉> (def graph
+                   "Map of node => set of adjacent nodes."
+                   {"A" #{"B", "E"}
+                    "B" #{"A", "C", "D"}
+                    "C" #{"B", "D"}
+                    "D" #{"B", "C", "E"}
+                    "E" #{"A", "D"}})
+#'hench.path/graph
+clj꞉hench.path꞉> (a* graph "A" "D")
+(("A" "E" "D") ("A" "B" "D") ("A" "B" "C" "D"))
+clj꞉hench.path꞉> (def costs
+                   "Map of node => adjacent node => cost. This could
+  be replaced with any cost function of the shape
+  (node, node') => cost."
+                   {"A" {"B" 2, "E" 10}
+                    "B" {"A" 2, "C" 3, "D" 4}
+                    "C" {"B" 3, "D" 2}
+                    "D" {"B" 4, "C" 3, "E" 10}
+                    "E" {"A" 10, "D" 10}})
+#'hench.path/costs
+clj꞉hench.path꞉> 
+(a* graph "A" "D" :distance cost)
+; Syntax error compiling at (.calva/output-window/output.calva-repl:44:1).
+; Unable to resolve symbol: cost in this context
+clj꞉hench.path꞉> 
+(a* graph "A" "D" :distance costs)
+; Error printing return value (ClassCastException) at clojure.lang.Numbers/add (Numbers.java:153).
+; class clojure.lang.PersistentArrayMap cannot be cast to class java.lang.Number (clojure.lang.PersistentArrayMap is in unnamed module of loader 'app'; java.lang.Number is in module java.base of loader 'bootstrap')
+clj꞉hench.path꞉> (def heuristic
+                   (constantly 0))
+#'hench.path/heuristic
+clj꞉hench.path꞉> (defn cost [node node']
+                   (get-in costs [node node']))
+#'hench.path/cost
+clj꞉hench.path꞉> 
+(a* graph "A" "D" :distance cost)
+(("A" "B" "D") ("A" "B" "C" "D") ("A" "E" "D"))
+clj꞉hench.path꞉> 
