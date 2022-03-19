@@ -36,9 +36,8 @@
                        (avoid-hazards body-params)
                        (avoid-small-surfaces body-params) ;if you add it back you need to add a non nil all-walls to all-obstacles for some reasons, maybe caused by surface.
                        (eat body-params)
-                       (follow-tail body-params)
-                       #_(recenter body-params) ;The sauce is near the centre first
-                       #_(avoid-borders body-params) ;This is not a thing anymore
+                       (favor-less-sauce body-params)
+                       #_(follow-tail body-params) ;I don't want to follow tail anymore, not useful I think
                        #_(optionality body-params) ;Good base idea but not that way here
                        (find-closest-free-case body-params)
                        (favour-straight-line body-params)

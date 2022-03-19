@@ -378,27 +378,6 @@
                        (vec (concat forbidden expc))
                        (vec (concat res expc))))))))
 
-#_(defn surface
-  "Returns the vector of cases reachable from c"
-  [c s obstacles]
-  (if (some #(= c %) obstacles)
-    []
-    (loop [v [c]
-           direction (substract c (:head s))
-           forbidden obstacles]
-       ;(println "direction: " direction)
-      (let [res (apply concat (mapv #(get-line % direction forbidden) v))]
-        (cond
-          (> (count (into [] (distinct v))) (:length s)) (into [] (distinct v))
-          (and (= res [])
-               (= [c] v)) (recur [c c]
-                                 (first (perpendicular direction))
-                                 forbidden)
-          (= res []) (into [] (distinct v))
-          :else (recur (into [] (concat v res))
-                       (first (perpendicular direction))
-                       (into [] (concat forbidden res))))))))
-
 (defn contains-tail
   "Returns true if surface contains snake's tail"
   [body-params surface]
@@ -415,7 +394,10 @@
         h (-> body-params :board :height)
         head (:head me)
         length (:length me)
-        all-obs (all-obstacles body-params me)]
+        snakes (other-snakes body-params)
+        projected-heads (into [] (apply concat
+                                        (mapv #(project-head % w h) snakes))) ; I need all heads, not just larger snakes's heads
+        all-obs (vec (concat projected-heads (all-obstacles body-params me)))]
     (cond-> moves
       (and (> length (count (surface (update head :x #(mod (inc %) w)) me all-obs w h)))
            (not (contains-tail body-params (surface (update head :x #(mod (inc %) w)) me all-obs w h)))) (update :right #(* 0.009 %))
@@ -425,6 +407,32 @@
            (not (contains-tail body-params (surface (update head :y #(mod (inc %) h)) me all-obs w h)))) (update :up #(* 0.009 %))
       (and (> length (count (surface (update head :y #(mod (dec %) h)) me all-obs w h)))
            (not (contains-tail body-params (surface (update head :y #(mod (dec %) h)) me all-obs w h)))) (update :down #(* 0.009 %)))))
+
+(defn favor-less-sauce
+  "Favors the direction with less sauce in its closest environment."
+  [body-params moves]
+  (println "FAVOR-LESS-SAUCE")
+  (let [me (-> body-params :you)
+        w (-> body-params :board :width)
+        h (-> body-params :board :height)
+        head (:head me)
+        length (:length me)
+        hazards (-> body-params :board :hazards)
+        all-obs (all-obstacles body-params me)
+        s1 (surface (update head :x #(mod (inc %) w)) me all-obs w h)
+        s2 (surface (update head :x #(mod (dec %) w)) me all-obs w h)
+        s3 (surface (update head :y #(mod (inc %) h)) me all-obs w h)
+        s4 (surface (update head :y #(mod (dec %) h)) me all-obs w h)
+        hr1 (if (> length (count s1)) 0 (/ (count (filterv #(not (hazard? % hazards)) s1)) length))
+        hr2 (if (> length (count s2)) 0 (/ (count (filterv #(not (hazard? % hazards)) s2)) length))
+        hr3 (if (> length (count s3)) 0 (/ (count (filterv #(not (hazard? % hazards)) s3)) length))
+        hr4 (if (> length (count s4)) 0 (/ (count (filterv #(not (hazard? % hazards)) s4)) length))
+        maxhr (max hr1 hr2 hr3 hr4)]
+    (cond
+      (= hr1 maxhr) (probabilise-movements head [(update head :x #(mod (inc %) w))] 1.4 moves w h)
+      (= hr2 maxhr) (probabilise-movements head [(update head :x #(mod (dec %) w))] 1.4 moves w h)
+      (= hr3 maxhr) (probabilise-movements head [(update head :y #(mod (inc %) h))] 1.4 moves w h)
+      (= hr4 maxhr) (probabilise-movements head [(update head :y #(mod (dec %) h))] 1.4 moves w h))))
 
 (defn favour-straight-line
   "Favours going on a straight line over turning when two moves have same probability.
