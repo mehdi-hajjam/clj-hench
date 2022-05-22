@@ -56,23 +56,73 @@
 ;;transforms board into graph
 
 (defn c->n 
-  "coordinates to name"
+  "Coordinates to name"
   [{:keys [x y]}]
   (str x " " y))
 
 (defn n->c
-  "name to coordinates"
+  "Name to coordinates"
   [s]
   (let [sp (clojure.string/split s #"\s+")]
     {:x (read-string (first sp)) :y (read-string (second sp))}))
 
-#_(defn board->graph
+(defn neighbours
+  "From coordinates to set of neighbours names"
+  [criteria c w h]
+  (set (mapv #(c->n %) (filterv criteria [(add c {:x 1 :y 0} w h)
+                                          (add c {:x 0 :y 1} w h)
+                                          (add c {:x -1 :y 0} w h)
+                                          (add c {:x 0 :y -1} w h)]))))
+
+(defn snaky
+  "all snakes but my head and all tails"
+  [body-params]
+  (let [board (:board body-params)
+        width (:width board)
+        height (:height board)
+        my-length (-> body-params :you :length)
+        my-body (-> body-params :you :body)
+        my-head (-> body-params :you :head)
+        my-body-head (filterv #(not (= % my-head)) (butlast my-body))
+        snakes (other-snakes body-params)
+        projected-heads (into [] (apply concat
+                                        (mapv #(if (< (:length %) my-length)
+                                                 []
+                                                 (project-head % width height)) snakes)))
+        all-bodies (into [] (apply concat (mapv #(vec (butlast (:body %))) snakes)))]
+    (into [] (concat my-body-head projected-heads all-bodies))))
+
+(defn in?
+  "Returns true if elm part of coll"
+  [elm coll]
+  (some #(= elm %) coll))
+
+(defn filter-keys
+  "Returns a map with keys whose keys are not forbidden"
+  [m forbidden]
+  (let [str-forbidden (mapv #(c->n %) forbidden)]
+    (select-keys m (filterv #(not (in? % str-forbidden)) (keys m)))))
+
+(defn board->graph
   [body-params]
   (let [board (-> body-params :board)
-        width (-> board :width)
-        height (-> board :height)]
-    
-    
-    
-    )
-  )
+        w (-> board :width)
+        h (-> board :height)
+        m {}
+        snaky (snaky body-params)
+        whole-graph (into {} (for [x (range 0 w)
+                                   y (range 0 h)]
+                               (assoc m (c->n {:x x :y y}) (neighbours #(not (in? % snaky)) {:x x :y y} w h))))]
+    (filter-keys whole-graph snaky)
+    ))
+
+
+
+(def heuristic
+  (constantly 0))
+
+(defn cost
+  "For now all costs are one (not health, distance)"
+  [node node']
+  1)
+
