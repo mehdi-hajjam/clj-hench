@@ -137,19 +137,40 @@
 
 (defn sfp 
   "Shortest feasible path"
-  [snake end board hazards w h]
+  [snake end graph hazards w h]
   (let [ns (c->n (:head snake))
         ne (c->n end)
-        all-paths (a* board ns ne :heuristic #(d (n->c %1) (n->c %2) w h))
+        all-paths (a* graph ns ne :heuristic #(d (n->c %1) (n->c %2) w h))
         afp (filter #(reachable? snake % hazards) all-paths)]
     (first afp)))
 
 (defn lsfp
   "Length (or duration) of sfp"
-  [snake end board hazards w h]
-  (let [shortest (sfp snake end board hazards w h)]
+  [snake end graph hazards w h]
+  (let [shortest (sfp snake end graph hazards w h)]
     (cond
       (nil? shortest) 1000 ;if no path then say it's very large
       :else (count shortest))))
 
+(defn snakes-to-food
+  "Returns the min duration that a snake from a group of snakes take to get to this food"
+  [snakes f body-params]
+  (apply min (mapv #(lsfp % f (board->graph % body-params) (hazard body-params) (width body-params) (height body-params)) snakes)))
 
+
+;; TOO SLOW IF SOME FOOD CAN'T BE REACHED!
+(defn steps-to-food
+  "Returns a vector of first step of paths that lead to food I can eat first"
+  [body-params]
+  (let [food (food body-params)
+        snakes (other-snakes body-params)
+        me (-> body-params :you)
+        snakes-to-all-food (mapv #(snakes-to-food snakes % body-params) food)
+        my-graph (board->graph me body-params)
+        my-best-path-to-all-food (map #(sfp me % my-graph (hazard body-params) (width body-params) (height body-params)) food)]
+    (println "staf: " snakes-to-all-food)
+    (println "mbptaf: " my-best-path-to-all-food)
+    #_(into [] (remove nil? 
+                  (map #(if (<= (count %1) %2) (n->c (first %1)))
+                      my-best-path-to-all-food
+                      snakes-to-all-food)))))

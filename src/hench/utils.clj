@@ -13,6 +13,14 @@
   [c hazards]
   (some #(= c %) hazards))
 
+(defn width 
+  [body-params]
+  (-> body-params :board :width))
+
+(defn height
+  [body-params]
+  (-> body-params :board :height))
+
 (defn add
   "Vectorial addition"
   [c1 c2 w h]

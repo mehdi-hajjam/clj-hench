@@ -28,8 +28,7 @@
 
 (defn move-handler
   [req]
-  (let [body-params (:body-params req)
-        #_#_body-params (wrapped-mode b-p)]
+  (let [body-params (:body-params req)]
     {:body {:move (->> {:up 1 :down 1 :right 1 :left 1}
                        (begin-turn body-params)
                        (avoid-self-direct-hits body-params)
