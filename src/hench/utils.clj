@@ -412,3 +412,8 @@
       (some #(= (- w 1) (:x %)) b) (concatv (make-wall "right" h w))
       (some #(= 0 (:y %)) b) (concatv (make-wall "down" h w))
       (some #(= (- h 1) (:y %)) b) (concatv (make-wall "top" h w)))))
+
+(defn in?
+  "Returns true if elm part of coll"
+  [elm coll]
+  (some #(= elm %) coll))

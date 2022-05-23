@@ -55,7 +55,7 @@
 
 ;;transforms board into graph
 
-(defn c->n 
+(defn c->n
   "Coordinates to name"
   [{:keys [x y]}]
   (str x " " y))
@@ -92,11 +92,6 @@
         all-bodies (into [] (apply concat (mapv #(vec (butlast (:body %))) snakes)))]
     (into [] (concat my-body-head projected-heads all-bodies))))
 
-(defn in?
-  "Returns true if elm part of coll"
-  [elm coll]
-  (some #(= elm %) coll))
-
 (defn filter-keys
   "Returns a map with keys whose keys are not forbidden"
   [m forbidden]
@@ -113,16 +108,22 @@
         whole-graph (into {} (for [x (range 0 w)
                                    y (range 0 h)]
                                (assoc m (c->n {:x x :y y}) (neighbours #(not (in? % snaky)) {:x x :y y} w h))))]
-    (filter-keys whole-graph snaky)
-    ))
+    (filter-keys whole-graph snaky)))
 
+;;
+; Path related calculations
+;;
 
+(defn uhcost
+  "Returns the unitary health cost of a step in a path"
+  [hazards c]
+  (cond
+    (in? (n->c c) hazards) 15 ;as per https://blog.battlesnake.com/updates-to-royale-mode-and/
+    :else 1))
 
-(def heuristic
-  (constantly 0))
+(defn hcost
+  "Returns the health cost of a path"
+  [hazards path]
+  (reduce + (map #(uhcost hazards %) path)))
 
-(defn cost
-  "For now all costs are one (not health, distance)"
-  [node node']
-  1)
 
