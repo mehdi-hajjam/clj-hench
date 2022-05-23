@@ -145,6 +145,11 @@
     (first afp)))
 
 (defn lsfp
-  "Length or duration of sfp"
+  "Length (or duration) of sfp"
   [snake end board hazards w h]
-  (count (sfp snake end board hazards w h)))
+  (let [shortest (sfp snake end board hazards w h)]
+    (cond
+      (nil? shortest) 1000 ;if no path then say it's very large
+      :else (count shortest))))
+
+

@@ -6,7 +6,8 @@
             [reitit.ring.middleware.muuntaja :as muuntaja]
             [mount.core :as mount]
             [hench.space :refer :all]
-            [hench.food :refer :all]))
+            [hench.food :refer :all]
+            [hench.shout :refer :all]))
 
 (defn get-battlesnake-handler
   "Customization, latency checks and ping"
@@ -42,7 +43,7 @@
                        (find-closest-free-case body-params)
                        (favour-straight-line body-params)
                        (choose-move body-params))
-            :shout "Omae wa mo shinde iru!"}}))
+            :shout (random-shout sfquotes)}}))
 
 (defn end-game-handler
   [req]

@@ -2614,3 +2614,35 @@ clj꞉hench.path꞉> 
 (lsfp (first (-> sample :board :snakes)) {:x 2 :y 7} (board->graph (first (-> sample :board :snakes)) sample) (-> sample :board :hazards) 11 11)
 8
 clj꞉hench.path꞉> 
+; Evaluating file: shout.clj
+#'hench.shout/random-shout
+clj꞉hench.shout꞉> 
+; Evaluating file: shout.clj
+#'hench.shout/random-shout
+clj꞉hench.shout꞉> (random-shout sfquotes)
+"Don't fight for victory--fight to improve yourself. Victory will come."
+clj꞉hench.shout꞉> 
+(random-shout sfquotes)
+"I am the man!"
+clj꞉hench.shout꞉> 
+(random-shout sfquotes)
+"I know you can do better! Get up and try again!"
+clj꞉hench.shout꞉> 
+(random-shout sfquotes)
+"In the heat of battle, the blood of the true fighter runs hot!"
+clj꞉hench.shout꞉> 
+(random-shout sfquotes)
+"I am the man!"
+clj꞉hench.shout꞉> 
+(random-shout sfquotes)
+"Omae wa mo... shinde iru!"
+clj꞉hench.shout꞉> 
+(random-shout sfquotes)
+"Shoryureppa...! Shinryuken...! Feel my burning vigor!"
+clj꞉hench.shout꞉> 
+(random-shout sfquotes)
+"If you want to be a true fighter... go home and train!"
+clj꞉hench.shout꞉> 
+(random-shout sfquotes)
+"Damn! You wrinkled my clothes!"
+clj꞉hench.shout꞉> 
