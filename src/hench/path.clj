@@ -116,14 +116,35 @@
 
 (defn uhcost
   "Returns the unitary health cost of a step in a path"
-  [hazards c]
+  [c hazards]
   (cond
     (in? (n->c c) hazards) 15 ;as per https://blog.battlesnake.com/updates-to-royale-mode-and/
     :else 1))
 
 (defn hcost
   "Returns the health cost of a path"
-  [hazards path]
-  (reduce + (map #(uhcost hazards %) path)))
+  [path hazards]
+  (reduce + (map #(uhcost % hazards) path)))
 
+(defn reachable?
+  "Returns the length (nb of steps) of fastest feasible path for snake"
+  [snake path hazards]
+  (let [h (:health snake)
+        c (hcost path hazards)]
+    (cond 
+      (>= h c) (count path)
+      :else false)))
 
+(defn sfp 
+  "Shortest feasible path"
+  [snake end board hazards w h]
+  (let [ns (c->n (:head snake))
+        ne (c->n end)
+        all-paths (a* board ns ne :heuristic #(d (n->c %1) (n->c %2) w h))
+        afp (filter #(reachable? snake % hazards) all-paths)]
+    (first afp)))
+
+(defn lsfp
+  "Length or duration of sfp"
+  [snake end board hazards w h]
+  (count (sfp snake end board hazards w h)))
