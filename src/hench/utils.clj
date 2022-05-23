@@ -40,11 +40,15 @@
 
 (defn other-snakes
   "Returns only the other snakes (I shouldn't project my own head!)"
-  [body-params]
-  (let [snakes (-> body-params :board :snakes)
-        me (-> body-params :you)
-        myID (:id me)]
-    (filterv #(not= myID (:id %)) snakes)))
+  ([body-params]
+   (let [snakes (-> body-params :board :snakes)
+         me (-> body-params :you)
+         myID (:id me)]
+     (filterv #(not= myID (:id %)) snakes)))
+  ([snake body-params]
+   (let [snakes (-> body-params :board :snakes)
+         sID (:id snake)]
+     (filterv #(not= sID (:id %)) snakes))))
 
 (defn multiply-points
   "Creates the points' doppelgangers in all 4 directions"

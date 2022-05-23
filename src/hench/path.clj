@@ -75,22 +75,22 @@
                                           (add c {:x 0 :y -1} w h)]))))
 
 (defn snaky
-  "all snakes but my head and all tails"
-  [body-params]
+  "all snakes but snake's head and all tails"
+  [snake body-params]
   (let [board (:board body-params)
         width (:width board)
         height (:height board)
-        my-length (-> body-params :you :length)
-        my-body (-> body-params :you :body)
-        my-head (-> body-params :you :head)
-        my-body-head (filterv #(not (= % my-head)) (butlast my-body))
-        snakes (other-snakes body-params)
+        s-length (-> snake :length)
+        s-body (-> snake :body)
+        s-head (-> snake :head)
+        s-body-head (filterv #(not (= % s-head)) (butlast s-body))
+        snakes (other-snakes snake body-params)
         projected-heads (into [] (apply concat
-                                        (mapv #(if (< (:length %) my-length)
+                                        (mapv #(if (< (:length %) s-length)
                                                  []
                                                  (project-head % width height)) snakes)))
         all-bodies (into [] (apply concat (mapv #(vec (butlast (:body %))) snakes)))]
-    (into [] (concat my-body-head projected-heads all-bodies))))
+    (into [] (concat s-body-head projected-heads all-bodies))))
 
 (defn filter-keys
   "Returns a map with keys whose keys are not forbidden"
@@ -99,12 +99,12 @@
     (select-keys m (filterv #(not (in? % str-forbidden)) (keys m)))))
 
 (defn board->graph
-  [body-params]
+  [snake body-params]
   (let [board (-> body-params :board)
         w (-> board :width)
         h (-> board :height)
         m {}
-        snaky (snaky body-params)
+        snaky (snaky snake body-params)
         whole-graph (into {} (for [x (range 0 w)
                                    y (range 0 h)]
                                (assoc m (c->n {:x x :y y}) (neighbours #(not (in? % snaky)) {:x x :y y} w h))))]
