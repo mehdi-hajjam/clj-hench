@@ -168,7 +168,7 @@
    This one sort of works, but fails to capture the smallest possible surface containing all points
    because I only consider min and max, whereas if I add a diagonal point, it should sometimes act as the max...
    see (convex-hull [{:x 0 :y 0} {:x 2 :y 2} {:x 10 :y 10}]) for instance..."
-  [v]
+  [v w h]
   (let [xmin (apply min (mapv #(:x %) v))
         ymin (apply min (mapv #(:y %) v))
         xmax (apply max (mapv #(:x %) v))
@@ -176,19 +176,19 @@
         ;direct x and direct y
         s1 (vec (for [x (vec (range xmin (+ xmax 1)))
                       y (vec (range ymin (+ ymax 1)))]
-                  {:x (mod x 11) :y (mod y 11)}))
+                  {:x (mod x w) :y (mod y h)}))
         ;direct x and indirect y
         s2 (vec (for [x (vec (range xmin (+ xmax 1)))
-                      y (vec (range ymax (+ ymin 11 1)))]
-                  {:x (mod x 11) :y (mod y 11)}))
+                      y (vec (range ymax (+ ymin h 1)))]
+                  {:x (mod x w) :y (mod y h)}))
         ;indirect x and direct y
-        s3 (vec (for [x (vec (range xmax (+ xmin 11 1)))
+        s3 (vec (for [x (vec (range xmax (+ xmin w 1)))
                       y (vec (range ymin (+ ymax 1)))]
-                  {:x (mod x 11) :y (mod y 11)}))
+                  {:x (mod x w) :y (mod y h)}))
         ;indirect x and indirect y
-        s4 (vec (for [x (vec (range xmax (+ xmin 11 1)))
-                      y (vec (range ymax (+ ymin 11 1)))]
-                  {:x (mod x 11) :y (mod y 11)}))]
+        s4 (vec (for [x (vec (range xmax (+ xmin w 1)))
+                      y (vec (range ymax (+ ymin h 1)))]
+                  {:x (mod x w) :y (mod y h)}))]
     (first (sort-by count (filterv #(included? v %) [s1 s2 s3 s4])))))
 
 (defn d
@@ -320,7 +320,7 @@
   [s c hazards w h]
   (let [head (-> s :head)
         hazards+body (vec (concat hazards (vec (rest (:body s)))))
-        chull (convex-hull [head c])
+        chull (convex-hull [head c] w h)
         min-in-x (min-hazard-in-x chull hazards+body)
         min-in-y (min-hazard-in-y chull hazards+body)
         max-in-x (max-hazard-in-x chull hazards+body)

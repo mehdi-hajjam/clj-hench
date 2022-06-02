@@ -3,8 +3,8 @@
 
 (defn visible?
   "Returns true if food is visible from head"
-  [head obstacles food]
-  (let [chull (convex-hull [head food])
+  [head obstacles food w h]
+  (let [chull (convex-hull [head food] w h)
         intersection (into [] (clojure.set/intersection
                                (set chull)
                                (set obstacles)))]
@@ -26,7 +26,7 @@
   [body-params s other-snakes hazards food]
   (let [w (-> body-params :board :width)
         h (-> body-params :board :height)
-        can-see (filterv #(visible? (:head %) (obstacles body-params %) food) other-snakes)
+        can-see (filterv #(visible? (:head %) (obstacles body-params %) food w h) other-snakes)
         can-access (filterv #(accessible? % hazards food w h) can-see)
         distances (mapv #(sd % food w h) can-access)
         my-distance (sd s food w h)]
@@ -48,7 +48,7 @@
         obstacles (obstacles body-params s)
         other-snakes (other-snakes body-params)
         v&a (vec (->> foods
-                      (filterv #(visible? head obstacles %))
+                      (filterv #(visible? head obstacles % w h))
                       (filterv #(accessible? s hazards % w h))
                       (sort-by #(sd s % w h))))
         v&a&c (vec (->> v&a
@@ -81,7 +81,7 @@
           (<= my-length (+ 1 (apply max snakes-length))))
       (let [food (first foods)
             head (-> body-params :you :head)
-            chull (convex-hull [head food])]
+            chull (convex-hull [head food] w h)]
         (probabilise-movements head chull 10 moves w h))
       :else moves)))
 
@@ -135,6 +135,6 @@
       (or (> 63 my-health) ;I am hungry
           (<= my-length (+ 1 (apply max snakes-length))) ;hungry coz not large enough
           (hazard? head hazards)) ;My head is on hazards
-      (let [chull (convex-hull [head target])]
+      (let [chull (convex-hull [head target] w h)]
         (probabilise-movements head chull 3 moves w h))
       :else moves)))

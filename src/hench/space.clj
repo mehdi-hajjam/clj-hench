@@ -611,38 +611,7 @@
             hborder (ext-hazard-border body-params)
             free-hborder (filterv #(not-obstacle? % obstacles) hborder)
             closest-free-cell (first (sort-by #(sd me % w h) free-hborder))
-            chull (convex-hull [head closest-free-cell])]
+            chull (convex-hull [head closest-free-cell] w h)]
         (probabilise-movements head chull 1.55 moves w h)))))
 
-#_(defn find-closest-free-case
-  "Favours the chull of [head closest-free-case]"
-  [body-params moves]
-  (println "FIND-CLOSEST-FREE-CASE")
-  (let [me (-> body-params :you)
-        body (-> me :body)
-        head (-> me :head)
-        hazards (hazard body-params)
-        all-obst (all-obstacles body-params me)]
-    (loop [body body #_(vec (rest body)) ; that changes because now head can enter the sauce and still be next to the exit
-           ]
-      (cond
-        (not (hazard? head hazards)) moves
-        (= [] body) moves
-        (= [] (free-cases (first body) all-obst hazards)) (recur (vec (rest body)))
-        :else (let [f (first (free-cases (first body) all-obst hazards))
-                    chull (convex-hull [head f])]
-                (probabilise-movements head chull 1.55 moves))))))
 
-(defn wrapped-mode
-  "Duplicates the board on each side of the initial board, but not any head. 
-   They are duplicated directly in the projected-head fn"
-  [body-params]
-  (let [board (:board body-params)
-        width (:width board)
-        height (:height board)]
-    (-> body-params
-        (assoc-in [:you :ndbody] (-> body-params :you :body))
-        (update-in [:board :food] #(wrap-multiply % width height))
-        (update-in [:board :hazards] #(wrap-multiply % width height))
-        (update-in [:you :body] #(wrap-multiply % width height))
-        (update-in [:board :snakes] #(update-snakes % width height)))))
