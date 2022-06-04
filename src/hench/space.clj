@@ -142,6 +142,7 @@
           fmoves (filter-map moves max)]
       (random-move fmoves))))
 
+; Could use anticipating what happens if I eat food - if it happens that I collide with myself in those corner cases
 (defn avoid-self-direct-hits
   "Avoids colliding with itself on the next move"
   [body-params moves]
@@ -151,8 +152,9 @@
         board (:board body-params)
         width (:width board)
         height (:height board)]
-    (probabilise-movements head body #_(wrap-multiply body width height) 0 moves width height)))
+    (probabilise-movements head body 0 moves width height)))
 
+; Same comment as above on the corner cases of food just eaten by opposing snake
 (defn avoid-other-snakes
   "Avoids direct hits with other snakes"
   [body-params moves]
@@ -284,7 +286,7 @@
        (bounded-in-y? c obstacles)))
 
 (defn avoid-hazards
-  "Avoids hazards as much as it makes sense"
+  "Avoids hazards at all cost (now hazards are 100 damage, not 14 anymore)"
   [body-params moves]
   (println "AVOID HAZARDS")
   (let [hazards (-> body-params :board :hazards)
@@ -292,9 +294,7 @@
         head (-> body-params :you :head)
         w (-> body-params :board :width)
         h (-> body-params :board :height)]
-    (cond
-      (> 75.0 health) (probabilise-movements head hazards 0.66 moves w h)
-      :else (probabilise-movements head hazards 0.5 moves w h))))
+    (probabilise-movements head hazards 0 moves w h)))
 
 (defn diagonal?
   "Returns true if c1 and c2 are touching diagonally"
@@ -385,6 +385,7 @@
         tail (last (:body me))]
     (some #(close? % tail) surface)))
 
+; I can't use it now as I have to be able to follow snakes sometimes!
 (defn avoid-small-surfaces
   "Avoids surfaces smaller than snake (don't put 0 as it still is better than a wall!)"
   [body-params moves]

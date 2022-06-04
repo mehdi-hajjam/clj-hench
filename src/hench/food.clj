@@ -62,6 +62,7 @@
       (= [] v&a&c) v&a
       :else v&a&c)))
 
+; needs a rewrite
 (defn eat
   "Drives the snake to eat"
   [body-params moves]

@@ -31,16 +31,10 @@
   (let [body-params (:body-params req)]
     {:body {:move (->> {:up 1 :down 1 :right 1 :left 1}
                        (begin-turn body-params)
-                       (avoid-self-direct-hits body-params)
-                       (avoid-other-snakes body-params)
-                       (avoid-hazards body-params)
-                       (avoid-small-surfaces body-params) ;if you add it back you need to add a non nil all-walls to all-obstacles for some reasons, maybe caused by surface.
-                       (eat body-params)
-                       (favor-less-sauce body-params)
-                       #_(follow-tail body-params) ;I don't want to follow tail anymore, not useful I think
-                       #_(optionality body-params) ;Good base idea but not that way here
-                       (find-closest-free-case body-params)
-                       (favour-straight-line body-params)
+                       (avoid-hazards body-params) ; OK - means avoid walls really
+                       (avoid-self-direct-hits body-params) ; OK
+                       (avoid-other-snakes body-params) ; OK             
+                       (eat body-params) ; needs a rewrite
                        (choose-move body-params))
             :shout (random-shout sfquotes)}}))
 
