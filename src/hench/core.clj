@@ -7,6 +7,7 @@
             [mount.core :as mount]
             [hench.space :refer :all]
             [hench.food :refer :all]
+            [hench.path :refer :all]
             [hench.shout :refer :all]))
 
 (defn get-battlesnake-handler
@@ -28,7 +29,8 @@
 
 (defn move-handler
   [req]
-  (let [body-params (:body-params req)]
+  (let [body-params (:body-params req)
+        base-graph (create-base-graph body-params)]
     {:body {:move (->> {:up 1 :down 1 :right 1 :left 1}
                        (begin-turn body-params)
                        (avoid-hazards body-params) ; OK - means avoid walls really

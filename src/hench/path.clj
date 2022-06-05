@@ -109,7 +109,7 @@
 ; Trying ubergraph
 ;;
 
-(defn massoc 
+(defn massoc
   "Assoc all elements of n(eighbours) to p(oint) in v(ector)"
   [v p n]
   (loop [n n
@@ -146,10 +146,19 @@
   ; ==> it seems using a heuristic is detrimental here!!!
   )
 
+(defn create-base-graph
+  [body-params]
+  (board->ubergraph {:body []} body-params))
+
+(defn remove-point-from-graph
+  "Removes all vectors containing p either first or second"
+  [p vv]
+  (filterv #(not (in? (c->n p) %)) vv))
+
 (defn asp
   "All shortest paths from p"
-  [snake body-params]
-  (let [g (apply uber/graph (board->ubergraph snake body-params))
+  [snake base-graph body-params]
+  (let [g (apply uber/graph (remove-point-from-graph (second (:body snake)) base-graph))
         w (-> body-params :board :width)
         h (-> body-params :board :height)
         head (:head snake)]
@@ -158,11 +167,10 @@
 
 (comment
   (time (asp (:you am-sample) am-sample))
-"Elapsed time: 36.792916 msecs"
+  "Elapsed time: 36.792916 msecs"
   ; of which building the ubergraph is longest!
   (time (apply uber/graph (board->ubergraph (:you am-sample) am-sample)))
-"Elapsed time: 39.049167 msecs"
+  "Elapsed time: 39.049167 msecs"
+  (time (asp (:you am-sample) base-graph am-sample))
+"Elapsed time: 6.671958 msecs" ; much better with base graph out
   )
-
-;; todo: create board->ubergraph once and for all and add snake's neck only live!!!
-;; check how much faster it's getting
