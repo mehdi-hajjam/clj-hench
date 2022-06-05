@@ -8,7 +8,8 @@
             [hench.space :refer :all]
             [hench.food :refer :all]
             [hench.path :refer :all]
-            [hench.shout :refer :all]))
+            [hench.shout :refer :all]
+            [hench.samples :refer :all]))
 
 (defn get-battlesnake-handler
   "Customization, latency checks and ping"
@@ -27,10 +28,13 @@
   (clojure.pprint/pprint "A new game has started!")
   {:status 200 :body {}})
 
+; Created once and for all to avoid calculating during the game (not even once I think)
+(def base-graph (create-base-graph am-sample))
+
 (defn move-handler
   [req]
   (let [body-params (:body-params req)
-        base-graph (create-base-graph body-params)]
+        base-graph base-graph]
     {:body {:move (->> {:up 1 :down 1 :right 1 :left 1}
                        (begin-turn body-params)
                        (avoid-hazards body-params) ; OK - means avoid walls really
