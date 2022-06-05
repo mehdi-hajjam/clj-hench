@@ -159,8 +159,8 @@
   "All shortest paths from p"
   [snake base-graph body-params]
   (let [g (apply uber/graph (remove-point-from-graph (second (:body snake)) base-graph))
-        w (-> body-params :board :width)
-        h (-> body-params :board :height)
+        #_#_w (-> body-params :board :width)
+        #_#_h (-> body-params :board :height)
         head (:head snake)]
     (alg/shortest-path g {:start-node (c->n head)
                           #_#_:heuristic-fn #(d (n->c %) head w h)})))
@@ -172,5 +172,43 @@
   (time (apply uber/graph (board->ubergraph (:you am-sample) am-sample)))
   "Elapsed time: 39.049167 msecs"
   (time (asp (:you am-sample) base-graph am-sample))
-"Elapsed time: 6.671958 msecs" ; much better with base graph out
+  "Elapsed time: 6.671958 msecs" ; much better with base graph out
   )
+
+;;
+; Path validation
+;;
+
+; intersection detection
+
+(defn list-intersections
+  "Returns a list of all intersections encountered in path"
+  [path]
+  (filterv #(in? % am-intersections) path))
+
+; intersection validation
+
+(defn valid-intersection?
+  "Returns true if the intersection is safe for snake"
+  [i my-snake my-asp other-snakes other-asp]
+  (let [my-length (:length my-snake)
+        my-dist (count (alg/nodes-in-path (alg/path-to my-asp (c->n i))))]
+    (loop [s other-snakes
+           asps other-asp]
+      (let [his-dist (count (alg/nodes-in-path (alg/path-to (first asps) (c->n i))))]
+        (cond
+          (= s []) true ; si y a plus de serpents à valider c'est que je suis bon
+          (< my-dist his-dist) (recur (rest s)
+                                      (rest asps)) ; si j'arrive avant le serpent je peux recur
+          (and (> my-length (:length (first s)))
+               (> my-dist (+ his-dist (:length (first s))))) (recur (rest s)
+                                                                    (rest asps)) ; si j'arrive après la queue du serpent et il est plus petit, recur (pas besoin de refaire la comparaison des distances) 
+          :else false ; sinon j'arrive après la queue du serpent et il est plus grand donc pas safe
+          )))))
+
+
+; obstacle validation (snakes encountered in the path)
+
+
+
+; path validation using all three fns above

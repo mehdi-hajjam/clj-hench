@@ -9,7 +9,8 @@
             [hench.food :refer :all]
             [hench.path :refer :all]
             [hench.shout :refer :all]
-            [hench.samples :refer :all]))
+            [hench.samples :refer :all]
+            [hench.utils :refer :all]))
 
 (defn get-battlesnake-handler
   "Customization, latency checks and ping"
@@ -20,7 +21,7 @@
           :color "#61EB42"
           :head "evil"
           :tail "hook"
-          :version "0.0.1"}})
+          :version "0.2.0"}})
 
 (defn new-game-handler
   [req]
@@ -34,7 +35,10 @@
 (defn move-handler
   [req]
   (let [body-params (:body-params req)
-        base-graph base-graph]
+        base-graph base-graph
+        other-snakes (other-snakes body-params)
+        my-asp (asp (:you body-params) base-graph body-params)
+        other-asp (mapv #(asp % base-graph body-params) other-snakes)]
     {:body {:move (->> {:up 1 :down 1 :right 1 :left 1}
                        (begin-turn body-params)
                        (avoid-hazards body-params) ; OK - means avoid walls really
