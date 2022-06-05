@@ -4966,4 +4966,490 @@ clj꞉hench.path꞉> 
 clj꞉hench.path꞉> 
 ; Evaluating file: path.clj
 nil
+clj꞉hench.path꞉> (time (apply uber/graph (board->ubergraph snake body-params)))
+; Syntax error compiling at (.calva/output-window/output.calva-repl:4969:42).
+; Unable to resolve symbol: snake in this context
+clj꞉hench.path꞉> 
+(time (apply uber/graph (board->ubergraph (:you am-sample) am-sample)))
+"Elapsed time: 39.049167 msecs"
+{:node-map
+ {"6 5"
+  {:out-edges
+   {"7 5" #{{:id #uuid "480e7cdc-75f0-4fb2-adbd-fd6bc3c85318", :src "6 5", :dest "7 5", :mirror? false}},
+    "6 4" #{{:id #uuid "c99faa6f-578c-49de-b626-cdec975cc8be", :src "6 5", :dest "6 4", :mirror? false}},
+    "5 5" #{{:id #uuid "7e484d6f-e0c2-4e7c-b339-f70a53d669de", :src "6 5", :dest "5 5", :mirror? false}}},
+   :in-edges
+   {"7 5" #{{:id #uuid "480e7cdc-75f0-4fb2-adbd-fd6bc3c85318", :src "7 5", :dest "6 5", :mirror? true}},
+    "6 4" #{{:id #uuid "c99faa6f-578c-49de-b626-cdec975cc8be", :src "6 4", :dest "6 5", :mirror? true}},
+    "5 5" #{{:id #uuid "7e484d6f-e0c2-4e7c-b339-f70a53d669de", :src "5 5", :dest "6 5", :mirror? true}}},
+   :out-degree 3,
+   :in-degree 3},
+  "15 1"
+  {:out-edges
+   {"14 1" #{{:id #uuid "7dcecb59-77d5-41aa-9d54-f5b3c0c50850", :src "15 1", :dest "14 1", :mirror? false}},
+    "16 1" #{{:id #uuid "6280fced-2e56-4734-a846-4ecb4ef55817", :src "15 1", :dest "16 1", :mirror? false}}},
+   :in-edges
+   {"14 1" #{{:id #uuid "7dcecb59-77d5-41aa-9d54-f5b3c0c50850", :src "14 1", :dest "15 1", :mirror? true}},
+    "16 1" #{{:id #uuid "6280fced-2e56-4734-a846-4ecb4ef55817", :src "16 1", :dest "15 1", :mirror? true}}},
+   :out-degree 2,
+   :in-degree 2},
+  "3 19"
+  {:out-edges
+   {"4 19" #{{:id #uuid "19437b4b-a968-421b-95d4-4dae5d90556b", :src "3 19", :dest "4 19", :mirror? false}},
+    "2 19" #{{:id #uuid "958a67e8-b163-4910-b359-cbd20e6b3907", :src "3 19", :dest "2 19", :mirror? false}}},
+   :in-edges
+   {"4 19" #{{:id #uuid "19437b4b-a968-421b-95d4-4dae5d90556b", :src "4 19", :dest "3 19", :mirror? true}},
+    "2 19" #{{:id #uuid "958a67e8-b163-4910-b359-cbd20e6b3907", :src "2 19", :dest "3 19", :mirror? true}}},
+   :out-degree 2,
+   :in-degree 2},
+  "7 5"
+  {:out-edges
+   {"6 5" #{{:id #uuid "480e7cdc-75f0-4fb2-adbd-fd6bc3c85318", :src "7 5", :dest "6 5", :mirror? true}},
+    "8 5" #{{:id #uuid "54d38d9c-f66f-4cf3-b331-5168f2867604", :src "7 5", :dest "8 5", :mirror? false}}},
+   :in-edges
+   {"6 5" #{{:id #uuid "480e7cdc-75f0-4fb2-adbd-fd6bc3c85318", :src "6 5", :dest "7 5", :mirror? false}},
+    "8 5" #{{:id #uuid "54d38d9c-f66f-4cf3-b331-5168f2867604", :src "8 5", :dest "7 5", :mirror? true}}},
+   :out-degree 2,
+   :in-degree 2},
+  "13 5"
+  {:out-edges
+   {"14 5" #{{:id #uuid "6de1c999-445a-4303-81e3-ff53f41f467c", :src "13 5", :dest "14 5", :mirror? false}},
+    "12 5" #{{:id #uuid "78466a0a-bafa-4cdc-9dc1-8237eede5b3f", :src "13 5", :dest "12 5", :mirror? false}}},
+   :in-edges
+   {"14 5" #{{:id #uuid "6de1c999-445a-4303-81e3-ff53f41f467c", :src "14 5", :dest "13 5", :mirror? true}},
+    "12 5" #{{:id #uuid "78466a0a-bafa-4cdc-9dc1-8237eede5b3f", :src "12 5", :dest "13 5", :mirror? true}}},
+   :out-degree 2,
+   :in-degree 2},
+  "14 10"
+  {:out-edges
+   {"14 9" #{{:id #uuid "eab6e3ac-7b07-4037-a94a-dd8ee4fd57ee", :src "14 10", :dest "14 9", :mirror? false}},
+    "14 11" #{{:id #uuid "c09e0568-8643-4f7a-adcd-e568bcee31a9", :src "14 10", :dest "14 11", :mirror? false}}},
+   :in-edges
+   {"14 9" #{{:id #uuid "eab6e3ac-7b07-4037-a94a-dd8ee4fd57ee", :src "14 9", :dest "14 10", :mirror? true}},
+    "14 11" #{{:id #uuid "c09e0568-8643-4f7a-adcd-e568bcee31a9", :src "14 11", :dest "14 10", :mirror? true}}},
+   :out-degree 2,
+   :in-degree 2},
+  "16 3"
+  {:out-edges
+   {"15 3" #{{:id #uuid "86fc7d3c-ac53-490e-b4a9-13644b8c7985", :src "16 3", :dest "15 3", :mirror? false}},
+    "16 4" #{{:id #uuid "8921af76-84a3-40e2-a7dc-d6ab081d0848", :src "16 3", :dest "16 4", :mirror? false}},
+    "17 3" #{{:id #uuid "ac8e13fd-86e8-4a3a-9408-63c1e7495466", :src "16 3", :dest "17 3", :mirror? false}}},
+   :in-edges
+   {"15 3" #{{:id #uuid "86fc7d3c-ac53-490e-b4a9-13644b8c7985", :src "15 3", :dest "16 3", :mirror? true}},
+    "16 4" #{{:id #uuid "8921af76-84a3-40e2-a7dc-d6ab081d0848", :src "16 4", :dest "16 3", :mirror? true}},
+    "17 3" #{{:id #uuid "ac8e13fd-86e8-4a3a-9408-63c1e7495466", :src "17 3", :dest "16 3", :mirror? true}}},
+   :out-degree 3,
+   :in-degree 3},
+  "14 5"
+  {:out-edges
+   {"13 5" #{{:id #uuid "6de1c999-445a-4303-81e3-ff53f41f467c", :src "14 5", :dest "13 5", :mirror? true}},
+    "14 4" #{{:id #uuid "869b66d1-3b99-4fdc-a4c1-4dc4e227d686", :src "14 5", :dest "14 4", :mirror? false}},
+    "14 6" #{{:id #uuid "271e4949-1c1a-4fd6-a675-392ad20f5103", :src "14 5", :dest "14 6", :mirror? false}}},
+   :in-edges
+   {"13 5" #{{:id #uuid "6de1c999-445a-4303-81e3-ff53f41f467c", :src "13 5", :dest "14 5", :mirror? false}},
+    "14 4" #{{:id #uuid "869b66d1-3b99-4fdc-a4c1-4dc4e227d686", :src "14 4", :dest "14 5", :mirror? true}},
+    "14 6" #{{:id #uuid "271e4949-1c1a-4fd6-a675-392ad20f5103", :src "14 6", :dest "14 5", :mirror? true}}},
+   :out-degree 3,
+   :in-degree 3},
+  "14 8"
+  {:out-edges
+   {"14 9" #{{:id #uuid "34050402-0765-46e5-9882-a299341e6183", :src "14 8", :dest "14 9", :mirror? false}},
+    "14 7" #{{:id #uuid "4c3c6cd8-26a5-4a44-a60a-2643c7b5eecf", :src "14 8", :dest "14 7", :mirror? false}}},
+   :in-edges
+   {"14 9" #{{:id #uuid "34050402-0765-46e5-9882-a299341e6183", :src "14 9", :dest "14 8", :mirror? true}},
+    "14 7" #{{:id #uuid "4c3c6cd8-26a5-4a44-a60a-2643c7b5eecf", :src "14 7", :dest "14 8", :mirror? true}}},
+   :out-degree 2,
+   :in-degree 2},
+  "1 14"
+  {:out-edges
+   {"2 14" #{{:id #uuid "5a687a2d-9f9d-464c-ac5a-1796f45cc3d0", :src "1 14", :dest "2 14", :mirror? false}},
+    "1 13" #{{:id #uuid "583114f4-32c0-416b-ba05-4331069b412a", :src "1 14", :dest "1 13", :mirror? false}},
+    "1 15" #{{:id #uuid "ca6e0b82-802a-432b-83d3-73e56172665d", :src "1 14", :dest "1 15", :mirror? false}}},
+   :in-edges
+   {"2 14" #{{:id #uuid "5a687a2d-9f9d-464c-ac5a-1796f45cc3d0", :src "2 14", :dest "1 14", :mirror? true}},
+    "1 13" #{{:id #uuid "583114f4-32c0-416b-ba05-4331069b412a", :src "1 13", :dest "1 14", :mirror? true}},
+    "1 15" #{{:id #uuid "ca6e0b82-802a-432b-83d3-73e56172665d", :src "1 15", :dest "1 14", :mirror? true}}},
+   :out-degree 3,
+   :in-degree 3},
+  "7 19"
+  {:out-edges
+   {"6 19" #{{:id #uuid "75b7941f-6454-4341-9532-e88e4775183d", :src "7 19", :dest "6 19", :mirror? false}},
+    "8 19" #{{:id #uuid "e0f460ac-0e0b-4fde-bc2f-a8b87b3d662c", :src "7 19", :dest "8 19", :mirror? false}}},
+   :in-edges
+   {"6 19" #{{:id #uuid "75b7941f-6454-4341-9532-e88e4775183d", :src "6 19", :dest "7 19", :mirror? true}},
+    "8 19" #{{:id #uuid "e0f460ac-0e0b-4fde-bc2f-a8b87b3d662c", :src "8 19", :dest "7 19", :mirror? true}}},
+   :out-degree 2,
+   :in-degree 2},
+  "6 12"
+  {:out-edges
+   {"6 11" #{{:id #uuid "5feb72df-eb8b-4e2e-8a58-b81136da28a8", :src "6 12", :dest "6 11", :mirror? false}},
+    "6 13" #{{:id #uuid "c6033213-d224-4d71-9859-d03023891199", :src "6 12", :dest "6 13", :mirror? false}}},
+   :in-edges
+   {"6 11" #{{:id #uuid "5feb72df-eb8b-4e2e-8a58-b81136da28a8", :src "6 11", :dest "6 12", :mirror? true}},
+    "6 13" #{{:id #uuid "c6033213-d224-4d71-9859-d03023891199", :src "6 13", :dest "6 12", :mirror? true}}},
+   :out-degree 2,
+   :in-degree 2},
+  "1 17"
+  {:out-edges
+   {"1 18" #{{:id #uuid "19fc5338-a46c-4708-b0d3-a5d929cedcb1", :src "1 17", :dest "1 18", :mirror? false}},
+    "2 17" #{{:id #uuid "4dd3928c-e01f-46aa-8081-00c15adbbba5", :src "1 17", :dest "2 17", :mirror? false}},
+    "1 16" #{{:id #uuid "6e0a4943-46d9-498b-ab87-b8d5ac5e1336", :src "1 17", :dest "1 16", :mirror? false}}},
+   :in-edges
+   {"1 18" #{{:id #uuid "19fc5338-a46c-4708-b0d3-a5d929cedcb1", :src "1 18", :dest "1 17", :mirror? true}},
+    "2 17" #{{:id #uuid "4dd3928c-e01f-46aa-8081-00c15adbbba5", :src "2 17", :dest "1 17", :mirror? true}},
+    "1 16" #{{:id #uuid "6e0a4943-46d9-498b-ab87-b8d5ac5e1336", :src "1 16", :dest "1 17", :mirror? true}}},
+   :out-degree 3,
+   :in-degree 3},
+  "7 9"
+  {:out-edges
+   {"8 9" #{{:id #uuid "28656a31-6720-4c74-be3b-802407402751", :src "7 9", :dest "8 9", :mirror? false}},
+    "6 9" #{{:id #uuid "4cda58e4-bf41-4906-b1a2-4fdf831739bb", :src "7 9", :dest "6 9", :mirror? false}}},
+   :in-edges
+   {"8 9" #{{:id #uuid "28656a31-6720-4c74-be3b-802407402751", :src "8 9", :dest "7 9", :mirror? true}},
+    "6 9" #{{:id #uuid "4cda58e4-bf41-4906-b1a2-4fdf831739bb", :src "6 9", :dest "7 9", :mirror? true}}},
+   :out-degree 2,
+   :in-degree 2},
+  "1 2"
+  {:out-edges
+   {"1 3" #{{:id #uuid "57d0449d-3fac-4a2f-ad59-dea7234cdda2", :src "1 2", :dest "1 3", :mirror? false}},
+    "1 1" #{{:id #uuid "2d849262-7fc7-456a-b258-98a87ffb30b9", :src "1 2", :dest "1 1", :mirror? false}}},
+   :in-edges
+   {"1 3" #{{:id #uuid "57d0449d-3fac-4a2f-ad59-dea7234cdda2", :src "1 3", :dest "1 2", :mirror? true}},
+    "1 1" #{{:id #uuid "2d849262-7fc7-456a-b258-98a87ffb30b9", :src "1 1", :dest "1 2", :mirror? true}}},
+   :out-degree 2,
+   :in-degree 2},
+  "16 7"
+  {:out-edges
+   {"16 8" #{{:id #uuid "edc3722f-d162-4cda-90a3-46572e6bd39c", :src "16 7", :dest "16 8", :mirror? false}},
+    "17 7" #{{:id #uuid "bba8a34e-3043-4853-ad70-3b3166cc0348", :src "16 7", :dest "17 7", :mirror? false}},
+    "15 7" #{{:id #uuid "659d8a94-9b9d-4890-98f3-cfd46dd4384d", :src "16 7", :dest "15 7", :mirror? false}}},
+   :in-edges
+   {"16 8" #{{:id #uuid "edc3722f-d162-4cda-90a3-46572e6bd39c", :src "16 8", :dest "16 7", :mirror? true}},
+    "17 7" #{{:id #uuid "bba8a34e-3043-4853-ad70-3b3166cc0348", :src "17 7", :dest "16 7", :mirror? true}},
+    "15 7" #{{:id #uuid "659d8a94-9b9d-4890-98f3-cfd46dd4384d", :src "15 7", :dest "16 7", :mirror? true}}},
+   :out-degree 3,
+   :in-degree 3},
+  "8 7"
+  {:out-edges
+   {"7 7" #{{:id #uuid "99dc7547-0b8f-4542-8bfc-a4de46000f9a", :src "8 7", :dest "7 7", :mirror? false}},
+    "8 6" #{{:id #uuid "11d142be-c02b-4123-8a91-d731202cd530", :src "8 7", :dest "8 6", :mirror? false}}},
+   :in-edges
+   {"7 7" #{{:id #uuid "99dc7547-0b8f-4542-8bfc-a4de46000f9a", :src "7 7", :dest "8 7", :mirror? true}},
+    "8 6" #{{:id #uuid "11d142be-c02b-4123-8a91-d731202cd530", :src "8 6", :dest "8 7", :mirror? true}}},
+   :out-degree 2,
+   :in-degree 2},
+  "15 11"
+  {:out-edges
+   {"16 11" #{{:id #uuid "586de7dd-d88c-4e8d-a619-af5c6acb6560", :src "15 11", :dest "16 11", :mirror? false}},
+    "14 11" #{{:id #uuid "2bc775e4-2b09-4932-9fc5-b39a23a0336c", :src "15 11", :dest "14 11", :mirror? false}}},
+   :in-edges
+   {"16 11" #{{:id #uuid "586de7dd-d88c-4e8d-a619-af5c6acb6560", :src "16 11", :dest "15 11", :mirror? true}},
+    "14 11" #{{:id #uuid "2bc775e4-2b09-4932-9fc5-b39a23a0336c", :src "14 11", :dest "15 11", :mirror? true}}},
+   :out-degree 2,
+   :in-degree 2},
+  "12 12"
+  {:out-edges
+   {"12 11" #{{:id #uuid "c5471466-a041-4dd2-8bee-bf99c58fcd26", :src "12 12", :dest "12 11", :mirror? false}},
+    "12 13" #{{:id #uuid "498830a6-9abb-43f8-8208-942e589e27da", :src "12 12", :dest "12 13", :mirror? false}}},
+   :in-edges
+   {"12 11" #{{:id #uuid "c5471466-a041-4dd2-8bee-bf99c58fcd26", :src "12 11", :dest "12 12", :mirror? true}},
+    "12 13" #{{:id #uuid "498830a6-9abb-43f8-8208-942e589e27da", :src "12 13", :dest "12 12", :mirror? true}}},
+   :out-degree 2,
+   :in-degree 2},
+  "10 15"
+  {:out-edges
+   {"11 15" #{{:id #uuid "1667b406-f9ca-44d1-b758-4da53536b186", :src "10 15", :dest "11 15", :mirror? false}},
+    "10 14" #{{:id #uuid "95267fe9-74ee-4af7-9085-0f2d88dd86e2", :src "10 15", :dest "10 14", :mirror? false}}},
+   :in-edges
+   {"11 15" #{{:id #uuid "1667b406-f9ca-44d1-b758-4da53536b186", :src "11 15", :dest "10 15", :mirror? true}},
+    "10 14" #{{:id #uuid "95267fe9-74ee-4af7-9085-0f2d88dd86e2", :src "10 14", :dest "10 15", :mirror? true}}},
+   :out-degree 2,
+   :in-degree 2},
+  "4 18"
+  {:out-edges
+   {"4 19" #{{:id #uuid "bf4372e9-b600-4745-bcaa-5c817976b928", :src "4 18", :dest "4 19", :mirror? false}},
+    "4 17" #{{:id #uuid "3500ac77-c3a0-431e-ac27-5ec9dd8c53fd", :src "4 18", :dest "4 17", :mirror? false}}},
+   :in-edges
+   {"4 19" #{{:id #uuid "bf4372e9-b600-4745-bcaa-5c817976b928", :src "4 19", :dest "4 18", :mirror? true}},
+    "4 17" #{{:id #uuid "3500ac77-c3a0-431e-ac27-5ec9dd8c53fd", :src "4 17", :dest "4 18", :mirror? true}}},
+   :out-degree 2,
+   :in-degree 2},
+  "8 10"
+  {:out-edges
+   {"8 9" #{{:id #uuid "ccf95214-5d79-4f39-a3df-51fc7050dc7f", :src "8 10", :dest "8 9", :mirror? false}},
+    "8 11" #{{:id #uuid "1c514992-7d76-445c-89ef-076631e3a0c9", :src "8 10", :dest "8 11", :mirror? false}}},
+   :in-edges
+   {"8 9" #{{:id #uuid "ccf95214-5d79-4f39-a3df-51fc7050dc7f", :src "8 9", :dest "8 10", :mirror? true}},
+    "8 11" #{{:id #uuid "1c514992-7d76-445c-89ef-076631e3a0c9", :src "8 11", :dest "8 10", :mirror? true}}},
+   :out-degree 2,
+   :in-degree 2},
+  "16 8"
+  {:out-edges
+   {"16 7" #{{:id #uuid "edc3722f-d162-4cda-90a3-46572e6bd39c", :src "16 8", :dest "16 7", :mirror? true}},
+    "17 8" #{{:id #uuid "480375c6-3c1b-410c-8e0e-b1c13d864d90", :src "16 8", :dest "17 8", :mirror? false}},
+    "16 9" #{{:id #uuid "60783afd-f05f-4cd9-a5ce-f962cc6a3261", :src "16 8", :dest "16 9", :mirror? false}}},
+   :in-edges
+   {"16 7" #{{:id #uuid "edc3722f-d162-4cda-90a3-46572e6bd39c", :src "16 7", :dest "16 8", :mirror? false}},
+    "17 8" #{{:id #uuid "480375c6-3c1b-410c-8e0e-b1c13d864d90", :src "17 8", :dest "16 8", :mirror? true}},
+    "16 9" #{{:id #uuid "60783afd-f05f-4cd9-a5ce-f962cc6a3261", :src "16 9", :dest "16 8", :mirror? true}}},
+   :out-degree 3,
+   :in-degree 3},
+  "15 3"
+  {:out-edges
+   {"16 3" #{{:id #uuid "86fc7d3c-ac53-490e-b4a9-13644b8c7985", :src "15 3", :dest "16 3", :mirror? true}},
+    "14 3" #{{:id #uuid "88ffce56-fe80-4d3d-9e23-4602a05bef76", :src "15 3", :dest "14 3", :mirror? false}}},
+   :in-edges
+   {"16 3" #{{:id #uuid "86fc7d3c-ac53-490e-b4a9-13644b8c7985", :src "16 3", :dest "15 3", :mirror? false}},
+    "14 3" #{{:id #uuid "88ffce56-fe80-4d3d-9e23-4602a05bef76", :src "14 3", :dest "15 3", :mirror? true}}},
+   :out-degree 2,
+   :in-degree 2},
+  "2 11"
+  {:out-edges
+   {"3 11" #{{:id #uuid "65dc99af-d1c5-4a74-b0aa-f21eccd88da2", :src "2 11", :dest "3 11", :mirror? false}},
+    "1 11" #{{:id #uuid "799ddac3-9f56-4e5d-89c4-f3b4963c7860", :src "2 11", :dest "1 11", :mirror? false}}},
+   :in-edges
+   {"3 11" #{{:id #uuid "65dc99af-d1c5-4a74-b0aa-f21eccd88da2", :src "3 11", :dest "2 11", :mirror? true}},
+    "1 11" #{{:id #uuid "799ddac3-9f56-4e5d-89c4-f3b4963c7860", :src "1 11", :dest "2 11", :mirror? true}}},
+   :out-degree 2,
+   :in-degree 2},
+  "11 17"
+  {:out-edges
+   {"12 17" #{{:id #uuid "8c70d37e-6623-4b97-ab6c-c7b96b11cceb", :src "11 17", :dest "12 17", :mirror? false}},
+    "10 17" #{{:id #uuid "55ed8b29-de1e-4c03-ae45-cd7ab5a7f303", :src "11 17", :dest "10 17", :mirror? false}}},
+   :in-edges
+   {"12 17" #{{:id #uuid "8c70d37e-6623-4b97-ab6c-c7b96b11cceb", :src "12 17", :dest "11 17", :mirror? true}},
+    "10 17" #{{:id #uuid "55ed8b29-de1e-4c03-ae45-cd7ab5a7f303", :src "10 17", :dest "11 17", :mirror? true}}},
+   :out-degree 2,
+   :in-degree 2},
+  "7 15"
+  {:out-edges
+   {"6 15" #{{:id #uuid "0ca08655-0a85-4418-82ef-91d87b8ed6d5", :src "7 15", :dest "6 15", :mirror? false}},
+    "8 15" #{{:id #uuid "409ad482-22d6-4c52-ba32-453d93a18d53", :src "7 15", :dest "8 15", :mirror? false}}},
+   :in-edges
+   {"6 15" #{{:id #uuid "0ca08655-0a85-4418-82ef-91d87b8ed6d5", :src "6 15", :dest "7 15", :mirror? true}},
+    "8 15" #{{:id #uuid "409ad482-22d6-4c52-ba32-453d93a18d53", :src "8 15", :dest "7 15", :mirror? true}}},
+   :out-degree 2,
+   :in-degree 2},
+  "3 3"
+  {:out-edges
+   {"4 3" #{{:id #uuid "41a118b9-e6a9-40cb-9e98-dd8c931f3b62", :src "3 3", :dest "4 3", :mirror? false}},
+    "2 3" #{{:id #uuid "4ceac065-16b0-48fc-bb35-eb12ac5ab080", :src "3 3", :dest "2 3", :mirror? false}}},
+   :in-edges
+   {"4 3" #{{:id #uuid "41a118b9-e6a9-40cb-9e98-dd8c931f3b62", :src "4 3", :dest "3 3", :mirror? true}},
+    "2 3" #{{:id #uuid "4ceac065-16b0-48fc-bb35-eb12ac5ab080", :src "2 3", :dest "3 3", :mirror? true}}},
+   :out-degree 2,
+   :in-degree 2},
+  "17 20"
+  {:out-edges
+   {"17 0" #{{:id #uuid "af6b184a-c968-4b12-9086-75a6c3d3db53", :src "17 20", :dest "17 0", :mirror? false}},
+    "17 19" #{{:id #uuid "43873efa-10c2-45d6-9345-39ecd423ac11", :src "17 20", :dest "17 19", :mirror? false}}},
+   :in-edges
+   {"17 0" #{{:id #uuid "af6b184a-c968-4b12-9086-75a6c3d3db53", :src "17 0", :dest "17 20", :mirror? true}},
+    "17 19" #{{:id #uuid "43873efa-10c2-45d6-9345-39ecd423ac11", :src "17 19", :dest "17 20", :mirror? true}}},
+   :out-degree 2,
+   :in-degree 2},
+  "16 11"
+  {:out-edges
+   {"15 11" #{{:id #uuid "586de7dd-d88c-4e8d-a619-af5c6acb6560", :src "16 11", :dest "15 11", :mirror? true}},
+    "17 11" #{{:id #uuid "1c98fce9-5e6d-4c7f-bba4-3bd04ef73953", :src "16 11", :dest "17 11", :mirror? false}}},
+   :in-edges
+   {"15 11" #{{:id #uuid "586de7dd-d88c-4e8d-a619-af5c6acb6560", :src "15 11", :dest "16 11", :mirror? false}},
+    "17 11" #{{:id #uuid "1c98fce9-5e6d-4c7f-bba4-3bd04ef73953", :src "17 11", :dest "16 11", :mirror? true}}},
+   :out-degree 2,
+   :in-degree 2},
+  "3 15"
+  {:out-edges
+   {"4 15" #{{:id #uuid "e3e29de0-f92c-41f6-bc9a-ab39523c4c9f", :src "3 15", :dest "4 15", :mirror? false}},
+    "2 15" #{{:id #uuid "6352ce6f-3733-4a5b-9655-3b1486d2a64d", :src "3 15", :dest "2 15", :mirror? false}}},
+   :in-edges
+   {"4 15" #{{:id #uuid "e3e29de0-f92c-41f6-bc9a-ab39523c4c9f", :src "4 15", :dest "3 15", :mirror? true}},
+    "2 15" #{{:id #uuid "6352ce6f-3733-4a5b-9655-3b1486d2a64d", :src "2 15", :dest "3 15", :mirror? true}}},
+   :out-degree 2,
+   :in-degree 2},
+  "16 13"
+  {:out-edges
+   {"17 13" #{{:id #uuid "e994c937-722e-4b9e-afd1-a8cc1802e8f8", :src "16 13", :dest "17 13", :mirror? false}},
+    "16 14" #{{:id #uuid "646d4dec-5aa0-45c3-b666-33a1b6c82370", :src "16 13", :dest "16 14", :mirror? false}}},
+   :in-edges
+   {"17 13" #{{:id #uuid "e994c937-722e-4b9e-afd1-a8cc1802e8f8", :src "17 13", :dest "16 13", :mirror? true}},
+    "16 14" #{{:id #uuid "646d4dec-5aa0-45c3-b666-33a1b6c82370", :src "16 14", :dest "16 13", :mirror? true}}},
+   :out-degree 2,
+   :in-degree 2},
+  "12 10"
+  {:out-edges
+   {"12 11" #{{:id #uuid "8a4f59a0-dd73-48b2-b4a8-65a1f7e96822", :src "12 10", :dest "12 11", :mirror? false}},
+    "12 9" #{{:id #uuid "81859bff-c91c-4334-9ef5-70e18781ceb0", :src "12 10", :dest "12 9", :mirror? false}}},
+   :in-edges
+   {"12 11" #{{:id #uuid "8a4f59a0-dd73-48b2-b4a8-65a1f7e96822", :src "12 11", :dest "12 10", :mirror? true}},
+    "12 9" #{{:id #uuid "81859bff-c91c-4334-9ef5-70e18781ceb0", :src "12 9", :dest "12 10", :mirror? true}}},
+   :out-degree 2,
+   :in-degree 2},
+  "12 15"
+  {:out-edges
+   {"11 15" #{{:id #uuid "0d43700e-63e0-4aac-90c8-0cb999c39e87", :src "12 15", :dest "11 15", :mirror? false}},
+    "12 16" #{{:id #uuid "1d22249f-bccb-421f-b24e-d39dbaf09e4e", :src "12 15", :dest "12 16", :mirror? false}}},
+   :in-edges
+   {"11 15" #{{:id #uuid "0d43700e-63e0-4aac-90c8-0cb999c39e87", :src "11 15", :dest "12 15", :mirror? true}},
+    "12 16" #{{:id #uuid "1d22249f-bccb-421f-b24e-d39dbaf09e4e", :src "12 16", :dest "12 15", :mirror? true}}},
+   :out-degree 2,
+   :in-degree 2},
+  "5 11"
+  {:out-edges
+   {"6 11" #{{:id #uuid "0575fa85-1341-410e-8252-3ede7c55fb00", :src "5 11", :dest "6 11", :mirror? false}},
+    "4 11" #{{:id #uuid "485ebf44-97dd-4b46-9d54-83f8cfadfdba", :src "5 11", :dest "4 11", :mirror? false}}},
+   :in-edges
+   {"6 11" #{{:id #uuid "0575fa85-1341-410e-8252-3ede7c55fb00", :src "6 11", :dest "5 11", :mirror? true}},
+    "4 11" #{{:id #uuid "485ebf44-97dd-4b46-9d54-83f8cfadfdba", :src "4 11", :dest "5 11", :mirror? true}}},
+   :out-degree 2,
+   :in-degree 2},
+  "9 13"
+  {:out-edges
+   {"10 13" #{{:id #uuid "caaea09a-9d5c-4042-a819-1f5754874f75", :src "9 13", :dest "10 13", :mirror? false}},
+    "8 13" #{{:id #uuid "2e87f2c9-ba88-4be1-8a46-6eb1a089b716", :src "9 13", :dest "8 13", :mirror? false}}},
+   :in-edges
+   {"10 13" #{{:id #uuid "caaea09a-9d5c-4042-a819-1f5754874f75", :src "10 13", :dest "9 13", :mirror? true}},
+    "8 13" #{{:id #uuid "2e87f2c9-ba88-4be1-8a46-6eb1a089b716", :src "8 13", :dest "9 13", :mirror? true}}},
+   :out-degree 2,
+   :in-degree 2},
+  "14 14"
+  {:out-edges
+   {"14 15" #{{:id #uuid "84677727-26f1-4ba0-a188-94d02e3999bf", :src "14 14", :dest "14 15", :mirror? false}},
+    "14 13" #{{:id #uuid "d3c613df-a5e0-489d-abf7-3dd6e4987b81", :src "14 14", :dest "14 13", :mirror? false}}},
+   :in-edges
+   {"14 15" #{{:id #uuid "84677727-26f1-4ba0-a188-94d02e3999bf", :src "14 15", :dest "14 14", :mirror? true}},
+    "14 13" #{{:id #uuid "d3c613df-a5e0-489d-abf7-3dd6e4987b81", :src "14 13", :dest "14 14", :mirror? true}}},
+   :out-degree 2,
+   :in-degree 2},
+  "10 13"
+  {:out-edges
+   {"9 13" #{{:id #uuid "caaea09a-9d5c-4042-a819-1f5754874f75", :src "10 13", :dest "9 13", :mirror? true}},
+    "10 14" #{{:id #uuid "64a8929f-8583-4951-a873-54144afb4814", :src "10 13", :dest "10 14", :mirror? false}},
+    "11 13" #{{:id #uuid "a1a014c8-68e8-434b-b117-bad4cdc90dc2", :src "10 13", :dest "11 13", :mirror? false}},
+    "10 12" #{{:id #uuid "e0e77c29-5cfc-4c01-ae54-13fd2cb7b1c2", :src "10 13", :dest "10 12", :mirror? false}}},
+   :in-edges
+   {"9 13" #{{:id #uuid "caaea09a-9d5c-4042-a819-1f5754874f75", :src "9 13", :dest "10 13", :mirror? false}},
+    "10 14" #{{:id #uuid "64a8929f-8583-4951-a873-54144afb4814", :src "10 14", :dest "10 13", :mirror? true}},
+    "11 13" #{{:id #uuid "a1a014c8-68e8-434b-b117-bad4cdc90dc2", :src "11 13", :dest "10 13", :mirror? true}},
+    "10 12" #{{:id #uuid "e0e77c29-5cfc-4c01-ae54-13fd2cb7b1c2", :src "10 12", :dest "10 13", :mirror? true}}},
+   :out-degree 4,
+   :in-degree 4},
+  "1 0"
+  {:out-edges
+   {"1 1" #{{:id #uuid "cc812dd1-35f6-4f7d-a729-0ec2343ce152", :src "1 0", :dest "1 1", :mirror? false}},
+    "1 20" #{{:id #uuid "1ffa7bef-44ed-48b3-897b-1ed140e43e39", :src "1 0", :dest "1 20", :mirror? false}}},
+   :in-edges
+   {"1 1" #{{:id #uuid "cc812dd1-35f6-4f7d-a729-0ec2343ce152", :src "1 1", :dest "1 0", :mirror? true}},
+    "1 20" #{{:id #uuid "1ffa7bef-44ed-48b3-897b-1ed140e43e39", :src "1 20", :dest "1 0", :mirror? true}}},
+   :out-degree 2,
+   :in-degree 2},
+  "10 11"
+  {:out-edges
+   {"9 11" #{{:id #uuid "7f3eddde-c5f8-4dd5-b677-7956b477d705", :src "10 11", :dest "9 11", :mirror? false}},
+    "10 10" #{{:id #uuid "d4204c4f-d70e-4a4b-bb02-6f2f5aaeacc8", :src "10 11", :dest "10 10", :mirror? false}},
+    "10 12" #{{:id #uuid "9ff6e659-011a-4972-9d5e-6d2e6525df97", :src "10 11", :dest "10 12", :mirror? false}}},
+   :in-edges
+   {"9 11" #{{:id #uuid "7f3eddde-c5f8-4dd5-b677-7956b477d705", :src "9 11", :dest "10 11", :mirror? true}},
+    "10 10" #{{:id #uuid "d4204c4f-d70e-4a4b-bb02-6f2f5aaeacc8", :src "10 10", :dest "10 11", :mirror? true}},
+    "10 12" #{{:id #uuid "9ff6e659-011a-4972-9d5e-6d2e6525df97", :src "10 12", :dest "10 11", :mirror? true}}},
+   :out-degree 3,
+   :in-degree 3},
+  "17 0"
+  {:out-edges
+   {"17 20" #{{:id #uuid "af6b184a-c968-4b12-9086-75a6c3d3db53", :src "17 0", :dest "17 20", :mirror? true}},
+    "17 1" #{{:id #uuid "3c3de00c-a81a-4d89-99ce-f78d5dd51f3b", :src "17 0", :dest "17 1", :mirror? false}}},
+   :in-edges
+   {"17 20" #{{:id #uuid "af6b184a-c968-4b12-9086-75a6c3d3db53", :src "17 20", :dest "17 0", :mirror? false}},
+    "17 1" #{{:id #uuid "3c3de00c-a81a-4d89-99ce-f78d5dd51f3b", :src "17 1", :dest "17 0", :mirror? true}}},
+   :out-degree 2,
+   :in-degree 2},
+  "11 7"
+  {:out-edges
+   {"10 7" #{{:id #uuid "5f5454d6-23d2-4cb7-9769-57e8bba4c94b", :src "11 7", :dest "10 7", :mirror? false}},
+    "12 7" #{{:id #uuid "709c7cfa-a772-474d-b0c6-8d3c1e0da489", :src "11 7", :dest "12 7", :mirror? false}}},
+   :in-edges
+   {"10 7" #{{:id #uuid "5f5454d6-23d2-4cb7-9769-57e8bba4c94b", :src "10 7", :dest "11 7", :mirror? true}},
+    "12 7" #{{:id #uuid "709c7cfa-a772-474d-b0c6-8d3c1e0da489", :src "12 7", :dest "11 7", :mirror? true}}},
+   :out-degree 2,
+   :in-degree 2},
+  "7 1"
+  {:out-edges
+   {"6 1" #{{:id #uuid "d262c31b-68cc-453c-8153-2a8c3439c266", :src "7 1", :dest "6 1", :mirror? false}},
+    "8 1" #{{:id #uuid "6c309fc8-d463-432b-a2bf-a8e7dd83476c", :src "7 1", :dest "8 1", :mirror? false}}},
+   :in-edges
+   {"6 1" #{{:id #uuid "d262c31b-68cc-453c-8153-2a8c3439c266", :src "6 1", :dest "7 1", :mirror? true}},
+    "8 1" #{{:id #uuid "6c309fc8-d463-432b-a2bf-a8e7dd83476c", :src "8 1", :dest "7 1", :mirror? true}}},
+   :out-degree 2,
+   :in-degree 2},
+  "14 9"
+  {:out-edges
+   {"14 10" #{{:id #uuid "eab6e3ac-7b07-4037-a94a-dd8ee4fd57ee", :src "14 9", :dest "14 10", :mirror? true}},
+    "14 8" #{{:id #uuid "34050402-0765-46e5-9882-a299341e6183", :src "14 9", :dest "14 8", :mirror? true}}},
+   :in-edges
+   {"14 10" #{{:id #uuid "eab6e3ac-7b07-4037-a94a-dd8ee4fd57ee", :src "14 10", :dest "14 9", :mirror? false}},
+    "14 8" #{{:id #uuid "34050402-0765-46e5-9882-a299341e6183", :src "14 8", :dest "14 9", :mirror? false}}},
+   :out-degree 2,
+   :in-degree 2},
+  "9 11"
+  {:out-edges
+   {"10 11" #{{:id #uuid "7f3eddde-c5f8-4dd5-b677-7956b477d705", :src "9 11", :dest "10 11", :mirror? true}},
+    "8 11" #{{:id #uuid "d38970e4-13ab-4c7b-9d47-3ecb56612a45", :src "9 11", :dest "8 11", :mirror? false}}},
+   :in-edges
+   {"10 11" #{{:id #uuid "7f3eddde-c5f8-4dd5-b677-7956b477d705", :src "10 11", :dest "9 11", :mirror? false}},
+    "8 11" #{{:id #uuid "d38970e4-13ab-4c7b-9d47-3ecb56612a45", :src "8 11", :dest "9 11", :mirror? true}}},
+   :out-degree 2,
+   :in-degree 2},
+  "12 1"
+  {:out-edges
+   {"13 1" #{{:id #uuid "947ac1cd-4030-45b2-bc6c-e9b9be297c67", :src "12 1", :dest "13 1", :mirror? false}},
+    "11 1" #{{:id #uuid "cf1be7e9-1350-4dcc-a52a-030d5cb5d08e", :src "12 1", :dest "11 1", :mirror? false}}},
+   :in-edges
+   {"13 1" #{{:id #uuid "947ac1cd-4030-45b2-bc6c-e9b9be297c67", :src "13 1", :dest "12 1", :mirror? true}},
+    "11 1" #{{:id #uuid "cf1be7e9-1350-4dcc-a52a-030d5cb5d08e", :src "11 1", :dest "12 1", :mirror? true}}},
+   :out-degree 2,
+   :in-degree 2},
+  "11 15"
+  {:out-edges
+   {"10 15" #{{:id #uuid "1667b406-f9ca-44d1-b758-4da53536b186", :src "11 15", :dest "10 15", :mirror? true}},
+    "12 15" #{{:id #uuid "0d43700e-63e0-4aac-90c8-0cb999c39e87", :src "11 15", :dest "12 15", :mirror? true}}},
+   :in-edges
+   {"10 15" #{{:id #uuid "1667b406-f9ca-44d1-b758-4da53536b186", :src "10 15", :dest "11 15", :mirror? false}},
+    "12 15" #{{:id #uuid "0d43700e-63e0-4aac-90c8-0cb999c39e87", :src "12 15", :dest "11 15", :mirror? false}}},
+   :out-degree 2,
+   :in-degree 2},
+  "16 15"
+  {:out-edges
+   {"15 15" #{{:id #uuid "cba4dd76-bed7-446d-9afe-0ba41d332554", :src "16 15", :dest "15 15", :mirror? false}},
+    "17 15" #{{:id #uuid "b3f1dcd4-a164-4d77-9391-81737a476c43", :src "16 15", :dest "17 15", :mirror? false}},
+    "16 14" #{{:id #uuid "29a946bb-e498-41fa-921a-95dfb271f4ad", :src "16 15", :dest "16 14", :mirror? false}}},
+   :in-edges
+   {"15 15" #{{:id #uuid "cba4dd76-bed7-446d-9afe-0ba41d332554", :src "15 15", :dest "16 15", :mirror? true}},
+    "17 15" #{{:id #uuid "b3f1dcd4-a164-4d77-9391-81737a476c43", :src "17 15", :dest "16 15", :mirror? true}},
+    "16 14" #{{:id #uuid "29a946bb-e498-41fa-921a-95dfb271f4ad", :src "16 14", :dest "16 15", :mirror? true}}},
+   :out-degree 3,
+   :in-degree 3},
+  "17 7"
+  {:out-edges
+   {"16 7" #{{:id #uuid "bba8a34e-3043-4853-ad70-3b3166cc0348", :src "17 7", :dest "16 7", :mirror? true}},
+    "17 6" #{{:id #uuid "4bf7a9c2-6813-4442-a686-7d018298cdc6", :src "17 7", :dest "17 6", :mirror? false}},
+    "17 8" #{{:id #uuid "0d864351-5c0a-4ed6-90f3-3f5f1882f637", :src "17 7", :dest "17 8", :mirror? false}}},
+   :in-edges
+   {"16 7" #{{:id #uuid "bba8a34e-3043-4853-ad70-3b3166cc0348", :src "16 7", :dest "17 7", :mirror? false}},
+    "17 6" #{{:id #uuid "4bf7a9c2-6813-4442-a686-7d018298cdc6", :src "17 6", :dest "17 7", :mirror? true}},
+    "17 8" #{{:id #uuid "0d864351-5c0a-4ed6-90f3-3f5f1882f637", :src "17 8", :dest "17 7", :mirror? true}}},
+   :out-degree 3,
+   :in-degree 3},
+  "6 4"
+  {:out-edges
+   {"6 5" #{{:id #uuid "c99faa6f-578c-49de-b626-cdec975cc8be", :src "6 4", :dest "6 5", :mirror? true}},
+    "6 3" #{{:id #uuid "f40bd8af-68a5-4b6c-a979-0d35d68c50dd", :src "6 4", :dest "6 3", :mirror? false}}},
+   :in-edges
+   {"6 5" #{{:id #uuid "c99faa6f-578c-49de-b626-cdec975cc8be", :src "6 5", :dest "6 4", :mirror? false}},
+    "6 3" #{{:id #uuid "f40bd8af-68a5-4b6c-a979-0d35d68c50dd", :src "6 3", :dest "6 4", :mirror? true}}},
+   :out-degree 2,
+   :in-degree 2},
+  ...},
+ :allow-parallel? false,
+ :undirected? true,
+ :attrs {},
+ :cached-hash #<Atom@14b8c539: -1>}
 clj꞉hench.path꞉> 

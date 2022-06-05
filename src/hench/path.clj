@@ -159,4 +159,10 @@
 (comment
   (time (asp (:you am-sample) am-sample))
 "Elapsed time: 36.792916 msecs"
+  ; of which building the ubergraph is longest!
+  (time (apply uber/graph (board->ubergraph (:you am-sample) am-sample)))
+"Elapsed time: 39.049167 msecs"
   )
+
+;; todo: create board->ubergraph once and for all and add snake's neck only live!!!
+;; check how much faster it's getting
