@@ -141,4 +141,22 @@
   ;without end node, gives recipe for whole board
   (def outof21 (alg/shortest-path g {:start-node "2 1"}))
   (alg/nodes-in-path (alg/path-to outof21 "9 11"))
+  (time (def outof21 (alg/shortest-path g {:start-node "2 1"}))) ; "Elapsed time: 1.687958 msecs"
+  (time (def outof21h (alg/shortest-path g {:start-node "2 1" :heuristic-fn #(d (n->c %) {:x 2 :y 1} 19 21)}))) ; "Elapsed time: 27.21775 msecs"
+  ; ==> it seems using a heuristic is detrimental here!!!
+  )
+
+(defn asp
+  "All shortest paths from p"
+  [snake body-params]
+  (let [g (apply uber/graph (board->ubergraph snake body-params))
+        w (-> body-params :board :width)
+        h (-> body-params :board :height)
+        head (:head snake)]
+    (alg/shortest-path g {:start-node (c->n head)
+                          #_#_:heuristic-fn #(d (n->c %) head w h)})))
+
+(comment
+  (time (asp (:you am-sample) am-sample))
+"Elapsed time: 36.792916 msecs"
   )
