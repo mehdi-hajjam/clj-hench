@@ -1,57 +1,8 @@
 (ns hench.path
-  (:require [hench.utils :refer :all]))
-
-;; from https://matthewdowney.github.io/astar-in-clojure-find-k-shortest-paths.html
-(declare a*-seq, next-a*-path, unseen?, step-factory, rpath, cmp-step)
-
-(defn a*
-  "A sequence of paths from `src` to `dest`, shortest first, within the supplied `graph`.
-  If the graph is weighted, supply a `distance` function. To make use of A*, supply a 
-  heuristic function. Otherwise performs like Dijkstra's algorithm."
-  [graph src dest & {:keys [distance heuristic]}]
-  (let [init-adjacent (sorted-set-by cmp-step {:node src :cost 0 :entered 0})]
-    (a*-seq graph dest init-adjacent
-            (or distance (constantly 1))
-            (or heuristic (constantly 0)))))
-
-(defn a*-seq
-  "Construct a lazy sequence of calls to `next-a*-path`, returning the shortest path first."
-  [graph dest adjacent distance heuristic]
-  (lazy-seq
-   (when-let [[path, adjacent'] (next-a*-path graph dest adjacent distance heuristic)]
-     (cons path (a*-seq graph dest adjacent' distance heuristic)))))
-
-(defn next-a*-path [graph dest adjacent f-cost f-heur]
-  (when-let [{:keys [node] :as current} (first adjacent)]
-    (let [path (rpath current)
-          adjacent' (disj adjacent current)] ;; "pop" the current node
-      (if (= node dest)
-        [(reverse path), adjacent']
-        (let [last-idx (or (:entered (last adjacent')) 0)
-              factory (step-factory current last-idx f-cost f-heur dest)
-              xform (comp (filter (partial unseen? path)) (map-indexed factory))
-              adjacent'' (into adjacent' xform (get graph node))]
-          (recur graph dest adjacent'' f-cost f-heur))))))
-
-(defn unseen? [path node]
-  (not-any? #{node} path))
-
-(defn step-factory [parent last-insertion cost heur dest]
-  (fn [insertion-idx node]
-    {:parent parent
-     :node node
-     :entered (+ last-insertion (inc insertion-idx))
-     :cost (+ (:cost parent) (cost (:node parent) node) (heur node dest))}))
-
-(defn rpath [{:keys [node parent]}]
-  (lazy-seq
-   (cons node (when parent (rpath parent)))))
-
-(defn cmp-step [step-a step-b]
-  (let [cmp (compare (:cost step-a) (:cost step-b))]
-    (if (zero? cmp)
-      (compare (:entered step-a) (:entered step-b))
-      cmp)))
+  (:require [hench.utils :refer :all]
+            [hench.samples :refer :all]
+            [ubergraph.core :as uber]
+            [ubergraph.alg :as alg]))
 
 ;;transforms board into graph
 
@@ -98,79 +49,96 @@
   (let [str-forbidden (mapv #(c->n %) forbidden)]
     (select-keys m (filterv #(not (in? % str-forbidden)) (keys m)))))
 
-(defn board->graph
+;;
+; Intersections
+;; 
+
+;; Should be a function later to adapt to any map
+;; An intersection is a point that has strictly more than 2 neighbours that are not hazards
+;; but that def doesn't work for groups of free cases (comme en y 8 x 1 par exemple)
+
+(def am-intersections
+  [{:x 1 :y 1}
+   {:x 8 :y 1}
+   {:x 10 :y 1}
+   {:x 17 :y 1}
+   {:x 2 :y 3}
+   {:x 16 :y 3}
+   {:x 4 :y 5}
+   {:x 6 :y 5}
+   {:x 8 :y 5}
+   {:x 10 :y 5}
+   {:x 12 :y 5}
+   {:x 14 :y 5}
+   {:x 1 :y 7}
+   {:x 4 :y 7}
+   {:x 6 :y 7}
+   {:x 12 :y 7}
+   {:x 14 :y 7}
+   {:x 17 :y 7}
+   {:x 6 :y 9}
+   {:x 8 :y 9}
+   {:x 10 :y 9}
+   {:x 12 :y 9}
+   {:x 4 :y 11}
+   {:x 6 :y 11}
+   {:x 8 :y 11}
+   {:x 10 :y 11}
+   {:x 12 :y 11}
+   {:x 14 :y 11}
+   {:x 8 :y 13}
+   {:x 10 :y 13}
+   {:x 1 :y 15}
+   {:x 4 :y 15}
+   {:x 14 :y 15}
+   {:x 17 :y 15}
+   {:x 1 :y 17}
+   {:x 4 :y 17}
+   {:x 6 :y 17}
+   {:x 8 :y 17}
+   {:x 10 :y 17}
+   {:x 12 :y 17}
+   {:x 14 :y 17}
+   {:x 17 :y 17}
+   {:x 1 :y 19}
+   {:x 4 :y 19}
+   {:x 14 :y 19}
+   {:x 17 :y 19}])
+
+;;
+; Trying ubergraph
+;;
+
+(defn massoc 
+  "Assoc all elements of n(eighbours) to p(oint) in v(ector)"
+  [v p n]
+  (loop [n n
+         res v]
+    (cond
+      (= n []) res
+      :else (recur (rest n)
+                   (into res [[p (first n)]])))))
+
+(defn board->ubergraph
   [snake body-params]
   (let [board (-> body-params :board)
         w (-> board :width)
         h (-> board :height)
         m {}
-        snaky (snaky snake body-params)
+        hazards (-> board :hazards)
+        neck (neck (-> snake :body))
+        forbidden (into hazards [neck])
         whole-graph (into {} (for [x (range 0 w)
                                    y (range 0 h)]
-                               (assoc m (c->n {:x x :y y}) (neighbours #(not (in? % snaky)) {:x x :y y} w h))))]
-    (filter-keys whole-graph snaky)))
+                               (let [n (neighbours #(not (in? % forbidden)) {:x x :y y} w h)]
+                                 (assoc m (c->n {:x x :y y}) (massoc [] (c->n {:x x :y y}) n)))))
+        whole-map (filter-keys whole-graph forbidden)]
+    (into [] (apply concat (vals whole-map)))))
 
-;;
-; Path related calculations
-;;
-
-(defn uhcost
-  "Returns the unitary health cost of a step in a path"
-  [c hazards]
-  (cond
-    (in? (n->c c) hazards) 15 ;as per https://blog.battlesnake.com/updates-to-royale-mode-and/
-    :else 1))
-
-(defn hcost
-  "Returns the health cost of a path"
-  [path hazards]
-  (reduce + (map #(uhcost % hazards) path)))
-
-(defn reachable?
-  "Returns the length (nb of steps) of fastest feasible path for snake"
-  [snake path hazards]
-  (let [h (:health snake)
-        c (hcost path hazards)]
-    (cond 
-      (>= h c) (count path)
-      :else false)))
-
-(defn sfp 
-  "Shortest feasible path"
-  [snake end graph hazards w h]
-  (let [ns (c->n (:head snake))
-        ne (c->n end)
-        all-paths (a* graph ns ne :heuristic #(d (n->c %1) (n->c %2) w h))
-        afp (filter #(reachable? snake % hazards) all-paths)]
-    (first afp)))
-
-(defn lsfp
-  "Length (or duration) of sfp"
-  [snake end graph hazards w h]
-  (let [shortest (sfp snake end graph hazards w h)]
-    (cond
-      (nil? shortest) 1000 ;if no path then say it's very large
-      :else (count shortest))))
-
-(defn snakes-to-food
-  "Returns the min duration that a snake from a group of snakes take to get to this food"
-  [snakes f body-params]
-  (apply min (mapv #(lsfp % f (board->graph % body-params) (hazard body-params) (width body-params) (height body-params)) snakes)))
-
-
-;; TOO SLOW IF SOME FOOD CAN'T BE REACHED!
-(defn steps-to-food
-  "Returns a vector of first step of paths that lead to food I can eat first"
-  [body-params]
-  (let [food (food body-params)
-        snakes (other-snakes body-params)
-        me (-> body-params :you)
-        snakes-to-all-food (mapv #(snakes-to-food snakes % body-params) food)
-        my-graph (board->graph me body-params)
-        my-best-path-to-all-food (map #(sfp me % my-graph (hazard body-params) (width body-params) (height body-params)) food)]
-    (println "staf: " snakes-to-all-food)
-    (println "mbptaf: " my-best-path-to-all-food)
-    #_(into [] (remove nil? 
-                  (map #(if (<= (count %1) %2) (n->c (first %1)))
-                      my-best-path-to-all-food
-                      snakes-to-all-food)))))
+(comment
+  (def g (apply uber/graph (board->ubergraph (:you am-sample) am-sample)))
+  (uber/pprint g)
+  ;without end node, gives recipe for whole board
+  (def outof21 (alg/shortest-path g {:start-node "2 1"}))
+  (alg/nodes-in-path (alg/path-to outof21 "9 11"))
+  )
