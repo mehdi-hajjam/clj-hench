@@ -184,7 +184,7 @@
 (defn list-intersections
   "Returns a list of all intersections encountered in path"
   [path]
-  (filterv #(in? % am-intersections) path))
+  (filterv #(in? (n->c %) am-intersections) path))
 
 ; intersection validation
 
@@ -203,12 +203,35 @@
           (and (> my-length (:length (first s)))
                (> my-dist (+ his-dist (:length (first s))))) (recur (rest s)
                                                                     (rest asps)) ; si j'arrive après la queue du serpent et il est plus petit, recur (pas besoin de refaire la comparaison des distances) 
-          :else false ; sinon j'arrive après la queue du serpent et il est plus grand donc pas safe
+          :else false ; sinon j'arrive sur le corps d'un serpent plus petit ou il est plus grand donc pas safe
           )))))
 
 
 ; obstacle validation (snakes encountered in the path)
 
+(defn reverse-index
+  "Returns the index of point p in snake s in reverse, e.g. tail is index 0 in the snake"
+  [p snake]
+  (let [his-body (:body snake)]
+    (.indexOf his-body p)))
+
+(defn index-in-path
+  [p path]
+  (.indexOf path p))
+
+(defn detect-first-encounters
+  "Hmm not sure how to deal with first encounters"
+  [path other-snakes])
+
+; si c'est sa tête et qu'il est plus petit que moi c'est ok
+; si c'est sa queue c'est toujours ok et ça peut être mergé dans la condition en dessous
+; si l’indice dans son corps à l’envers de sa case que je rencontre est plus petit ou égal à l’indice de cette rencontre dans mon path c'est bon
+; sinon c'est pas bon
+(defn non-lethal?
+  "Returns true if obstacle (first encounter with a part of a snake) is safe (will have disappeared by then), false otherwise")
 
 
 ; path validation using all three fns above
+; must apply to all intersections in path, and all first obstacles in path
+;; remember to always convert path back into coordinates with a mapv #(n->c %) call
+;; "x y" should only be an interface format as much as possible
