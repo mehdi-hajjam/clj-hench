@@ -213,25 +213,65 @@
   "Returns the index of point p in snake s in reverse, e.g. tail is index 0 in the snake"
   [p snake]
   (let [his-body (:body snake)]
-    (.indexOf his-body p)))
+    (.indexOf (reverse his-body) p)))
 
 (defn index-in-path
   [p path]
   (.indexOf path p))
 
-(defn detect-first-encounters
-  "Hmm not sure how to deal with first encounters"
-  [path other-snakes])
+(defn encounters?
+  "Returns false if no encounter, first point of encounter otherwise.
+   Beware, (rest path) only should be considered as my head will be there when I am the other-snake for myself otherwise"
+  [path other-snake]
+  (let [rpath (rest path)
+        common (into [] (clojure.set/intersection (set rpath) (set (:body other-snake))))]
+    (cond
+      (= [] common) false
+      :else (let [indexes (mapv #(.indexOf rpath %) common)
+                  minval (apply min indexes)]
+              {:e (nth path minval) :snake other-snake}))))
 
-; si c'est sa tête et qu'il est plus petit que moi c'est ok
-; si c'est sa queue c'est toujours ok et ça peut être mergé dans la condition en dessous
-; si l’indice dans son corps à l’envers de sa case que je rencontre est plus petit ou égal à l’indice de cette rencontre dans mon path c'est bon
-; sinon c'est pas bon
+(defn list-encounters
+  "Returns the list of encounters, even with my self, hence all-snakes and not other-snakes"
+  [path all-snakes]
+  (filterv true? (mapv #(encounters? path %) all-snakes)))
+
 (defn non-lethal?
-  "Returns true if obstacle (first encounter with a part of a snake) is safe (will have disappeared by then), false otherwise")
+  "Returns true if obstacle (first encounter with a part of a snake) is safe (will have disappeared by then), false otherwise"
+  [e path my-snake other-snake]
+  (cond
+    ; si c'est sa tête et qu'il est plus petit que moi c'est ok
+    (and (= (:head other-snake) e)
+         (< (:length other-snake) (:length my-snake))) true
+    ; si c'est sa tête et qu'il est plus grand ou égal à moi c'est mort (le cas égal est débattable)
+    (and (= (:head other-snake) e)
+         (>= (:length other-snake) (:length my-snake))) false
+    ; si l’indice dans son corps à l’envers de sa case que je rencontre est plus petit ou égal à l’indice de cette rencontre dans mon path c'est bon
+    (<= (reverse-index e other-snake) (index-in-path e (rest path))) true
+    :else false))
 
+;BE CAREFUL IF I DON'T GET A VECTOR OF 1 OTHER SNAKE I COULD RUN INTO TYPE ISSUES, getting one element instead of a vector of 1 element
+(defn list-of-lethal-encounters
+  "Returns the list of lethal encounters"
+  [path my-snake other-snakes]
+  (let [enc-list (list-encounters path (conj other-snakes my-snake))
+        leth-enc-list (mapv #(non-lethal? (:e %) path my-snake (:snake %)) enc-list)]
+    (filterv false? leth-enc-list)))
 
 ; path validation using all three fns above
 ; must apply to all intersections in path, and all first obstacles in path
 ;; remember to always convert path back into coordinates with a mapv #(n->c %) call
 ;; "x y" should only be an interface format as much as possible
+
+(defn valid?
+  "Returns true if a path is valid, false otherwise"
+  [path my-snake my-asp other-snakes other-asp]
+  (let [rpath (rest path)
+        int-list (list-intersections rpath)]
+    (cond
+      ; if even one intersection is invalid, return false
+      (some false? (mapv #(valid-intersection? % my-snake my-asp other-snakes other-asp) int-list)) false
+      ; if some encounters are lethal, return false
+      (not= [] (list-of-lethal-encounters path my-snake other-snakes)) false
+      :else true)))
+
