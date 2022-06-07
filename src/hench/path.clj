@@ -105,6 +105,12 @@
    {:x 14 :y 19}
    {:x 17 :y 19}])
 
+; used to derive which intersection after the food should be free for a path to food to be valid
+(def food-intersections
+  {"3 11" [{:x 4 :y 11} {:x 14 :y 11}]
+   "9 11" [{:x 8 :y 11} {:x 10 :y 11}]
+   "15 11" [{:x 4 :y 11} {:x 14 :y 11 }]})
+
 ;;
 ; Trying ubergraph
 ;;
@@ -275,3 +281,15 @@
       (not= [] (list-of-lethal-encounters path my-snake other-snakes)) false
       :else true)))
 
+; coder que pour un path to food l'intersection après food doit être valide ET le path to food valide
+
+
+; The further away from some food seem to be 23.
+; A sensible first approach would be to prioritize food when we go below 3 times that amount
+; in health (69) or we are not the largest one
+; Then if these are met or there is no food available and there are more than 1 remaining opponent, try and see if center can be hugged
+; If there is only one opponent remaining and health is ok try to kill the remaining opponent
+; Else try and find one intersection I can safely go to and aim for it
+
+(defn strategize
+  [])
