@@ -354,9 +354,47 @@
         ints (filterv #(in? % am-intersections) cpath)]
     (cond
       (= ints []) (println "ERROR in next-int - cpath doesn't contain any intersection from am-intersections")
-      :else (first ints))))
+      :else {:intersection (first ints) :turns (.indexOf cpath (first ints)) :slength (:length snake)})))
 
-(defn killables)
+(defn in-window?
+  "Returns true if [path-length;path-length + my-length] contains a value of (:turns intersection)"
+  [my-length path intersection]
+  (cond
+    (> my-length (:slength intersection)) (and (<= (- (count path) 1) (:turns intersection)) ;I am there first or at same time as opponent
+                                               (>= (+ (- (count path) 1) my-length) (:turns intersection)) ;my tail is there after or same time as him
+                                               )
+    :else (and (< (- (count path) 1) (:turns intersection)) ;I am there strictly first
+               (>= (+ (- (count path) 1) my-length) (:turns intersection)) ;my tail is there after or same time as him
+               )))
+
+(comment
+  clj꞉hench.path꞉>  (in-window? 4 [0 1 2 3 4] {:turns 3 :slength 5})
+false
+clj꞉hench.path꞉> 
+(in-window? 4 [0 1 2 3 4] {:turns 4 :slength 5})
+false
+clj꞉hench.path꞉> 
+(in-window? 4 [0 1 2 3 4] {:turns 5 :slength 5})
+true
+clj꞉hench.path꞉> 
+(in-window? 4 [0 1 2 3 4] {:turns 8 :slength 5})
+true
+clj꞉hench.path꞉> 
+(in-window? 4 [0 1 2 3 4] {:turns 9 :slength 5})
+false
+  )
+
+(defn killables
+  "Returns the path to the closest killable snake"
+  [my-snake my-asp other-snakes other-asp]
+  (let [targets (not-at-xroads other-snakes)]
+    (cond
+      (= targets []) []
+      :else (let [indexes (mapv #(.indexOf other-snakes %) targets)
+                  their-asp (mapv #(nth other-asp %) indexes)
+                  ints (mapv #(next-int % targets their-asp) targets)
+                  my-npaths-to-ints (mapv #(alg/nodes-in-path (alg/path-to my-asp (c->n (:intersection %)))) ints)]
+              (shortest (filterv true? (mapv #(in-window? (:length my-snake) %1 %2) my-npaths-to-ints ints)))))))
 
 
 ; Remember the first elem of a path is where my head is I think!!!!!!!

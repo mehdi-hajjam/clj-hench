@@ -5770,4 +5770,36 @@ clj꞉hench.path꞉> (into am-intersections [{:x 9 :y 11}])
  {:x 14, :y 19}
  {:x 17, :y 19}
  {:x 9, :y 11}]
+clj꞉hench.path꞉> (shortest [])
+; Syntax error compiling at (.calva/output-window/output.calva-repl:5773:18).
+; Unable to resolve symbol: shortest in this context
+clj꞉hench.path꞉> 
+#'hench.utils/shortest
+clj꞉hench.utils꞉> (shortest[])
+; Execution error (ArityException) at hench.utils/shortest (REPL:448).
+; Wrong number of args (0) passed to: clojure.core/min
+clj꞉hench.utils꞉> 
+#'hench.utils/shortest
+clj꞉hench.utils꞉> 
+(shortest[])
+[]
+clj꞉hench.utils꞉> 
+(shortest [])
+[]
+clj꞉hench.utils꞉> 
+#'hench.path/in-window?
+clj꞉hench.path꞉> (in-window? 4 [0 1 2 3 4] {:turns 3 :slength 5})
+false
+clj꞉hench.path꞉> 
+(in-window? 4 [0 1 2 3 4] {:turns 4 :slength 5})
+false
+clj꞉hench.path꞉> 
+(in-window? 4 [0 1 2 3 4] {:turns 5 :slength 5})
+true
+clj꞉hench.path꞉> 
+(in-window? 4 [0 1 2 3 4] {:turns 8 :slength 5})
+true
+clj꞉hench.path꞉> 
+(in-window? 4 [0 1 2 3 4] {:turns 9 :slength 5})
+false
 clj꞉hench.path꞉> 

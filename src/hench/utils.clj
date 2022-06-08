@@ -444,6 +444,8 @@
 (defn shortest
   "Returns the vector with the lowest count in a vector of vector"
   [vv]
-  (let [counts (mapv #(count %) vv)
-        mini (apply min counts)]
-    (nth vv (.indexOf counts mini))))
+  (cond
+    (= vv []) []
+    :else (let [counts (mapv #(count %) vv)
+                mini (apply min counts)]
+            (nth vv (.indexOf counts mini)))))
