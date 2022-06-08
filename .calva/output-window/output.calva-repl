@@ -5881,3 +5881,7 @@ clj꞉hench.path꞉> (nshuffle 8 am-intersections)
  {:x 14, :y 19}
  {:x 17, :y 15}]
 clj꞉hench.path꞉> 
+#'hench.utils/nmshuffle
+clj꞉hench.utils꞉> (nmshuffle 4 10 [1 2 3 4 5 6 7 8 9 10 11 12 13])
+[1 2 4 3 10 8 6 5 7 9 11 13 12]
+clj꞉hench.utils꞉> 

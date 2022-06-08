@@ -60,9 +60,12 @@
 ;; it will be nshuffled for a certain n to avoid obvious looping that'd be detrimental
 
 (def am-intersections
-  [;4 escape routes intersection, from closest to center to further away
+  [;centermost as center is key
    {:x 8 :y 13}
    {:x 10 :y 13}
+   {:x 8 :y 9}
+   {:x 10 :y 9}
+   ;other key ones, but less key
    {:x 4 :y 11}
    {:x 14 :y 11}
    {:x 4 :y 7}
@@ -87,8 +90,6 @@
    {:x 12 :y 7}
    {:x 17 :y 7}
    {:x 6 :y 9}
-   {:x 8 :y 9}
-   {:x 10 :y 9}
    {:x 12 :y 9}
    {:x 6 :y 11}
    {:x 8 :y 11}
@@ -414,7 +415,7 @@ false
 (defn first-hug
   "Returns the path to the first valid intersection"
   [my-snake my-asp other-snakes other-asp]
-  (loop [ints (nshuffle 8 am-intersections)]
+  (loop [ints (nmshuffle 4 10 am-intersections)]
     (println "first-hug/count ints: " (count ints))
     (let [npath (alg/nodes-in-path (alg/path-to my-asp (c->n (first ints))))]
       (cond

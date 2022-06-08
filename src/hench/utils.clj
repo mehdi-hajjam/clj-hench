@@ -436,6 +436,14 @@
   (let [scoll (subvec coll 0 n)]
     (into (shuffle scoll) (shuffle (subvec coll n)))))
 
+(defn nmshuffle
+  "Returns coll shuffled on its n first entries"
+  [n m coll]
+  (let [coll1 (subvec coll 0 n)
+        coll2 (subvec coll n m)
+        coll3 (subvec coll m)]
+    (into (shuffle coll1) (into (shuffle coll2) (shuffle coll3)))))
+
 (comment
   (nshuffle 5 [1 2 3 4 5 6 7 8 9])
 ; => [3 5 1 2 4 7 6 9 8]
