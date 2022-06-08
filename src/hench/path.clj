@@ -251,6 +251,9 @@
   [path other-snake]
   (let [rpath (rest path)
         common (into [] (clojure.set/intersection (set rpath) (set (:body other-snake))))]
+    (println "rpath: " rpath)
+    (println "body other snake: " (:body other-snake))
+    (println "common: " common)
     (cond
       (= [] common) false
       :else (let [indexes (mapv #(.indexOf rpath %) common)
@@ -260,7 +263,7 @@
 (defn list-encounters
   "Returns the list of encounters, even with my self, hence all-snakes and not other-snakes"
   [path all-snakes]
-  (filterv true? (mapv #(encounters? path %) all-snakes)))
+  (filterv some? (mapv #(encounters? path %) all-snakes)))
 
 (defn non-lethal?
   "Returns true if obstacle (first encounter with a part of a snake) is safe (will have disappeared by then), false otherwise
@@ -440,7 +443,8 @@ false
     (println "first-hug/count ints: " (count ints))
     (let [npath (alg/nodes-in-path (alg/path-to my-asp (c->n (first ints))))]
       (cond
-        (= ints []) (println "No point choosing anything, no intersection is free...") ;I guess it's a bit wrong for head to head between last two snakes alive but then shouldn't even happen
+        (= ints []) (do (println "No point choosing anything, no intersection is free...")
+                        []) ;I guess it's a bit wrong for head to head between last two snakes alive but then shouldn't even happen
         (valid? npath my-snake my-asp other-snakes other-asp) (mapv #(n->c %) npath)
         :else (recur (rest ints))))))
 
