@@ -385,7 +385,7 @@ false
   )
 
 (defn killables
-  "Returns the path to the closest killable snake"
+  "Returns the valid path to the closest killable snake"
   [my-snake my-asp other-snakes other-asp]
   (let [targets (not-at-xroads other-snakes)]
     (cond
@@ -394,8 +394,27 @@ false
                   their-asp (mapv #(nth other-asp %) indexes)
                   ints (mapv #(next-int % targets their-asp) targets)
                   my-npaths-to-ints (mapv #(alg/nodes-in-path (alg/path-to my-asp (c->n (:intersection %)))) ints)]
-              (shortest (filterv true? (mapv #(in-window? (:length my-snake) %1 %2) my-npaths-to-ints ints)))))))
+              (shortest (filterv true? (mapv #(and (in-window? (:length my-snake) %1 %2)
+                                                   (valid? % my-snake my-asp other-snakes other-asp)) my-npaths-to-ints ints)))))))
 
+;;
+; Hug the center (or find and choose the first free intersection in the list)
+;;
+
+(defn hug-the-center
+  "Returns the path to the first valid intersection"
+  [my-snake my-asp other-snakes other-asp]
+
+  (loop [ints (nshuffle 8 am-intersections)]
+    (let [npath (alg/nodes-in-path (alg/path-to my-asp (c->n (first ints))))]
+      (cond
+        (= ints []) (println "No point choosing anything, no intersection is free...") ;I guess it's a bit wrong for head to head between last two snakes alive but then shouldn't even happen
+        (valid? npath my-snake my-asp other-snakes other-asp) (mapv #(n->c %) npath)
+        :else (recur (rest ints))))))
+
+;;
+; Strategize
+;;
 
 ; Remember the first elem of a path is where my head is I think!!!!!!!
 (defn strategize
