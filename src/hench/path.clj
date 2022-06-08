@@ -330,7 +330,7 @@
     (cond
       (= available-food []) []
       :else (let [paths (mapv #(alg/nodes-in-path (alg/path-to my-asp (c->n %))) available-food)
-                  valid-paths (filterv #(valid? % my-snake my-asp other-snakes other-asp) paths)]
+                  valid-paths (filterv #(fvalid? % my-snake my-asp other-snakes other-asp) paths)]
               (cond
                 (= valid-paths []) []
                 ; I have paths of names here
@@ -393,9 +393,10 @@ false
       :else (let [indexes (mapv #(.indexOf other-snakes %) targets)
                   their-asp (mapv #(nth other-asp %) indexes)
                   ints (mapv #(next-int % targets their-asp) targets)
-                  my-npaths-to-ints (mapv #(alg/nodes-in-path (alg/path-to my-asp (c->n (:intersection %)))) ints)]
-              (shortest (filterv true? (mapv #(and (in-window? (:length my-snake) %1 %2)
-                                                   (valid? % my-snake my-asp other-snakes other-asp)) my-npaths-to-ints ints)))))))
+                  my-npaths-to-ints (mapv #(alg/nodes-in-path (alg/path-to my-asp (c->n (:intersection %)))) ints)
+                  best-kill (shortest (filterv true? (mapv #(and (in-window? (:length my-snake) %1 %2)
+                                                                 (valid? % my-snake my-asp other-snakes other-asp)) my-npaths-to-ints ints)))]
+              (mapv #(n->c %) best-kill)))))
 
 ;;
 ; Hug the center (or find and choose the first free intersection in the list)
@@ -404,7 +405,6 @@ false
 (defn first-hug
   "Returns the path to the first valid intersection"
   [my-snake my-asp other-snakes other-asp]
-
   (loop [ints (nshuffle 8 am-intersections)]
     (let [npath (alg/nodes-in-path (alg/path-to my-asp (c->n (first ints))))]
       (cond
@@ -426,8 +426,19 @@ false
   "Responsible for choosing amongst feasible moves"
   [body-params my-snake my-asp other-snakes other-asp moves]
   (let [w (-> body-params :board :width)
-        h (-> body-params :board :height)]
-    
-    
-    )
-  )
+        h (-> body-params :board :height)
+        my-health (-> body-params :you :health)
+        my-length (-> body-params :you :length)
+        snakes (-> body-params :board :snakes)
+        nb-snakes (count snakes)
+        rank-in-snakes (+ 1 (count (filterv #(< my-length (:length %)) snakes)))
+        e (eatables body-params my-snake my-asp other-snakes other-asp)
+        k (killables my-snake my-asp other-snakes other-asp)
+        f (first-hug my-snake my-asp other-snakes other-asp)]
+    (cond
+      ; si je suis à moins de 50 en health ou je suis pas au moins le 2e plus grand snake et que j’ai de la food safe -> mange
+      (and (not= [] e) (or (<= my-health 50) (> rank-in-snakes 2))) (choose-path e 10 moves w h)
+      ; si il y a à tuer et qu'il me reste plus de 23 de health après -> tuer
+      (and (not= [] k) (<= 23 (- my-health (- (count k) 1)))) (choose-path k 10 moves w h)
+      ; sinon hug the center for now
+      :else (choose-path f 10 moves w h))))
