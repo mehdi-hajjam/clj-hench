@@ -299,13 +299,22 @@
 ; coder que pour un path to food l'intersection après food doit être valide ET le path to food valide
 ; pour center food, il faut voir plus loin et l'une ou l'autre des center food intersections doit être libre aussi
 
+(defn fvalid?
+  "Returns true if a path to food is valid, false otherwise.
+   A valid path to food is firstly a valid path, and then depending on the food there are some additional conditions
+   TAKES A PATH OF NAMES BECAUSE OF VALID?"
+  [path my-snake my-asp other-snakes other-asp]
+  (let [food (last path)]
+    (and (valid? path my-snake my-asp other-snakes other-asp)
+         (cond
+           (= "3 11" food) (every? true? (mapv #(valid-intersection? % my-snake my-asp other-snakes other-asp) (food-intersections food)))
+           (= "15 11" food) (every? true? (mapv #(valid-intersection? % my-snake my-asp other-snakes other-asp) (food-intersections food)))
+           (= "9 11" food) (let [list (list-intersections path)
+                                 next-int (vector-difference (food-intersections food) list) ;it's a vector with one coordinate at this point
+                                 ]
+                             (and (valid-intersection? next-int my-snake my-asp other-snakes other-asp)
+                                  (some true? (mapv #(valid-intersection? % my-snake my-asp other-snakes other-asp) (center-food-intersections food)))))))))
 
-; The further away from some food seem to be 23.
-; A sensible first approach would be to prioritize food when we go below 3 times that amount
-; in health (69) or we are not the largest one
-; Then if these are met or there is no food available/reachable and there are more than 1 remaining opponent, try and see if center can be hugged
-; If there is only one opponent remaining and health is ok try to kill the remaining opponent
-; Else try and find one intersection I can safely go to and aim for it
 
 ;;
 ; Eatables

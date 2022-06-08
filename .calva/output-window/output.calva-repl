@@ -5719,3 +5719,7 @@ clj꞉hench.utils꞉> 
 (shortest [[1 2 3] [1 2 3 4] [1 2 3 4 5]])
 [1 2 3]
 clj꞉hench.utils꞉> 
+#'hench.path/food-intersections
+clj꞉hench.path꞉> (food-intersections "3 11")
+[{:x 4, :y 11} {:x 14, :y 11}]
+clj꞉hench.path꞉> 
