@@ -296,6 +296,12 @@
       (not= [] (list-of-lethal-encounters path my-snake other-snakes)) false
       :else true)))
 
+
+
+;;
+; Eatables
+;; 
+
 ; coder que pour un path to food l'intersection après food doit être valide ET le path to food valide
 ; pour center food, il faut voir plus loin et l'une ou l'autre des center food intersections doit être libre aussi
 
@@ -316,9 +322,6 @@
                                   (some true? (mapv #(valid-intersection? % my-snake my-asp other-snakes other-asp) (center-food-intersections food)))))))))
 
 
-;;
-; Eatables
-;; 
 
 (defn eatables
   "Returns the path to the closest food that can be started during the turn"
@@ -332,6 +335,29 @@
                 (= valid-paths []) []
                 ; I have paths of names here
                 :else (mapv #(n->c %) (shortest valid-paths)))))))
+
+;;
+; killables
+;;
+
+(defn not-at-xroads
+  "Returns the snakes which head is not at a crossroads or 9 11, amongst other-snakes"
+  [other-snakes]
+  (filterv #(not (in? (:head %) (into am-intersections [{:x 9 :y 11}]))) other-snakes))
+
+(defn next-int
+  "Returns the next intersection a snake not at an intersection will go through"
+  [snake other-snakes other-asp]
+  (let [i (.indexOf other-snakes snake)
+        sasp (nth other-asp i)
+        cpath (mapv #(n->c %) (alg/nodes-in-path (alg/path-to sasp "9 11"))) ;cpath is path of coordinates
+        ints (filterv #(in? % am-intersections) cpath)]
+    (cond
+      (= ints []) (println "ERROR in next-int - cpath doesn't contain any intersection from am-intersections")
+      :else (first ints))))
+
+(defn killables)
+
 
 ; Remember the first elem of a path is where my head is I think!!!!!!!
 (defn strategize
