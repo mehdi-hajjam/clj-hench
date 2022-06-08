@@ -261,7 +261,7 @@
               #_(println "indexes: " indexes)
               #_(println "minval: " minval)
               #_(println "encounters?/e: " {:e (nth rpath minval) :snake other-snake})
-              {:e (nth path minval) :snake other-snake}))))
+              {:e (nth rpath minval) :snake other-snake}))))
 
 (defn list-encounters
   "Returns the list of encounters, even with my self, hence all-snakes and not other-snakes"
