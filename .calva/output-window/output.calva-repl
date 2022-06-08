@@ -5805,3 +5805,79 @@ false
 clj꞉hench.path꞉> (= [] nil)
 false
 clj꞉hench.path꞉> 
+#'hench.utils/nshuffle
+clj꞉hench.utils꞉> (nshuffle 5 [1 2 3 4 5 6 7 8 9])
+[3 1 5 4 2 7 9 6 8]
+clj꞉hench.utils꞉> (nshuffle 5 [1 2 3 4 5 6 7 8 9])
+[5 2 1 4 3 9 8 7 6]
+clj꞉hench.utils꞉> (nshuffle 5 [1 2 3 4 5 6 7 8 9])
+[4 3 5 1 2 7 9 6 8]
+clj꞉hench.utils꞉> (nshuffle 8 am-intersections)
+; Syntax error compiling at (.calva/output-window/output.calva-repl:5815:19).
+; Unable to resolve symbol: am-intersections in this context
+clj꞉hench.utils꞉> 
+#'hench.path/am-intersections
+clj꞉hench.path꞉> (nshuffle 8 am-intersections)
+; Syntax error compiling at (.calva/output-window/output.calva-repl:5820:18).
+; Unable to resolve symbol: nshuffle in this context
+clj꞉hench.path꞉> 
+#'hench.utils/nshuffle
+clj꞉hench.utils꞉> 
+#'hench.path/am-intersections
+clj꞉hench.path꞉> (nshuffle 8 am-intersections)
+; Syntax error compiling at (.calva/output-window/output.calva-repl:5827:18).
+; Unable to resolve symbol: nshuffle in this context
+clj꞉hench.path꞉> (defn nshuffle
+                   "Returns coll shuffled on its n first entries"
+                   [n coll]
+                   (let [scoll (subvec coll 0 n)]
+                     (into (shuffle scoll) (shuffle (subvec coll n)))))
+#'hench.path/nshuffle
+clj꞉hench.path꞉> (nshuffle 8 am-intersections)
+[{:x 14, :y 7}
+ {:x 10, :y 13}
+ {:x 14, :y 11}
+ {:x 4, :y 11}
+ {:x 14, :y 17}
+ {:x 8, :y 13}
+ {:x 4, :y 7}
+ {:x 4, :y 17}
+ {:x 14, :y 15}
+ {:x 8, :y 17}
+ {:x 17, :y 1}
+ {:x 17, :y 17}
+ {:x 8, :y 11}
+ {:x 6, :y 5}
+ {:x 4, :y 5}
+ {:x 12, :y 11}
+ {:x 1, :y 15}
+ {:x 12, :y 7}
+ {:x 2, :y 3}
+ {:x 4, :y 19}
+ {:x 8, :y 1}
+ {:x 14, :y 5}
+ {:x 6, :y 7}
+ {:x 17, :y 19}
+ {:x 12, :y 9}
+ {:x 1, :y 19}
+ {:x 10, :y 1}
+ {:x 8, :y 9}
+ {:x 1, :y 1}
+ {:x 12, :y 5}
+ {:x 6, :y 11}
+ {:x 10, :y 17}
+ {:x 6, :y 9}
+ {:x 6, :y 17}
+ {:x 10, :y 11}
+ {:x 17, :y 7}
+ {:x 10, :y 9}
+ {:x 1, :y 17}
+ {:x 16, :y 3}
+ {:x 4, :y 15}
+ {:x 8, :y 5}
+ {:x 1, :y 7}
+ {:x 10, :y 5}
+ {:x 12, :y 17}
+ {:x 14, :y 19}
+ {:x 17, :y 15}]
+clj꞉hench.path꞉> 

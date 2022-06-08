@@ -266,7 +266,9 @@
     (and (= (:head other-snake) e)
          (>= (:length other-snake) (:length my-snake))) false
     ; si l’indice dans son corps à l’envers de sa case que je rencontre est plus petit ou égal à l’indice de cette rencontre dans mon path c'est bon
-    (<= (reverse-index e other-snake) (index-in-path e (rest path))) true
+    (<= (reverse-index e other-snake) (index-in-path e (rest path))) (do (println "reverse index: " (reverse-index e other-snake))
+                                                                         (println "index in path: " (index-in-path e (rest path)))
+                                                                         true)
     :else false))
 
 ;BE CAREFUL IF I DON'T GET A VECTOR OF 1 OTHER SNAKE I COULD RUN INTO TYPE ISSUES, getting one element instead of a vector of 1 element
@@ -276,6 +278,7 @@
   [path my-snake other-snakes]
   (let [enc-list (list-encounters path (conj other-snakes my-snake))
         leth-enc-list (mapv #(non-lethal? (:e %) path my-snake (:snake %)) enc-list)]
+    (println "encounters list: " enc-list)
     (filterv false? leth-enc-list)))
 
 ; path validation using all three fns above
@@ -289,7 +292,11 @@
   [path my-snake my-asp other-snakes other-asp]
   (let [rpath (rest path)
         int-list (list-intersections rpath)]
+    (println "valid?/(first rpath): " (first rpath))
+    (println "valid?/(last rpath): " (last rpath))
     (cond
+      ; if a path is empty, say it's invalid!
+      (= [] rpath) false
       ; if even one intersection is invalid, return false
       (some false? (mapv #(valid-intersection? % my-snake my-asp other-snakes other-asp) int-list)) false
       ; if some encounters are lethal, return false
@@ -318,6 +325,8 @@
            (= "9 11" food) (let [list (list-intersections path)
                                  next-int (vector-difference (food-intersections food) list) ;it's a vector with one coordinate at this point
                                  ]
+                             (println "fvalid?/next-int: " next-int)
+                             (println "fvalid?/center-food-intersection: " (center-food-intersections food))
                              (and (valid-intersection? next-int my-snake my-asp other-snakes other-asp)
                                   (some true? (mapv #(valid-intersection? % my-snake my-asp other-snakes other-asp) (center-food-intersections food)))))))))
 
@@ -406,10 +415,13 @@ false
   "Returns the path to the first valid intersection"
   [my-snake my-asp other-snakes other-asp]
   (loop [ints (nshuffle 8 am-intersections)]
+    (println "first-hug/count ints: " (count ints))
     (let [npath (alg/nodes-in-path (alg/path-to my-asp (c->n (first ints))))]
       (cond
         (= ints []) (println "No point choosing anything, no intersection is free...") ;I guess it's a bit wrong for head to head between last two snakes alive but then shouldn't even happen
-        (valid? npath my-snake my-asp other-snakes other-asp) (mapv #(n->c %) npath)
+        (valid? npath my-snake my-asp other-snakes other-asp) (do (println "second npath: " (second npath))
+                                                                  (println "last npath: " (last npath))
+                                                                  (mapv #(n->c %) npath))
         :else (recur (rest ints))))))
 
 ;;
@@ -433,14 +445,20 @@ false
         my-length (-> my-snake :length)
         snakes (-> body-params :board :snakes)
         nb-snakes (count snakes)
-        rank-in-snakes (+ 1 (count (filterv #(< my-length (:length %)) snakes)))
+        rank-in-snakes (count (filterv #(<= my-length (:length %)) snakes))
         e (eatables body-params my-snake my-asp other-snakes other-asp)
         k (killables my-snake my-asp other-snakes other-asp)
         f (first-hug my-snake my-asp other-snakes other-asp)]
+    (println "rank-in-snakes: " rank-in-snakes)
+    (println "f: " (second f) " to " (last f))
+    (println "k: " (second k) " to " (last k))
+    (println "e: " (second e) " to " (last e))
     (cond
-      ; si je suis à moins de 50 en health ou je suis pas au moins le 2e plus grand snake et que j’ai de la food safe -> mange
-      (and (not= [] e) (or (<= my-health 50) (> rank-in-snakes 2))) (choose-path e 10 moves w h "Going for a snack!")
+      ; si je suis à moins de 50 en health ou je suis pas le plus grand snake et que j’ai de la food safe -> mange
+      (and (not= [] e) (or (<= my-health 50) (> rank-in-snakes 1))) (choose-path e 10 moves w h "Going for a snack!")
       ; si il y a à tuer et qu'il me reste plus de 23 de health après -> tuer
       (and (not= [] k) (<= 23 (- my-health (- (count k) 1)))) (choose-path k 10 moves w h "Going for the kill!")
       ; sinon hug the center for now
-      :else (choose-path f 10 moves w h "Hugging the center, waiting for food or kill"))))
+      (not= [] f) (choose-path f 10 moves w h "Hugging the center, waiting for food or kill")
+      :else (do (println "why don't I have any option available")
+                moves))))
