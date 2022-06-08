@@ -5802,4 +5802,6 @@ true
 clj꞉hench.path꞉> 
 (in-window? 4 [0 1 2 3 4] {:turns 9 :slength 5})
 false
+clj꞉hench.path꞉> (= [] nil)
+false
 clj꞉hench.path꞉> 

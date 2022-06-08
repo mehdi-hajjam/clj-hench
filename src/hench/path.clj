@@ -325,7 +325,7 @@
 
 (defn eatables
   "Returns the path to the closest food that can be started during the turn"
-  [body-params my-snake other-snakes my-asp other-asp]
+  [body-params my-snake my-asp other-snakes other-asp]
   (let [available-food (-> body-params :board :food)]
     (cond
       (= available-food []) []
@@ -401,7 +401,7 @@ false
 ; Hug the center (or find and choose the first free intersection in the list)
 ;;
 
-(defn hug-the-center
+(defn first-hug
   "Returns the path to the first valid intersection"
   [my-snake my-asp other-snakes other-asp]
 
@@ -416,6 +416,18 @@ false
 ; Strategize
 ;;
 
+(defn choose-path
+  "Chooses path by weighting the second point of a path to a random > 1 number"
+  [cpath f moves w h]
+  (probabilise-movements (first cpath) [(second cpath)] f moves w h))
+
 ; Remember the first elem of a path is where my head is I think!!!!!!!
 (defn strategize
-  [])
+  "Responsible for choosing amongst feasible moves"
+  [body-params my-snake my-asp other-snakes other-asp moves]
+  (let [w (-> body-params :board :width)
+        h (-> body-params :board :height)]
+    
+    
+    )
+  )
