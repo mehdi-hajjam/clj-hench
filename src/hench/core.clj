@@ -71,7 +71,8 @@
      :data {:muuntaja  m/instance}})))
 
 (mount/defstate server
-  :start (http/start-server #'app {:port 8123})
+  :start (do (println "Server started!")
+             (http/start-server #'app {:port 8123}))
   :stop (.close server))
 
 (defn -main [& _]

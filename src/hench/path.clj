@@ -216,13 +216,20 @@
            asps other-asp]
       (let [his-dist (count (alg/nodes-in-path (alg/path-to (first asps) (c->n i))))]
         (cond
-          (= s []) true ; si y a plus de serpents à valider c'est que je suis bon
+          ; si y a plus de serpents à valider c'est que je suis bon
+          (= s []) true
+          ; si j'arrive avant le serpent qqsoit sa taille je peux recur
           (< my-dist his-dist) (recur (rest s)
-                                      (rest asps)) ; si j'arrive avant le serpent je peux recur
-          (and (> my-length (:length (first s)))
+                                      (rest asps))
+          ; si j'arrive après la queue du serpent et il est plus petit, recur (pas besoin de refaire la comparaison des distances) 
+          ; s'il est plus grand que moi et qu'il arrive avant c'est faux
+          ; je mets le cas d'égalité des tailles ici pour qu'il ne soit pas dans la négation
+          ; par contre pas pour les distances car je meurs en me prenant la queue
+          (and (>= my-length (:length (first s)))
                (> my-dist (+ his-dist (:length (first s))))) (recur (rest s)
-                                                                    (rest asps)) ; si j'arrive après la queue du serpent et il est plus petit, recur (pas besoin de refaire la comparaison des distances) 
-          :else false ; sinon j'arrive sur le corps d'un serpent plus petit ou il est plus grand donc pas safe
+                                                                    (rest asps)) 
+          ; sinon j'arrive sur le corps d'un serpent (qqsoit sa taille) ou il est plus grand donc pas safe
+          :else false 
           )))))
 
 
@@ -244,6 +251,9 @@
   [path other-snake]
   (let [rpath (rest path)
         common (into [] (clojure.set/intersection (set rpath) (set (:body other-snake))))]
+    (println "set rpath: " (set rpath))
+    (println "set (:body other-snake): " (set (:body other-snake)))
+    (println "encounters?/common: " common)
     (cond
       (= [] common) false
       :else (let [indexes (mapv #(.indexOf rpath %) common)
@@ -290,8 +300,8 @@
 (defn valid?
   "Returns true if a path is valid, false otherwise
    TAKES A PATH OF NAMES BECAUSE OF LIST-INTERSECTIONS (could be changed if needed)"
-  [path my-snake my-asp other-snakes other-asp]
-  (let [rpath (rest path)
+  [npath my-snake my-asp other-snakes other-asp]
+  (let [rpath (rest npath)
         int-list (list-intersections rpath)]
     (println "valid?/(first rpath): " (first rpath))
     (println "valid?/(last rpath): " (last rpath))
@@ -301,7 +311,7 @@
       ; if even one intersection is invalid, return false
       (some false? (mapv #(valid-intersection? % my-snake my-asp other-snakes other-asp) int-list)) false
       ; if some encounters are lethal, return false
-      (not= [] (list-of-lethal-encounters path my-snake other-snakes)) false
+      (not= [] (list-of-lethal-encounters (mapv #(n->c %) npath) my-snake other-snakes)) false
       :else true)))
 
 
