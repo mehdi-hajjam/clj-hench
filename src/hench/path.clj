@@ -251,9 +251,9 @@
   [path other-snake]
   (let [rpath (rest path)
         common (into [] (clojure.set/intersection (set rpath) (set (:body other-snake))))]
-    #_(println "rpath: " rpath)
-    #_(println "body other snake: " (:body other-snake))
-    #_(println "common: " common)
+    (println "rpath: " rpath)
+    (println "body other snake: " (:body other-snake))
+    (println "common: " common)
     (cond
       (= [] common) false
       :else (let [indexes (mapv #(.indexOf rpath %) common)
@@ -293,6 +293,8 @@
   [path my-snake other-snakes]
   (let [enc-list (filterv #(not= false %) (list-encounters path (conj other-snakes my-snake)))
         leth-enc-list (mapv #(non-lethal? (:e %) path my-snake (:snake %)) enc-list)]
+    (println "lole/enc-list: " enc-list)
+    (println "lole/leth-enc-list: " leth-enc-list)
     (filterv false? leth-enc-list)))
 
 ; path validation using all three fns above
@@ -340,8 +342,10 @@
                                  ]
                              (println "fvalid?/list: " list)
                              (println "fvalid?/next-int: " next-int)
-                             (println "fvalid?/center-food-intersection: " (center-food-intersections food))
-                             (and (valid-intersection? next-int my-snake my-asp other-snakes other-asp)
+                             (println "fvalid?/center-food-intersection: " (center-food-intersections (c->n next-int)))
+                             (println "fvalid?validint?: " (valid-intersection? (first next-int) my-snake my-asp other-snakes other-asp))
+                             (println "fvalid?sometrue?:  " (some true? (mapv #(valid-intersection? % my-snake my-asp other-snakes other-asp) (center-food-intersections (c->n next-int)))))
+                             (and (valid-intersection? (first next-int) my-snake my-asp other-snakes other-asp)
                                   (some true? (mapv #(valid-intersection? % my-snake my-asp other-snakes other-asp) (center-food-intersections (c->n next-int))))))))))
 
 
@@ -357,7 +361,8 @@
               (cond
                 (= valid-paths []) []
                 ; I have paths of names here
-                :else (mapv #(n->c %) (shortest valid-paths)))))))
+                :else (do (println "all-eatables: " (mapv #(last %) valid-paths))
+                          (mapv #(n->c %) (shortest valid-paths))))))))
 
 ;;
 ; killables

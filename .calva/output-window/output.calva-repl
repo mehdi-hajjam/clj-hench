@@ -5945,3 +5945,6 @@ clj꞉hench.path꞉> 
 (center-food-intersections "8 11")
 [{:x 8, :y 9} {:x 8, :y 13}]
 clj꞉hench.path꞉> 
+(center-food-intersections "10 11")
+[{:x 10, :y 9} {:x 10, :y 13}]
+clj꞉hench.path꞉> 
