@@ -251,9 +251,6 @@
   [path other-snake]
   (let [rpath (rest path)
         common (into [] (clojure.set/intersection (set rpath) (set (:body other-snake))))]
-    (println "set rpath: " (set rpath))
-    (println "set (:body other-snake): " (set (:body other-snake)))
-    (println "encounters?/common: " common)
     (cond
       (= [] common) false
       :else (let [indexes (mapv #(.indexOf rpath %) common)
@@ -277,9 +274,7 @@
     (and (= (:head other-snake) e)
          (>= (:length other-snake) (:length my-snake))) false
     ; si l’indice dans son corps à l’envers de sa case que je rencontre est plus petit ou égal à l’indice de cette rencontre dans mon path c'est bon
-    (<= (reverse-index e other-snake) (index-in-path e (rest path))) (do (println "reverse index: " (reverse-index e other-snake))
-                                                                         (println "index in path: " (index-in-path e (rest path)))
-                                                                         true)
+    (<= (reverse-index e other-snake) (index-in-path e (rest path))) true 
     :else false))
 
 ;BE CAREFUL IF I DON'T GET A VECTOR OF 1 OTHER SNAKE I COULD RUN INTO TYPE ISSUES, getting one element instead of a vector of 1 element
@@ -290,6 +285,7 @@
   (let [enc-list (list-encounters path (conj other-snakes my-snake))
         leth-enc-list (mapv #(non-lethal? (:e %) path my-snake (:snake %)) enc-list)]
     (println "encounters list: " enc-list)
+    (println "lethal encounters list: " leth-enc-list)
     (filterv false? leth-enc-list)))
 
 ; path validation using all three fns above
@@ -303,8 +299,6 @@
   [npath my-snake my-asp other-snakes other-asp]
   (let [rpath (rest npath)
         int-list (list-intersections rpath)]
-    (println "valid?/(first rpath): " (first rpath))
-    (println "valid?/(last rpath): " (last rpath))
     (cond
       ; if a path is empty, say it's invalid!
       (= [] rpath) false
@@ -387,6 +381,22 @@
                (>= (+ (- (count path) 1) my-length) (:turns intersection)) ;my tail is there after or same time as him
                )))
 
+(defn paths-in-window
+  "Returns paths in window of a kill
+   Necessary cause I can't filterv with two colls for some reasons"
+  [my-length paths ints]
+  (loop [p paths
+         i ints
+         res []]
+    (cond 
+      (= p []) res
+      (in-window? my-length (first p) (first i)) (recur (rest p)
+                                                        (rest i)
+                                                        (into res [(first p)]))
+      :else (recur (rest p)
+                   (rest i)
+                   res))))
+
 (comment
   clj꞉hench.path꞉>  (in-window? 4 [0 1 2 3 4] {:turns 3 :slength 5})
 false
@@ -414,9 +424,10 @@ false
                   their-asp (mapv #(nth other-asp %) indexes)
                   ints (mapv #(next-int % targets their-asp) targets)
                   my-npaths-to-ints (mapv #(alg/nodes-in-path (alg/path-to my-asp (c->n (:intersection %)))) ints)
-                  best-kill (shortest (filterv true? (mapv #(and (in-window? (:length my-snake) %1 %2)
-                                                                 (valid? % my-snake my-asp other-snakes other-asp)) my-npaths-to-ints ints)))]
-              (mapv #(n->c %) best-kill)))))
+                  possible-kills (paths-in-window (:length my-snake) my-npaths-to-ints ints)
+                  valid-kills (filterv #(valid? % my-snake my-asp other-snakes other-asp) possible-kills)
+                  closest-kill (shortest valid-kills)]
+              (mapv #(n->c %) closest-kill)))))
 
 ;;
 ; Hug the center (or find and choose the first free intersection in the list)
@@ -430,9 +441,7 @@ false
     (let [npath (alg/nodes-in-path (alg/path-to my-asp (c->n (first ints))))]
       (cond
         (= ints []) (println "No point choosing anything, no intersection is free...") ;I guess it's a bit wrong for head to head between last two snakes alive but then shouldn't even happen
-        (valid? npath my-snake my-asp other-snakes other-asp) (do (println "second npath: " (second npath))
-                                                                  (println "last npath: " (last npath))
-                                                                  (mapv #(n->c %) npath))
+        (valid? npath my-snake my-asp other-snakes other-asp) (mapv #(n->c %) npath)
         :else (recur (rest ints))))))
 
 ;;
@@ -460,10 +469,11 @@ false
         e (eatables body-params my-snake my-asp other-snakes other-asp)
         k (killables my-snake my-asp other-snakes other-asp)
         f (first-hug my-snake my-asp other-snakes other-asp)]
+    (println "f: " f)
     (println "rank-in-snakes: " rank-in-snakes)
-    (println "f: " (second f) " to " (last f))
-    (println "k: " (second k) " to " (last k))
-    (println "e: " (second e) " to " (last e))
+    (println "path to hug: " (second f) " to " (last f))
+    (println "path to kill: " (second k) " to " (last k))
+    (println "path to eat: " (second e) " to " (last e))
     (cond
       ; si je suis à moins de 50 en health ou je suis pas le plus grand snake et que j’ai de la food safe -> mange
       (and (not= [] e) (or (<= my-health 50) (> rank-in-snakes 1))) (choose-path e 10 moves w h "Going for a snack!")
