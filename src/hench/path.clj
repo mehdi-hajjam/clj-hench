@@ -56,9 +56,21 @@
 ;; Should be a function later to adapt to any map
 ;; An intersection is a point that has strictly more than 2 neighbours that are not hazards
 ;; but that def doesn't work for groups of free cases (comme en y 8 x 1 par exemple)
+;; am-intersections has been ordered for central, 4 escape routes intersections first
+;; it will be nshuffled for a certain n to avoid obvious looping that'd be detrimental
 
 (def am-intersections
-  [{:x 1 :y 1}
+  [;4 escape routes intersection, from closest to center to further away
+   {:x 8 :y 13}
+   {:x 10 :y 13}
+   {:x 4 :y 11}
+   {:x 14 :y 11}
+   {:x 4 :y 7}
+   {:x 14 :y 7}
+   {:x 4 :y 17}
+   {:x 14 :y 17}
+   ;others, mostly 3 escape routes ones, and will be shuffled as well
+   {:x 1 :y 1}
    {:x 8 :y 1}
    {:x 10 :y 1}
    {:x 17 :y 1}
@@ -71,34 +83,26 @@
    {:x 12 :y 5}
    {:x 14 :y 5}
    {:x 1 :y 7}
-   {:x 4 :y 7}
    {:x 6 :y 7}
    {:x 12 :y 7}
-   {:x 14 :y 7}
    {:x 17 :y 7}
    {:x 6 :y 9}
    {:x 8 :y 9}
    {:x 10 :y 9}
    {:x 12 :y 9}
-   {:x 4 :y 11}
    {:x 6 :y 11}
    {:x 8 :y 11}
    {:x 10 :y 11}
    {:x 12 :y 11}
-   {:x 14 :y 11}
-   {:x 8 :y 13}
-   {:x 10 :y 13}
    {:x 1 :y 15}
    {:x 4 :y 15}
    {:x 14 :y 15}
    {:x 17 :y 15}
    {:x 1 :y 17}
-   {:x 4 :y 17}
    {:x 6 :y 17}
    {:x 8 :y 17}
    {:x 10 :y 17}
    {:x 12 :y 17}
-   {:x 14 :y 17}
    {:x 17 :y 17}
    {:x 1 :y 19}
    {:x 4 :y 19}
@@ -110,6 +114,11 @@
   {"3 11" [{:x 4 :y 11} {:x 14 :y 11}]
    "9 11" [{:x 8 :y 11} {:x 10 :y 11}]
    "15 11" [{:x 4 :y 11} {:x 14 :y 11 }]})
+
+; one of these should be free as well because more escape route
+(def center-food-intersections
+  {"8 11" [{:x 8 :y 9} {:x 8 :y 13}]
+   "10 11" [{:x 10 :y 9} {:x 10 :y 13}]})
 
 ;;
 ; Trying ubergraph
@@ -282,12 +291,13 @@
       :else true)))
 
 ; coder que pour un path to food l'intersection après food doit être valide ET le path to food valide
+; pour center food, il faut voir plus loin et l'une ou l'autre des center food intersections doit être libre aussi
 
 
 ; The further away from some food seem to be 23.
 ; A sensible first approach would be to prioritize food when we go below 3 times that amount
 ; in health (69) or we are not the largest one
-; Then if these are met or there is no food available and there are more than 1 remaining opponent, try and see if center can be hugged
+; Then if these are met or there is no food available/reachable and there are more than 1 remaining opponent, try and see if center can be hugged
 ; If there is only one opponent remaining and health is ok try to kill the remaining opponent
 ; Else try and find one intersection I can safely go to and aim for it
 

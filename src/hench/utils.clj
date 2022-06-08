@@ -429,3 +429,14 @@
   "Returns true if elm part of coll"
   [elm coll]
   (some #(= elm %) coll))
+
+(defn nshuffle
+  "Returns coll shuffled on its n first entries"
+  [n coll]
+  (let [scoll (subvec coll 0 n)]
+    (into (shuffle scoll) (shuffle (subvec coll n)))))
+
+(comment
+  (nshuffle 5 [1 2 3 4 5 6 7 8 9])
+; => [3 5 1 2 4 7 6 9 8]
+  )

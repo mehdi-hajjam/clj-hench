@@ -5696,4 +5696,19 @@ clj꞉hench.food꞉> (into [] (conj [1 2] 3))
 clj꞉hench.food꞉> (into [] 5)
 ; Execution error (IllegalArgumentException) at hench.food/eval19213 (REPL:5696).
 ; Don't know how to create ISeq from: java.lang.Long
+clj꞉hench.food꞉> (into [1 2 3] [5 6 7])
+[1 2 3 5 6 7]
 clj꞉hench.food꞉> 
+; Evaluating file: utils.clj
+#'hench.utils/nshuffle
+clj꞉hench.utils꞉> (nshuffle 3 [1 2 3 4 5 6 7 8 9])
+[2 1 3 4 5 6 7 8 9]
+clj꞉hench.utils꞉> 
+(nshuffle 5 [1 2 3 4 5 6 7 8 9])
+[2 4 3 5 1 6 7 8 9]
+clj꞉hench.utils꞉> 
+#'hench.utils/nshuffle
+clj꞉hench.utils꞉> 
+(nshuffle 5 [1 2 3 4 5 6 7 8 9])
+[3 5 1 2 4 7 6 9 8]
+clj꞉hench.utils꞉> 
