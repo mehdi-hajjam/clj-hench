@@ -251,13 +251,16 @@
   [path other-snake]
   (let [rpath (rest path)
         common (into [] (clojure.set/intersection (set rpath) (set (:body other-snake))))]
-    (println "rpath: " rpath)
-    (println "body other snake: " (:body other-snake))
-    (println "common: " common)
+    #_(println "rpath: " rpath)
+    #_(println "body other snake: " (:body other-snake))
+    #_(println "common: " common)
     (cond
       (= [] common) false
       :else (let [indexes (mapv #(.indexOf rpath %) common)
                   minval (apply min indexes)]
+              #_(println "indexes: " indexes)
+              #_(println "minval: " minval)
+              #_(println "encounters?/e: " {:e (nth rpath minval) :snake other-snake})
               {:e (nth path minval) :snake other-snake}))))
 
 (defn list-encounters
@@ -270,6 +273,9 @@
    TAKES A PATH OF COORDINATES"
   [e path my-snake other-snake]
   (cond
+    ; si e est false (don't have an encounter with that snake), then true
+    ; now redundant with my filterv not= false in list of lethal encounters
+    (= e nil) true
     ; si c'est sa tête et qu'il est plus petit que moi c'est ok
     (and (= (:head other-snake) e)
          (< (:length other-snake) (:length my-snake))) true
@@ -285,10 +291,8 @@
   "Returns the list of lethal encounters
    TAKES A PATH OF COORDINATES (for list of encouters to work)"
   [path my-snake other-snakes]
-  (let [enc-list (list-encounters path (conj other-snakes my-snake))
+  (let [enc-list (filterv #(not= false %) (list-encounters path (conj other-snakes my-snake)))
         leth-enc-list (mapv #(non-lethal? (:e %) path my-snake (:snake %)) enc-list)]
-    (println "encounters list: " enc-list)
-    (println "lethal encounters list: " leth-enc-list)
     (filterv false? leth-enc-list)))
 
 ; path validation using all three fns above
@@ -326,6 +330,7 @@
    TAKES A PATH OF NAMES BECAUSE OF VALID?"
   [path my-snake my-asp other-snakes other-asp]
   (let [food (last path)]
+    (println "fvalid?/food: " food)
     (and (valid? path my-snake my-asp other-snakes other-asp)
          (cond
            (= "3 11" food) (every? true? (mapv #(valid-intersection? % my-snake my-asp other-snakes other-asp) (food-intersections food)))
@@ -333,10 +338,11 @@
            (= "9 11" food) (let [list (list-intersections path)
                                  next-int (vector-difference (food-intersections food) list) ;it's a vector with one coordinate at this point
                                  ]
+                             (println "fvalid?/list: " list)
                              (println "fvalid?/next-int: " next-int)
                              (println "fvalid?/center-food-intersection: " (center-food-intersections food))
                              (and (valid-intersection? next-int my-snake my-asp other-snakes other-asp)
-                                  (some true? (mapv #(valid-intersection? % my-snake my-asp other-snakes other-asp) (center-food-intersections food)))))))))
+                                  (some true? (mapv #(valid-intersection? % my-snake my-asp other-snakes other-asp) (center-food-intersections (c->n next-int))))))))))
 
 
 
@@ -473,7 +479,7 @@ false
         e (eatables body-params my-snake my-asp other-snakes other-asp)
         k (killables my-snake my-asp other-snakes other-asp)
         f (first-hug my-snake my-asp other-snakes other-asp)]
-    (println "f: " f)
+    #_(println "f: " f)
     (println "rank-in-snakes: " rank-in-snakes)
     (println "path to hug: " (second f) " to " (last f))
     (println "path to kill: " (second k) " to " (last k))

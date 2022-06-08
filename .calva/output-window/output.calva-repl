@@ -5901,4 +5901,47 @@ false
 clj꞉hench.utils꞉> 
 (some? {:x 1})
 true
+clj꞉hench.utils꞉> (:e nil)
+nil
 clj꞉hench.utils꞉> 
+; Syntax error compiling at (src/hench/path.clj:284:9).
+; Unable to resolve symbol: reverse-index in this context
+clj꞉hench.path꞉> 
+; Syntax error compiling at (src/hench/path.clj:284:9).
+; Unable to resolve symbol: reverse-index in this context
+clj꞉hench.path꞉> 
+#'hench.path/reverse-index
+clj꞉hench.path꞉> 
+#'hench.path/index-in-path
+clj꞉hench.path꞉> 
+; Evaluating file: path.clj
+#'hench.path/strategize
+clj꞉hench.path꞉> (non-lethal? false)
+; Execution error (ArityException) at hench.path/eval23367 (REPL:5919).
+; Wrong number of args (1) passed to: hench.path/non-lethal?
+clj꞉hench.path꞉> 
+(non-lethal? false "toto" "tata" "titi")
+true
+clj꞉hench.path꞉> 
+#'hench.path/non-lethal?
+clj꞉hench.path꞉> (:e {:e 1 :x 2})
+1
+clj꞉hench.path꞉> (filterv true? [false false {:e 1 :snake 2}])
+[]
+clj꞉hench.path꞉> 
+(filterv some? [false false {:e 1 :snake 2}])
+[false false {:e 1, :snake 2}]
+clj꞉hench.path꞉> 
+(filterv #(not= false %) [false false {:e 1 :snake 2}])
+[{:e 1, :snake 2}]
+clj꞉hench.path꞉> (some true? [])
+nil
+clj꞉hench.path꞉> (center-food-intersections "3 11")
+nil
+clj꞉hench.path꞉> 
+(center-food-intersections "9 11")
+nil
+clj꞉hench.path꞉> 
+(center-food-intersections "8 11")
+[{:x 8, :y 9} {:x 8, :y 13}]
+clj꞉hench.path꞉> 
