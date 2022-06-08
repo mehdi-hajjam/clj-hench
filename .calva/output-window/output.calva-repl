@@ -5712,3 +5712,10 @@ clj꞉hench.utils꞉> 
 (nshuffle 5 [1 2 3 4 5 6 7 8 9])
 [3 5 1 2 4 7 6 9 8]
 clj꞉hench.utils꞉> 
+#'hench.utils/shortest
+clj꞉hench.utils꞉> (shortest [[1 2 3] [1 2 3 4] [1]])
+[1]
+clj꞉hench.utils꞉> 
+(shortest [[1 2 3] [1 2 3 4] [1 2 3 4 5]])
+[1 2 3]
+clj꞉hench.utils꞉> 

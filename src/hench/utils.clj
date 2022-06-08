@@ -440,3 +440,10 @@
   (nshuffle 5 [1 2 3 4 5 6 7 8 9])
 ; => [3 5 1 2 4 7 6 9 8]
   )
+
+(defn shortest
+  "Returns the vector with the lowest count in a vector of vector"
+  [vv]
+  (let [counts (mapv #(count %) vv)
+        mini (apply min counts)]
+    (nth vv (.indexOf counts mini))))

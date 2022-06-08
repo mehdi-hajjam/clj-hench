@@ -197,9 +197,12 @@
 ; intersection detection
 
 (defn list-intersections
-  "Returns a list of all intersections encountered in path"
+  "Returns a list of all intersections encountered in path
+   TAKES A PATH OF NAMES
+   RETURNS A VECTOR OF COORDINATES OF INTERSECTIONS"
   [path]
-  (filterv #(in? (n->c %) am-intersections) path))
+  (let [named-intersections (filterv #(in? (n->c %) am-intersections) path)]
+    (mapv #(n->c %) named-intersections)))
 
 ; intersection validation
 
@@ -252,7 +255,8 @@
   (filterv true? (mapv #(encounters? path %) all-snakes)))
 
 (defn non-lethal?
-  "Returns true if obstacle (first encounter with a part of a snake) is safe (will have disappeared by then), false otherwise"
+  "Returns true if obstacle (first encounter with a part of a snake) is safe (will have disappeared by then), false otherwise
+   TAKES A PATH OF COORDINATES"
   [e path my-snake other-snake]
   (cond
     ; si c'est sa tête et qu'il est plus petit que moi c'est ok
@@ -267,7 +271,8 @@
 
 ;BE CAREFUL IF I DON'T GET A VECTOR OF 1 OTHER SNAKE I COULD RUN INTO TYPE ISSUES, getting one element instead of a vector of 1 element
 (defn list-of-lethal-encounters
-  "Returns the list of lethal encounters"
+  "Returns the list of lethal encounters
+   TAKES A PATH OF COORDINATES (for list of encouters to work)"
   [path my-snake other-snakes]
   (let [enc-list (list-encounters path (conj other-snakes my-snake))
         leth-enc-list (mapv #(non-lethal? (:e %) path my-snake (:snake %)) enc-list)]
@@ -279,7 +284,8 @@
 ;; "x y" should only be an interface format as much as possible
 
 (defn valid?
-  "Returns true if a path is valid, false otherwise"
+  "Returns true if a path is valid, false otherwise
+   TAKES A PATH OF NAMES BECAUSE OF LIST-INTERSECTIONS (could be changed if needed)"
   [path my-snake my-asp other-snakes other-asp]
   (let [rpath (rest path)
         int-list (list-intersections rpath)]
@@ -301,5 +307,23 @@
 ; If there is only one opponent remaining and health is ok try to kill the remaining opponent
 ; Else try and find one intersection I can safely go to and aim for it
 
+;;
+; Eatables
+;; 
+
+(defn eatables
+  "Returns the path to the closest food that can be started during the turn"
+  [body-params my-snake other-snakes my-asp other-asp]
+  (let [available-food (-> body-params :board :food)]
+    (cond
+      (= available-food []) []
+      :else (let [paths (mapv #(alg/nodes-in-path (alg/path-to my-asp (c->n %))) available-food)
+                  valid-paths (filterv #(valid? % my-snake my-asp other-snakes other-asp) paths)]
+              (cond
+                (= valid-paths []) []
+                ; I have paths of names here
+                :else (mapv #(n->c %) (shortest valid-paths)))))))
+
+; Remember the first elem of a path is where my head is I think!!!!!!!
 (defn strategize
   [])
