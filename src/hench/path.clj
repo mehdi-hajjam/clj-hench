@@ -425,11 +425,12 @@ false
 ; Remember the first elem of a path is where my head is I think!!!!!!!
 (defn strategize
   "Responsible for choosing amongst feasible moves"
-  [body-params my-snake my-asp other-snakes other-asp moves]
+  [body-params my-asp other-snakes other-asp moves]
   (let [w (-> body-params :board :width)
         h (-> body-params :board :height)
-        my-health (-> body-params :you :health)
-        my-length (-> body-params :you :length)
+        my-snake (-> body-params :you)
+        my-health (-> my-snake :health)
+        my-length (-> my-snake :length)
         snakes (-> body-params :board :snakes)
         nb-snakes (count snakes)
         rank-in-snakes (+ 1 (count (filterv #(< my-length (:length %)) snakes)))
