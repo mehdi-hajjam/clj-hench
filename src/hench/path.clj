@@ -65,9 +65,9 @@
    {:x 10 :y 13}
    {:x 8 :y 9}
    {:x 10 :y 9}
-   ;other key ones, but less key
    {:x 4 :y 11}
    {:x 14 :y 11}
+   ;other key ones, but less key
    {:x 4 :y 7}
    {:x 14 :y 7}
    {:x 4 :y 17}
@@ -450,7 +450,7 @@ false
 (defn first-hug
   "Returns the path to the first valid intersection"
   [my-snake my-asp other-snakes other-asp]
-  (loop [ints (nmshuffle 4 10 am-intersections)]
+  (loop [ints (nmshuffle 6 10 am-intersections)]
     (println "first-hug/count ints: " (count ints))
     (let [npath (alg/nodes-in-path (alg/path-to my-asp (c->n (first ints))))]
       (cond

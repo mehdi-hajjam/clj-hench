@@ -5947,4 +5947,56 @@ clj꞉hench.path꞉> 
 clj꞉hench.path꞉> 
 (center-food-intersections "10 11")
 [{:x 10, :y 9} {:x 10, :y 13}]
+clj꞉hench.path꞉> (nmshuffle 4 10 am-intersections)
+[{:x 10, :y 9}
+ {:x 8, :y 9}
+ {:x 8, :y 13}
+ {:x 10, :y 13}
+ {:x 4, :y 17}
+ {:x 4, :y 7}
+ {:x 14, :y 17}
+ {:x 14, :y 7}
+ {:x 14, :y 11}
+ {:x 4, :y 11}
+ {:x 12, :y 9}
+ {:x 12, :y 7}
+ {:x 12, :y 5}
+ {:x 14, :y 5}
+ {:x 10, :y 11}
+ {:x 14, :y 19}
+ {:x 6, :y 17}
+ {:x 17, :y 19}
+ {:x 6, :y 7}
+ {:x 6, :y 11}
+ {:x 12, :y 17}
+ {:x 1, :y 17}
+ {:x 17, :y 1}
+ {:x 8, :y 1}
+ {:x 12, :y 11}
+ {:x 17, :y 15}
+ {:x 6, :y 9}
+ {:x 1, :y 7}
+ {:x 10, :y 1}
+ {:x 8, :y 5}
+ {:x 10, :y 5}
+ {:x 1, :y 19}
+ {:x 4, :y 5}
+ {:x 17, :y 7}
+ {:x 2, :y 3}
+ {:x 16, :y 3}
+ {:x 1, :y 1}
+ {:x 10, :y 17}
+ {:x 4, :y 15}
+ {:x 14, :y 15}
+ {:x 8, :y 11}
+ {:x 1, :y 15}
+ {:x 6, :y 5}
+ {:x 4, :y 19}
+ {:x 8, :y 17}
+ {:x 17, :y 17}]
+clj꞉hench.path꞉> (rand-nth ["#2600E4" "toto"])
+"#2600E4"
+clj꞉hench.path꞉> 
+(rand-nth ["#2600E4" "toto"])
+"toto"
 clj꞉hench.path꞉> 

@@ -18,7 +18,7 @@
   ;(clojure.pprint/pprint (:body-params req)) ;;for debugging
   {:body {:apiversion "1"
           :author "hbl206"
-          :color "#61EB42"
+          :color #_"#61EB42" (rand-nth ["#2600E4" "#61EB42"])
           :head "evil"
           :tail "hook"
           :version "0.2.0"}})
