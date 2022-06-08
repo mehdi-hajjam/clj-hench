@@ -418,7 +418,8 @@ false
 
 (defn choose-path
   "Chooses path by weighting the second point of a path to a random > 1 number"
-  [cpath f moves w h]
+  [cpath f moves w h message]
+  (println message)
   (probabilise-movements (first cpath) [(second cpath)] f moves w h))
 
 ; Remember the first elem of a path is where my head is I think!!!!!!!
@@ -437,8 +438,8 @@ false
         f (first-hug my-snake my-asp other-snakes other-asp)]
     (cond
       ; si je suis à moins de 50 en health ou je suis pas au moins le 2e plus grand snake et que j’ai de la food safe -> mange
-      (and (not= [] e) (or (<= my-health 50) (> rank-in-snakes 2))) (choose-path e 10 moves w h)
+      (and (not= [] e) (or (<= my-health 50) (> rank-in-snakes 2))) (choose-path e 10 moves w h "Going for a snack!")
       ; si il y a à tuer et qu'il me reste plus de 23 de health après -> tuer
-      (and (not= [] k) (<= 23 (- my-health (- (count k) 1)))) (choose-path k 10 moves w h)
+      (and (not= [] k) (<= 23 (- my-health (- (count k) 1)))) (choose-path k 10 moves w h "Going for the kill!")
       ; sinon hug the center for now
-      :else (choose-path f 10 moves w h))))
+      :else (choose-path f 10 moves w h "Hugging the center, waiting for food or kill"))))
