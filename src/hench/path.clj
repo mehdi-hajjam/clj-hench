@@ -357,8 +357,8 @@
     (println "fvalid?/last-int: " last-int)
     (cond
       ; if it's 3 11 or 15 11, check the validity of the shortest path till the next intersection, it should go through the food.
-      (= "3 11" food) (valid? (into (alg/nodes-in-path (alg/path-to my-asp (c->n (first next-int)))) tunnel-l-to-r) my-snake my-asp other-snakes other-asp)
-      (= "15 11" food) (valid? (into (alg/nodes-in-path (alg/path-to my-asp (c->n (first next-int)))) tunnel-r-to-l) my-snake my-asp other-snakes other-asp)
+      (= "3 11" food) (valid? (into (alg/nodes-in-path (alg/path-to my-asp food #_(c->n (first next-int)))) tunnel-l-to-r) my-snake my-asp other-snakes other-asp)
+      (= "15 11" food) (valid? (into (alg/nodes-in-path (alg/path-to my-asp food #_(c->n (first next-int)))) tunnel-r-to-l) my-snake my-asp other-snakes other-asp)
       ; if it's 9 11, check if I can escape top or bottom, left or right depending on which way I'm coming at 9 11
       :else (cond
               (= {:x 8 :y 11} last-int) (or (valid? (into (alg/nodes-in-path (alg/path-to my-asp (c->n (first next-int)))) out-top-right) my-snake my-asp other-snakes other-asp)
