@@ -159,9 +159,10 @@
         w (-> board :width)
         h (-> board :height)
         m {}
+        turn (-> body-params :turn)
         hazards (-> board :hazards)
         neck (neck (-> snake :body))
-        forbidden (into hazards [neck])
+        forbidden (into hazards (if (= turn 0) [] [neck]))
         whole-graph (into {} (for [x (range 0 w)
                                    y (range 0 h)]
                                (let [n (neighbours #(not (in? % forbidden)) {:x x :y y} w h)]
@@ -192,7 +193,8 @@
 (defn asp
   "All shortest paths from p"
   [snake base-graph body-params]
-  (let [g (apply uber/graph (remove-point-from-graph (second (:body snake)) base-graph))
+  (let [turn (-> body-params :turn)
+        g (apply uber/graph (if (= turn 0) base-graph (remove-point-from-graph (second (:body snake)) base-graph)))
         #_#_w (-> body-params :board :width)
         #_#_h (-> body-params :board :height)
         head (:head snake)]
@@ -327,13 +329,20 @@
         int-list (list-intersections rpath)]
     (cond
       ; if a path is empty, say it's invalid!
-      (= [] rpath) false
-      ; if rpath not longer than 9 and rpath doesn't contain 2 intersections, false -> it's the `don't aim to closely` fix
-      (and (< (count rpath) 9) (< (count int-list) 2)) false
+      (= [] rpath) (do (println "1st for " (last rpath))
+                       false)
+      ;if doesn't contain center and less than 9 and less than 3, false -> to look ahead as far as possible if don't go through the center
+      (and (not (in? "9 11" rpath)) (< (count rpath) 9) (< (count int-list) 3)) (do (println "2nd for " (last rpath))
+                                                           false)
+      ; if rpath is not longer than 9 and rpath doesn't contain 2 intersections, false -> it's the `don't aim to closely` fix
+      (and (< (count rpath) 9) (< (count int-list) 2)) (do (println "3rd for " (last rpath))
+                                                           false)
       ; if even one intersection is invalid, return false
-      (some false? (mapv #(valid-intersection? % my-snake my-asp other-snakes other-asp) int-list)) false
+      (some false? (mapv #(valid-intersection? % my-snake my-asp other-snakes other-asp) int-list)) (do (println "4th for " (last rpath))
+                                                                                                        false)
       ; if some encounters are lethal, return false
-      (not= [] (list-of-lethal-encounters (mapv #(n->c %) npath) my-snake other-snakes)) false
+      (not= [] (list-of-lethal-encounters (mapv #(n->c %) npath) my-snake other-snakes)) (do (println "5th for " (last rpath))
+                                                                                             false)
       :else true)))
 
 
@@ -385,10 +394,12 @@
   "Returns the path to the closest food that can be started during the turn"
   [body-params my-snake my-asp other-snakes other-asp]
   (let [available-food (-> body-params :board :food)]
+    (println "eatables/AVAILABLE-FOOD: " available-food)
     (cond
       (= available-food []) []
       :else (let [paths (mapv #(alg/nodes-in-path (alg/path-to my-asp (c->n %))) available-food)
                   valid-paths (filterv #(fvalid? % my-snake my-asp other-snakes other-asp) paths)]
+              (println "eatables/paths: " paths)
               (cond
                 (= valid-paths []) []
                 ; I have paths of names here

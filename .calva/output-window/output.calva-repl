@@ -566,4 +566,9 @@ clj꞉hench.path꞉> 
  "10 11"
  "10 12"
  "10 13"]
-clj꞉hench.path꞉> 
+clj꞉hench.path꞉> (into [1 2 3] [nil])
+[1 2 3 nil]
+clj꞉hench.core꞉> 
+(into [1 2 3] [])
+[1 2 3]
+clj꞉hench.core꞉> 
