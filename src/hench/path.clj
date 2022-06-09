@@ -361,10 +361,10 @@
       (= "15 11" food) (valid? (into (alg/nodes-in-path (alg/path-to my-asp food #_(c->n (first next-int)))) tunnel-r-to-l) my-snake my-asp other-snakes other-asp)
       ; if it's 9 11, check if I can escape top or bottom, left or right depending on which way I'm coming at 9 11
       :else (cond
-              (= {:x 8 :y 11} last-int) (or (valid? (into (alg/nodes-in-path (alg/path-to my-asp (c->n (first next-int)))) out-top-right) my-snake my-asp other-snakes other-asp)
-                                            (valid? (into (alg/nodes-in-path (alg/path-to my-asp (c->n (first next-int)))) out-bottom-right) my-snake my-asp other-snakes other-asp))
-              (= {:x 10 :y 11} last-int) (or (valid? (into (alg/nodes-in-path (alg/path-to my-asp (c->n (first next-int)))) out-top-left) my-snake my-asp other-snakes other-asp)
-                                             (valid? (into (alg/nodes-in-path (alg/path-to my-asp (c->n (first next-int)))) out-bottom-left) my-snake my-asp other-snakes other-asp))
+              (= {:x 8 :y 11} last-int) (or (valid? (into (alg/nodes-in-path (alg/path-to my-asp food)) out-top-right) my-snake my-asp other-snakes other-asp)
+                                            (valid? (into (alg/nodes-in-path (alg/path-to my-asp food)) out-bottom-right) my-snake my-asp other-snakes other-asp))
+              (= {:x 10 :y 11} last-int) (or (valid? (into (alg/nodes-in-path (alg/path-to my-asp food)) out-top-left) my-snake my-asp other-snakes other-asp)
+                                             (valid? (into (alg/nodes-in-path (alg/path-to my-asp food)) out-bottom-left) my-snake my-asp other-snakes other-asp))
               )
       
   )))
