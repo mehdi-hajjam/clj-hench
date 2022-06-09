@@ -61,13 +61,15 @@
 
 (def am-intersections
   [;centermost as center is key
+   {:x 8 :y 11}
+   {:x 10 :y 11}
    {:x 8 :y 13}
    {:x 10 :y 13}
    {:x 8 :y 9}
    {:x 10 :y 9}
+   ;other key ones, but less key
    {:x 4 :y 11}
    {:x 14 :y 11}
-   ;other key ones, but less key
    {:x 4 :y 7}
    {:x 14 :y 7}
    {:x 4 :y 17}
@@ -92,8 +94,6 @@
    {:x 6 :y 9}
    {:x 12 :y 9}
    {:x 6 :y 11}
-   {:x 8 :y 11}
-   {:x 10 :y 11}
    {:x 12 :y 11}
    {:x 1 :y 15}
    {:x 4 :y 15}
@@ -114,12 +114,30 @@
 (def food-intersections
   {"3 11" [{:x 4 :y 11} {:x 14 :y 11}]
    "9 11" [{:x 8 :y 11} {:x 10 :y 11}]
-   "15 11" [{:x 4 :y 11} {:x 14 :y 11 }]})
+   "15 11" [{:x 4 :y 11} {:x 14 :y 11}]})
 
 ; one of these should be free as well because more escape route
 (def center-food-intersections
   {"8 11" [{:x 8 :y 9} {:x 8 :y 13}]
    "10 11" [{:x 10 :y 9} {:x 10 :y 13}]})
+
+(def tunnel-l-to-r
+  ["16 11" "17 11" "18 11" "0 11" "1 11" "2 11" "3 11" "4 11"])
+
+(def tunnel-r-to-l
+  ["2 11" "1 11" "0 11" "18 11" "17 11" "16 11" "15 11" "14 11"])
+
+(def out-top-left
+  ["8 11" "8 12" "8 13"])
+
+(def out-top-right
+  ["10 11" "10 12" "10 13"])
+
+(def out-bottom-left
+  ["8 11" "8 10" "8 9"])
+
+(def out-bottom-right
+  ["10 11" "10 10" "10 9"])
 
 ;;
 ; Trying ubergraph
@@ -227,10 +245,9 @@
           ; par contre pas pour les distances car je meurs en me prenant la queue
           (and (>= my-length (:length (first s)))
                (> my-dist (+ his-dist (:length (first s))))) (recur (rest s)
-                                                                    (rest asps)) 
+                                                                    (rest asps))
           ; sinon j'arrive sur le corps d'un serpent (qqsoit sa taille) ou il est plus grand donc pas safe
-          :else false 
-          )))))
+          :else false)))))
 
 
 ; obstacle validation (snakes encountered in the path)
@@ -283,7 +300,7 @@
     (and (= (:head other-snake) e)
          (>= (:length other-snake) (:length my-snake))) false
     ; si l’indice dans son corps à l’envers de sa case que je rencontre est plus petit ou égal à l’indice de cette rencontre dans mon path c'est bon
-    (<= (reverse-index e other-snake) (index-in-path e (rest path))) true 
+    (<= (reverse-index e other-snake) (index-in-path e (rest path))) true
     :else false))
 
 ;BE CAREFUL IF I DON'T GET A VECTOR OF 1 OTHER SNAKE I COULD RUN INTO TYPE ISSUES, getting one element instead of a vector of 1 element
@@ -333,15 +350,24 @@
   [path my-snake my-asp other-snakes other-asp]
   (let [food (last path)
         list (list-intersections path)
+        last-int (last list) ; last intersection traversed by path
         next-int (vector-difference (food-intersections food) list) ;it's a vector with one coordinate at this point
         ]
     (println "fvalid?/food: " food)
+    (println "fvalid?/last-int: " last-int)
     (cond
       ; if it's 3 11 or 15 11, check the validity of the shortest path till the next intersection, it should go through the food.
-      (= "3 11" food) (valid? (alg/nodes-in-path (alg/path-to my-asp (c->n (first next-int)))) my-snake my-asp other-snakes other-asp)
-      (= "15 11" food) (valid? (alg/nodes-in-path (alg/path-to my-asp (c->n (first next-int)))) my-snake my-asp other-snakes other-asp)
-      ; if it's 9 11, just check this as well for now, but I will need in the future to amend how I see validity of a path, because one snake can't block two paths!
-      (= "9 11" food) (valid? (alg/nodes-in-path (alg/path-to my-asp (c->n (first next-int)))) my-snake my-asp other-snakes other-asp))))
+      (= "3 11" food) (valid? (into (alg/nodes-in-path (alg/path-to my-asp (c->n (first next-int)))) tunnel-l-to-r) my-snake my-asp other-snakes other-asp)
+      (= "15 11" food) (valid? (into (alg/nodes-in-path (alg/path-to my-asp (c->n (first next-int)))) tunnel-r-to-l) my-snake my-asp other-snakes other-asp)
+      ; if it's 9 11, check if I can escape top or bottom, left or right depending on which way I'm coming at 9 11
+      :else (cond
+              (= {:x 8 :y 11} last-int) (or (valid? (into (alg/nodes-in-path (alg/path-to my-asp (c->n (first next-int)))) out-top-right) my-snake my-asp other-snakes other-asp)
+                                            (valid? (into (alg/nodes-in-path (alg/path-to my-asp (c->n (first next-int)))) out-bottom-right) my-snake my-asp other-snakes other-asp))
+              (= {:x 10 :y 11} last-int) (or (valid? (into (alg/nodes-in-path (alg/path-to my-asp (c->n (first next-int)))) out-top-left) my-snake my-asp other-snakes other-asp)
+                                             (valid? (into (alg/nodes-in-path (alg/path-to my-asp (c->n (first next-int)))) out-bottom-left) my-snake my-asp other-snakes other-asp))
+              )
+      
+  )))
 
 
 
@@ -397,7 +423,7 @@
   (loop [p paths
          i ints
          res []]
-    (cond 
+    (cond
       (= p []) res
       (in-window? my-length (first p) (first i)) (recur (rest p)
                                                         (rest i)
@@ -408,20 +434,19 @@
 
 (comment
   clj꞉hench.path꞉>  (in-window? 4 [0 1 2 3 4] {:turns 3 :slength 5})
-false
-clj꞉hench.path꞉> 
-(in-window? 4 [0 1 2 3 4] {:turns 4 :slength 5})
-false
-clj꞉hench.path꞉> 
-(in-window? 4 [0 1 2 3 4] {:turns 5 :slength 5})
-true
-clj꞉hench.path꞉> 
-(in-window? 4 [0 1 2 3 4] {:turns 8 :slength 5})
-true
-clj꞉hench.path꞉> 
-(in-window? 4 [0 1 2 3 4] {:turns 9 :slength 5})
-false
-  )
+  false
+  clj꞉hench.path꞉> 
+  (in-window? 4 [0 1 2 3 4] {:turns 4 :slength 5})
+  false
+  clj꞉hench.path꞉> 
+  (in-window? 4 [0 1 2 3 4] {:turns 5 :slength 5})
+  true
+  clj꞉hench.path꞉> 
+  (in-window? 4 [0 1 2 3 4] {:turns 8 :slength 5})
+  true
+  clj꞉hench.path꞉> 
+  (in-window? 4 [0 1 2 3 4] {:turns 9 :slength 5})
+  false)
 
 (defn killables
   "Returns the valid path to the closest killable snake"
