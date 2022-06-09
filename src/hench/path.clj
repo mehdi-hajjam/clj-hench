@@ -328,6 +328,8 @@
     (cond
       ; if a path is empty, say it's invalid!
       (= [] rpath) false
+      ; if rpath not longer than 9 and rpath doesn't contain 2 intersections, false
+      (and (< (count rpath) 9) (< (count int-list) 2)) false
       ; if even one intersection is invalid, return false
       (some false? (mapv #(valid-intersection? % my-snake my-asp other-snakes other-asp) int-list)) false
       ; if some encounters are lethal, return false
