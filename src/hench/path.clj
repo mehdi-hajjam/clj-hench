@@ -121,10 +121,10 @@
   {"8 11" [{:x 8 :y 9} {:x 8 :y 13}]
    "10 11" [{:x 10 :y 9} {:x 10 :y 13}]})
 
-(def tunnel-l-to-r
+(def tunnel-r-to-l
   ["16 11" "17 11" "18 11" "0 11" "1 11" "2 11" "3 11" "4 11"])
 
-(def tunnel-r-to-l
+(def tunnel-l-to-r
   ["2 11" "1 11" "0 11" "18 11" "17 11" "16 11" "15 11" "14 11"])
 
 (def out-top-left
@@ -328,7 +328,7 @@
     (cond
       ; if a path is empty, say it's invalid!
       (= [] rpath) false
-      ; if rpath not longer than 9 and rpath doesn't contain 2 intersections, false
+      ; if rpath not longer than 9 and rpath doesn't contain 2 intersections, false -> it's the `don't aim to closely` fix
       (and (< (count rpath) 9) (< (count int-list) 2)) false
       ; if even one intersection is invalid, return false
       (some false? (mapv #(valid-intersection? % my-snake my-asp other-snakes other-asp) int-list)) false
@@ -359,14 +359,14 @@
     (println "fvalid?/last-int: " last-int)
     (cond
       ; if it's 3 11 or 15 11, check the validity of the shortest path till the next intersection, it should go through the food.
-      (= "3 11" food) (valid? (into (alg/nodes-in-path (alg/path-to my-asp food #_(c->n (first next-int)))) tunnel-l-to-r) my-snake my-asp other-snakes other-asp)
-      (= "15 11" food) (valid? (into (alg/nodes-in-path (alg/path-to my-asp food #_(c->n (first next-int)))) tunnel-r-to-l) my-snake my-asp other-snakes other-asp)
+      (= "3 11" food) (valid? (into (into [] (alg/nodes-in-path (alg/path-to my-asp food #_(c->n (first next-int))))) tunnel-l-to-r) my-snake my-asp other-snakes other-asp)
+      (= "15 11" food) (valid? (into (into [] (alg/nodes-in-path (alg/path-to my-asp food #_(c->n (first next-int))))) tunnel-r-to-l) my-snake my-asp other-snakes other-asp)
       ; if it's 9 11, check if I can escape top or bottom, left or right depending on which way I'm coming at 9 11
       :else (cond
-              (= {:x 8 :y 11} last-int) (or (valid? (into (alg/nodes-in-path (alg/path-to my-asp food)) out-top-right) my-snake my-asp other-snakes other-asp)
-                                            (valid? (into (alg/nodes-in-path (alg/path-to my-asp food)) out-bottom-right) my-snake my-asp other-snakes other-asp))
-              (= {:x 10 :y 11} last-int) (or (valid? (into (alg/nodes-in-path (alg/path-to my-asp food)) out-top-left) my-snake my-asp other-snakes other-asp)
-                                             (valid? (into (alg/nodes-in-path (alg/path-to my-asp food)) out-bottom-left) my-snake my-asp other-snakes other-asp))
+              (= {:x 8 :y 11} last-int) (or (valid? (into (into [] (alg/nodes-in-path (alg/path-to my-asp food))) out-top-right) my-snake my-asp other-snakes other-asp)
+                                            (valid? (into (into [] (alg/nodes-in-path (alg/path-to my-asp food))) out-bottom-right) my-snake my-asp other-snakes other-asp))
+              (= {:x 10 :y 11} last-int) (or (valid? (into (into [] (alg/nodes-in-path (alg/path-to my-asp food))) out-top-left) my-snake my-asp other-snakes other-asp)
+                                             (valid? (into (into [] (alg/nodes-in-path (alg/path-to my-asp food))) out-bottom-left) my-snake my-asp other-snakes other-asp))
               )
       
   )))
