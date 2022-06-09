@@ -6000,3 +6000,4 @@ clj꞉hench.path꞉> 
 (rand-nth ["#2600E4" "toto"])
 "toto"
 clj꞉hench.path꞉> 
+; nREPL Connection was closed

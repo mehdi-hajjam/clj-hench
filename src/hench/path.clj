@@ -331,22 +331,17 @@
    A valid path to food is firstly a valid path, and then depending on the food there are some additional conditions
    TAKES A PATH OF NAMES BECAUSE OF VALID?"
   [path my-snake my-asp other-snakes other-asp]
-  (let [food (last path)]
+  (let [food (last path)
+        list (list-intersections path)
+        next-int (vector-difference (food-intersections food) list) ;it's a vector with one coordinate at this point
+        ]
     (println "fvalid?/food: " food)
-    (and (valid? path my-snake my-asp other-snakes other-asp)
-         (cond
-           (= "3 11" food) (every? true? (mapv #(valid-intersection? % my-snake my-asp other-snakes other-asp) (food-intersections food)))
-           (= "15 11" food) (every? true? (mapv #(valid-intersection? % my-snake my-asp other-snakes other-asp) (food-intersections food)))
-           (= "9 11" food) (let [list (list-intersections path)
-                                 next-int (vector-difference (food-intersections food) list) ;it's a vector with one coordinate at this point
-                                 ]
-                             (println "fvalid?/list: " list)
-                             (println "fvalid?/next-int: " next-int)
-                             (println "fvalid?/center-food-intersection: " (center-food-intersections (c->n next-int)))
-                             (println "fvalid?validint?: " (valid-intersection? (first next-int) my-snake my-asp other-snakes other-asp))
-                             (println "fvalid?sometrue?:  " (some true? (mapv #(valid-intersection? % my-snake my-asp other-snakes other-asp) (center-food-intersections (c->n next-int)))))
-                             (and (valid-intersection? (first next-int) my-snake my-asp other-snakes other-asp)
-                                  (some true? (mapv #(valid-intersection? % my-snake my-asp other-snakes other-asp) (center-food-intersections (c->n next-int))))))))))
+    (cond
+      ; if it's 3 11 or 15 11, check the validity of the shortest path till the next intersection, it should go through the food.
+      (= "3 11" food) (valid? (alg/nodes-in-path (alg/path-to my-asp (c->n (first next-int)))) my-snake my-asp other-snakes other-asp)
+      (= "15 11" food) (valid? (alg/nodes-in-path (alg/path-to my-asp (c->n (first next-int)))) my-snake my-asp other-snakes other-asp)
+      ; if it's 9 11, just check this as well for now, but I will need in the future to amend how I see validity of a path, because one snake can't block two paths!
+      (= "9 11" food) (valid? (alg/nodes-in-path (alg/path-to my-asp (c->n (first next-int)))) my-snake my-asp other-snakes other-asp))))
 
 
 
