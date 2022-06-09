@@ -345,6 +345,14 @@
 ; coder que pour un path to food l'intersection après food doit être valide ET le path to food valide
 ; pour center food, il faut voir plus loin et l'une ou l'autre des center food intersections doit être libre aussi
 
+(defn complete-path-to-side-food
+  "Completes the path to food when food is either 3 11 or 15 11"
+  [path]
+  (let [food (last path)]
+    (cond
+      (= "3 11" food) (if (in? "18 11" path) path (into (into [] path) tunnel-l-to-r))
+      (= "15 11" food) (if (in? "O 11" path) path (into (into [] path) tunnel-r-to-l)))))
+
 (defn fvalid?
   "Returns true if a path to food is valid, false otherwise.
    A valid path to food is firstly a valid path, and then depending on the food there are some additional conditions
@@ -353,20 +361,20 @@
   (let [food (last path)
         list (list-intersections path)
         last-int (last list) ; last intersection traversed by path
-        next-int (vector-difference (food-intersections food) list) ;it's a vector with one coordinate at this point
+        #_#_next-int (vector-difference (food-intersections food) list) ;it's a vector with one coordinate at this point
         ]
     (println "fvalid?/food: " food)
     (println "fvalid?/last-int: " last-int)
     (cond
       ; if it's 3 11 or 15 11, check the validity of the shortest path till the next intersection, it should go through the food.
-      (= "3 11" food) (valid? (into (into [] (alg/nodes-in-path (alg/path-to my-asp food #_(c->n (first next-int))))) tunnel-l-to-r) my-snake my-asp other-snakes other-asp)
-      (= "15 11" food) (valid? (into (into [] (alg/nodes-in-path (alg/path-to my-asp food #_(c->n (first next-int))))) tunnel-r-to-l) my-snake my-asp other-snakes other-asp)
+      (= "3 11" food) (valid? (complete-path-to-side-food path) my-snake my-asp other-snakes other-asp)
+      (= "15 11" food) (valid? (complete-path-to-side-food path) my-snake my-asp other-snakes other-asp)
       ; if it's 9 11, check if I can escape top or bottom, left or right depending on which way I'm coming at 9 11
       :else (cond
-              (= {:x 8 :y 11} last-int) (or (valid? (into (into [] (alg/nodes-in-path (alg/path-to my-asp food))) out-top-right) my-snake my-asp other-snakes other-asp)
-                                            (valid? (into (into [] (alg/nodes-in-path (alg/path-to my-asp food))) out-bottom-right) my-snake my-asp other-snakes other-asp))
-              (= {:x 10 :y 11} last-int) (or (valid? (into (into [] (alg/nodes-in-path (alg/path-to my-asp food))) out-top-left) my-snake my-asp other-snakes other-asp)
-                                             (valid? (into (into [] (alg/nodes-in-path (alg/path-to my-asp food))) out-bottom-left) my-snake my-asp other-snakes other-asp))
+              (= {:x 8 :y 11} last-int) (or (valid? (into (into [] path) out-top-right) my-snake my-asp other-snakes other-asp)
+                                            (valid? (into (into [] path) out-bottom-right) my-snake my-asp other-snakes other-asp))
+              (= {:x 10 :y 11} last-int) (or (valid? (into (into [] path) out-top-left) my-snake my-asp other-snakes other-asp)
+                                             (valid? (into (into [] path) out-bottom-left) my-snake my-asp other-snakes other-asp))
               )
       
   )))
