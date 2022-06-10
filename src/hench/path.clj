@@ -270,8 +270,8 @@
   [path other-snake]
   (let [rpath (rest path)
         common (into [] (clojure.set/intersection (set rpath) (set (:body other-snake))))]
-    (println "rpath: " rpath)
-    (println "body other snake: " (:body other-snake))
+    #_(println "rpath: " rpath)
+    #_(println "body other snake: " (:body other-snake))
     (println "common: " common)
     (cond
       (= [] common) false
@@ -295,15 +295,12 @@
     ; si e est false (don't have an encounter with that snake), then true
     ; now redundant with my filterv not= false in list of lethal encounters
     (= e nil) true
-    ; si c'est sa tête et qu'il est plus petit que moi et que la distance à est impaire (pour éviter les neck butts) c'est ok
+    ; si c'est sa tête et qu'il est plus petit que moi c'est ok
     (and (= (:head other-snake) e)
-         (< (:length other-snake) (:length my-snake))
-         (even? (.indexOf path e))) true
+         (< (:length other-snake) (:length my-snake))) true
     ; si c'est sa tête et qu'il est plus grand ou égal à moi c'est mort (le cas égal est débattable)
     (and (= (:head other-snake) e)
-         (>= (:length other-snake) (:length my-snake))
-         (odd? (.indexOf path e)) ; when I add this it means I detect opportunities where the larger snake also dies as OK for me - it may not always be the case as I would actually die as well if even? is true
-         ) false
+         (>= (:length other-snake) (:length my-snake))) false
     ; si l’indice dans son corps à l’envers de sa case que je rencontre est plus petit ou égal à l’indice de cette rencontre dans mon path c'est bon
     (<= (reverse-index e other-snake) (index-in-path e (rest path))) true
     :else false))
@@ -315,7 +312,7 @@
   [path my-snake other-snakes]
   (let [enc-list (filterv #(not= false %) (list-encounters path (conj other-snakes my-snake)))
         leth-enc-list (mapv #(non-lethal? (:e %) path my-snake (:snake %)) enc-list)]
-    (println "lole/enc-list: " enc-list)
+    (println "lole/enc-list: " (mapv #(str (:e %) " ; " (:name (:snake %))) enc-list))
     (println "lole/leth-enc-list: " leth-enc-list)
     (filterv false? leth-enc-list)))
 
@@ -332,19 +329,19 @@
         int-list (list-intersections rpath)]
     (cond
       ; if a path is empty, say it's invalid!
-      (= [] rpath) (do (println "1st for " (last rpath))
+      (= [] rpath) (do (println "INVALID PATH - empty path for " (last rpath))
                        false)
-      ;if doesn't contain center and less than 9 and less than 3, false -> to look ahead as far as possible if don't go through the center
-      (and (not (in? "9 11" rpath)) (< (count rpath) 9) (< (count int-list) 3)) (do (println "2nd for " (last rpath))
+      ;if doesn't contain center and less than 9 (changed to 8 for a starter position at the top to still aim for the center) and less than 3, false -> to look ahead as far as possible if don't go through the center
+      (and (not (in? "9 11" rpath)) (< (count rpath) 8) (< (count int-list) 3)) (do (println "INVALID PATH - TOO SHORT OR NOT ENOUGH INTERSECTION NOT GOING THROUGH THE CENTER for " (last rpath))
                                                            false)
-      ; if rpath is not longer than 9 and rpath doesn't contain 2 intersections, false -> it's the `don't aim to closely` fix
-      (and (< (count rpath) 9) (< (count int-list) 2)) (do (println "3rd for " (last rpath))
+      ; if rpath is not longer than 9 (changed to 8, see above) and rpath doesn't contain 2 intersections, false -> it's the `don't aim to closely` fix
+      (and (< (count rpath) 8) (< (count int-list) 2)) (do (println "INVALID PATH - TOO SHORT OR NOT ENOUGH INTERSECTIONS GOING THROUGH THE CENTER for " (last rpath))
                                                            false)
       ; if even one intersection is invalid, return false
-      (some false? (mapv #(valid-intersection? % my-snake my-asp other-snakes other-asp) int-list)) (do (println "4th for " (last rpath))
+      (some false? (mapv #(valid-intersection? % my-snake my-asp other-snakes other-asp) int-list)) (do (println "INVALID PATH - INVALID INTERSECTION for " (last rpath))
                                                                                                         false)
       ; if some encounters are lethal, return false
-      (not= [] (list-of-lethal-encounters (mapv #(n->c %) npath) my-snake other-snakes)) (do (println "5th for " (last rpath))
+      (not= [] (list-of-lethal-encounters (mapv #(n->c %) npath) my-snake other-snakes)) (do (println "INVALID PATH - MORTAL POTENTIAL ENCOUNTER DETECTED for " (last rpath))
                                                                                              false)
       :else true)))
 
@@ -476,6 +473,7 @@
   "Returns the valid path to the closest killable snake"
   [my-snake my-asp other-snakes other-asp]
   (let [targets (not-at-xroads other-snakes)]
+    (println "killables/TARGETS: " targets)
     (cond
       (= targets []) []
       :else (let [indexes (mapv #(.indexOf other-snakes %) targets)
@@ -485,6 +483,9 @@
                   possible-kills (paths-in-window (:length my-snake) my-npaths-to-ints ints)
                   valid-kills (filterv #(valid? % my-snake my-asp other-snakes other-asp) possible-kills)
                   closest-kill (shortest valid-kills)]
+              (println "killables/possible-kills: " possible-kills)
+              (println "killables/valid-kills: " valid-kills)
+              (println "killables/closest-kill: " closest-kill)
               (mapv #(n->c %) closest-kill)))))
 
 ;;
@@ -494,8 +495,8 @@
 (defn first-hug
   "Returns the path to the first valid intersection"
   [my-snake my-asp other-snakes other-asp]
-  (loop [ints (nmshuffle 6 10 am-intersections)]
-    (println "first-hug/count ints: " (count ints))
+  (loop [ints (nmshuffle 6 8 am-intersections)]
+    #_(println "first-hug next int/remaining ints: " (first ints) " / " (count ints))
     (let [npath (alg/nodes-in-path (alg/path-to my-asp (c->n (first ints))))]
       (cond
         (= ints []) (do (println "No point choosing anything, no intersection is free...")
