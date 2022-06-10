@@ -359,8 +359,8 @@
   [path]
   (let [food (last path)]
     (cond
-      (= "3 11" food) (if (in? "18 11" path) path (into (into [] path) tunnel-l-to-r))
-      (= "15 11" food) (if (in? "O 11" path) path (into (into [] path) tunnel-r-to-l)))))
+      (= "3 11" food) (if (in? "18 11" path) (into (into [] path) ["4 11"]) (into (into [] path) tunnel-l-to-r))
+      (= "15 11" food) (if (in? "O 11" path) (into (into [] path) ["14 11"]) (into (into [] path) tunnel-r-to-l)))))
 
 (defn fvalid?
   "Returns true if a path to food is valid, false otherwise.
