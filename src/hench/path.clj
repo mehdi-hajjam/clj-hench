@@ -331,18 +331,18 @@
       ; if a path is empty, say it's invalid!
       (= [] rpath) (do (println "INVALID PATH - empty path for " (last rpath))
                        false)
-      ;if doesn't contain center and less than 9 (changed to 8 for a starter position at the top to still aim for the center) and less than 3, false -> to look ahead as far as possible if don't go through the center
-      (and (not (in? "9 11" rpath)) (< (count rpath) 8) (< (count int-list) 3)) (do (println "INVALID PATH - TOO SHORT OR NOT ENOUGH INTERSECTION NOT GOING THROUGH THE CENTER for " (last rpath))
-                                                           false)
-      ; if rpath is not longer than 9 (changed to 8, see above) and rpath doesn't contain 2 intersections, false -> it's the `don't aim to closely` fix
-      (and (< (count rpath) 8) (< (count int-list) 2)) (do (println "INVALID PATH - TOO SHORT OR NOT ENOUGH INTERSECTIONS GOING THROUGH THE CENTER for " (last rpath))
-                                                           false)
       ; if even one intersection is invalid, return false
       (some false? (mapv #(valid-intersection? % my-snake my-asp other-snakes other-asp) int-list)) (do (println "INVALID PATH - INVALID INTERSECTION for " (last rpath))
                                                                                                         false)
       ; if some encounters are lethal, return false
       (not= [] (list-of-lethal-encounters (mapv #(n->c %) npath) my-snake other-snakes)) (do (println "INVALID PATH - MORTAL POTENTIAL ENCOUNTER DETECTED for " (last rpath))
                                                                                              false)
+      ; if doesn't contain center and less than 9 (changed to 8 for a starter position at the top to still aim for the center) and less than 3, false -> to look ahead as far as possible if don't go through the center
+      (and (not (in? "9 11" rpath)) (< (count rpath) 8) (< (count int-list) 3)) (do (println "INVALID PATH - TOO SHORT OR NOT ENOUGH INTERSECTION NOT GOING THROUGH THE CENTER for " (last rpath))
+                                                                                    false)
+      ; if rpath is not longer than 9 (changed to 8, see above) and rpath doesn't contain 2 intersections, false -> it's the `don't aim to closely` fix
+      (and (< (count rpath) 8) (< (count int-list) 2)) (do (println "INVALID PATH - TOO SHORT OR NOT ENOUGH INTERSECTIONS GOING THROUGH THE CENTER for " (last rpath))
+                                                           false)
       :else true)))
 
 
@@ -543,5 +543,5 @@
       (and (not= [] k) (<= 23 (- my-health (- (count k) 1)))) (choose-path k 10 moves w h "Going for the kill!")
       ; sinon hug the center for now
       (not= [] f) (choose-path f 10 moves w h "Hugging the center, waiting for food or kill")
-      :else (do (println "why don't I have any option available")
-                moves))))
+      ; if nothing works follow tail as is the best move I got - may not always work and if not need to review this whole "its too short a path" thing
+      :else (choose-path (mapv #(n->c %) (alg/nodes-in-path (alg/path-to my-asp (c->n (last (:body my-snake)))))) 10 moves w h "Well I guess I'll follow my tail then - or die."))))
