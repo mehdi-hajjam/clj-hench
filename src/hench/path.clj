@@ -295,12 +295,15 @@
     ; si e est false (don't have an encounter with that snake), then true
     ; now redundant with my filterv not= false in list of lethal encounters
     (= e nil) true
-    ; si c'est sa tête et qu'il est plus petit que moi c'est ok
+    ; si c'est sa tête et qu'il est plus petit que moi et que la distance à est impaire (pour éviter les neck butts) c'est ok
     (and (= (:head other-snake) e)
-         (< (:length other-snake) (:length my-snake))) true
+         (< (:length other-snake) (:length my-snake))
+         (even? (.indexOf path e))) true
     ; si c'est sa tête et qu'il est plus grand ou égal à moi c'est mort (le cas égal est débattable)
     (and (= (:head other-snake) e)
-         (>= (:length other-snake) (:length my-snake))) false
+         (>= (:length other-snake) (:length my-snake))
+         (odd? (.indexOf path e)) ; when I add this it means I detect opportunities where the larger snake also dies as OK for me - it may not always be the case as I would actually die as well if even? is true
+         ) false
     ; si l’indice dans son corps à l’envers de sa case que je rencontre est plus petit ou égal à l’indice de cette rencontre dans mon path c'est bon
     (<= (reverse-index e other-snake) (index-in-path e (rest path))) true
     :else false))
