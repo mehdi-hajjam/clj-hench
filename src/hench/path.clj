@@ -535,8 +535,10 @@
     (println "path to kill: " (second k) " to " (last k))
     (println "path to eat: " (second e) " to " (last e))
     (cond
-      ; si je suis à moins de 50 en health ou je suis pas le plus grand snake et que j’ai de la food safe -> mange
-      (and (not= [] e) (or (<= my-health 50) (> rank-in-snakes 1))) (choose-path e 10 moves w h "Going for a snack!")
+      ; si on est multiway et que je suis à moins de 65 en health ou je suis pas le plus grand snake et que j’ai de la food safe -> mange
+      (and (not= [] e) (> nb-snakes 2) (or (<= my-health 65) (> rank-in-snakes 1))) (choose-path e 10 moves w h "Going for a snack!")
+      ; si on est en 1v1 et que ma santé est plus basse que la sienne, manger
+      (and (not= [] e) (= nb-snakes 2) (< my-health (:health (first other-snakes)))) (choose-path e 10 moves w h "I'll eat to survive you!")
       ; si il y a à tuer et qu'il me reste plus de 23 de health après -> tuer
       (and (not= [] k) (<= 23 (- my-health (- (count k) 1)))) (choose-path k 10 moves w h "Going for the kill!")
       ; sinon hug the center for now
