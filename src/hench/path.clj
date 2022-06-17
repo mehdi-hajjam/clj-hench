@@ -338,7 +338,8 @@
       (not= [] (list-of-lethal-encounters (mapv #(n->c %) npath) my-snake other-snakes)) (do (println "INVALID PATH - MORTAL POTENTIAL ENCOUNTER DETECTED for " (last rpath))
                                                                                              false)
       ; if doesn't contain center and less than 9 (changed to 8 for a starter position at the top to still aim for the center) and less than 3, false -> to look ahead as far as possible if don't go through the center
-      (and (not (in? "9 11" rpath)) (< (count rpath) 8) (< (count int-list) 3)) (do (println "INVALID PATH - TOO SHORT OR NOT ENOUGH INTERSECTION NOT GOING THROUGH THE CENTER for " (last rpath))
+      ; back to 2 intersections min to avoid leaving the center automatically when too big
+      (and (not (in? "9 11" rpath)) (< (count rpath) 8) (< (count int-list) 2)) (do (println "INVALID PATH - TOO SHORT OR NOT ENOUGH INTERSECTION NOT GOING THROUGH THE CENTER for " (last rpath))
                                                                                     false)
       ; if rpath is not longer than 9 (changed to 8, see above) and rpath doesn't contain 2 intersections, false -> it's the `don't aim to closely` fix
       (and (< (count rpath) 8) (< (count int-list) 2)) (do (println "INVALID PATH - TOO SHORT OR NOT ENOUGH INTERSECTIONS GOING THROUGH THE CENTER for " (last rpath))
@@ -379,14 +380,13 @@
       (= "3 11" food) (valid? (complete-path-to-side-food path) my-snake my-asp other-snakes other-asp)
       (= "15 11" food) (valid? (complete-path-to-side-food path) my-snake my-asp other-snakes other-asp)
       ; if it's 9 11, check if I can escape top or bottom, left or right depending on which way I'm coming at 9 11
-      :else (cond
-              (= {:x 8 :y 11} last-int) (or (valid? (into (into [] path) out-top-right) my-snake my-asp other-snakes other-asp)
-                                            (valid? (into (into [] path) out-bottom-right) my-snake my-asp other-snakes other-asp))
-              (= {:x 10 :y 11} last-int) (or (valid? (into (into [] path) out-top-left) my-snake my-asp other-snakes other-asp)
-                                             (valid? (into (into [] path) out-bottom-left) my-snake my-asp other-snakes other-asp))
-              )
-      
-  )))
+      (= "9 11" food) (cond
+                        (= {:x 8 :y 11} last-int) (or (valid? (into (into [] path) out-top-right) my-snake my-asp other-snakes other-asp)
+                                                      (valid? (into (into [] path) out-bottom-right) my-snake my-asp other-snakes other-asp))
+                        (= {:x 10 :y 11} last-int) (or (valid? (into (into [] path) out-top-left) my-snake my-asp other-snakes other-asp)
+                                                       (valid? (into (into [] path) out-bottom-left) my-snake my-asp other-snakes other-asp)))
+      :else (valid? path my-snake my-asp other-snakes other-asp)
+      )))
 
 
 
