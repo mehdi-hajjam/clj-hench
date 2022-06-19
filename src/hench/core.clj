@@ -38,7 +38,7 @@
         base-graph base-graph
         other-snakes (other-snakes body-params)
         my-asp (asp (:you body-params) base-graph body-params)
-        my-fasp (fasp (:you body-params) base-graph body-params 8 16)
+        my-fasp (fasp (:you body-params) base-graph body-params 11 22)
         other-asp (mapv #(asp % base-graph body-params) other-snakes)]
     {:body {:move (->> {:up 1 :down 1 :right 1 :left 1}
                        (begin-turn body-params)

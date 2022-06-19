@@ -430,6 +430,15 @@
                                                       (valid? (into (into [] path) out-bottom-right) my-snake my-asp other-snakes other-asp))
                         (= {:x 10 :y 11} last-int) (or (valid? (into (into [] path) out-top-left) my-snake my-asp other-snakes other-asp)
                                                        (valid? (into (into [] path) out-bottom-left) my-snake my-asp other-snakes other-asp)))
+      (= "9 1" food) (cond
+                       (= {:x 8 :y 1} last-int) (valid? (into (into [] path) ["10 1"]) my-snake my-asp other-snakes other-asp)
+                       (= {:x 10 :y 1} last-int) (valid? (into (into [] path) ["8 1"]) my-snake my-asp other-snakes other-asp))
+      (= "9 5" food) (cond
+                       (= {:x 8 :y 5} last-int) (valid? (into (into [] path) ["10 5"]) my-snake my-asp other-snakes other-asp)
+                       (= {:x 10 :y 5} last-int) (valid? (into (into [] path) ["8 5"]) my-snake my-asp other-snakes other-asp))
+      (= "9 17" food) (cond
+                        (= {:x 8 :y 17} last-int) (valid? (into (into [] path) ["10 17"]) my-snake my-asp other-snakes other-asp)
+                        (= {:x 10 :y 17} last-int) (valid? (into (into [] path) ["8 17"]) my-snake my-asp other-snakes other-asp))
       :else (valid? path my-snake my-asp other-snakes other-asp)
       )))
 
