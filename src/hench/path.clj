@@ -60,7 +60,14 @@
 ;; it will be nshuffled for a certain n to avoid obvious looping that'd be detrimental
 
 (def am-intersections
-  [;centermost as center is key
+  [;most options to escape
+   {:x 4 :y 11}
+   {:x 14 :y 11}
+   {:x 4 :y 7}
+   {:x 14 :y 7}
+   {:x 4 :y 17}
+   {:x 14 :y 17}
+  ;centermost ones
    {:x 8 :y 11}
    {:x 10 :y 11}
    {:x 8 :y 13}
@@ -68,12 +75,7 @@
    {:x 8 :y 9}
    {:x 10 :y 9}
    ;other key ones, but less key
-   {:x 4 :y 11}
-   {:x 14 :y 11}
-   {:x 4 :y 7}
-   {:x 14 :y 7}
-   {:x 4 :y 17}
-   {:x 14 :y 17}
+
    ;others, mostly 3 escape routes ones, and will be shuffled as well
    {:x 1 :y 1}
    {:x 8 :y 1}
@@ -272,7 +274,7 @@
         common (into [] (clojure.set/intersection (set rpath) (set (:body other-snake))))]
     #_(println "rpath: " rpath)
     #_(println "body other snake: " (:body other-snake))
-    (println "common: " common)
+    #_(println "common: " common)
     (cond
       (= [] common) false
       :else (let [indexes (mapv #(.indexOf rpath %) common)
@@ -312,9 +314,11 @@
   [path my-snake other-snakes]
   (let [enc-list (filterv #(not= false %) (list-encounters path (conj other-snakes my-snake)))
         leth-enc-list (mapv #(non-lethal? (:e %) path my-snake (:snake %)) enc-list)]
-    (println "lole/enc-list: " (mapv #(str (:e %) " ; " (:name (:snake %))) enc-list))
-    (println "lole/leth-enc-list: " leth-enc-list)
-    (filterv false? leth-enc-list)))
+    #_(println "lole/enc-list: " (mapv #(str (:e %) " ; " (:name (:snake %))) enc-list))
+    #_(println "lole/leth-enc-list: " leth-enc-list)
+    (filterv #(not (non-lethal? (:e %) path my-snake (:snake %))) enc-list)
+    #_(filterv false? leth-enc-list)
+    ))
 
 ; path validation using all three fns above
 ; must apply to all intersections in path, and all first obstacles in path
@@ -326,24 +330,36 @@
    TAKES A PATH OF NAMES BECAUSE OF LIST-INTERSECTIONS (could be changed if needed)"
   [npath my-snake my-asp other-snakes other-asp]
   (let [rpath (rest npath)
-        int-list (list-intersections rpath)]
+        int-list (list-intersections rpath)
+        ifi (.indexOf rpath (c->n (first int-list))) ;index of first intersection in rpath
+        ]
     (cond
       ; if a path is empty, say it's invalid!
       (= [] rpath) (do (println "INVALID PATH - empty path for " (last rpath))
                        false)
       ; if even one intersection is invalid, return false
-      (some false? (mapv #(valid-intersection? % my-snake my-asp other-snakes other-asp) int-list)) (do (println "INVALID PATH - INVALID INTERSECTION for " (last rpath))
-                                                                                                        false)
+      #_#_(some false? (mapv #(valid-intersection? % my-snake my-asp other-snakes other-asp) int-list)) (do (println "INVALID PATH - INVALID INTERSECTION for " (last rpath))
+                                                                                                            false)
+      ; if the first intersection is invalid, return false
+      (false? (first (mapv #(valid-intersection? % my-snake my-asp other-snakes other-asp) int-list))) (do (println "INVALID PATH - FIRST INTERSECTION INVALID for " (last rpath))
+                                                                                                           false)
+
       ; if some encounters are lethal, return false
-      (not= [] (list-of-lethal-encounters (mapv #(n->c %) npath) my-snake other-snakes)) (do (println "INVALID PATH - MORTAL POTENTIAL ENCOUNTER DETECTED for " (last rpath))
+      #_#_(not= [] (list-of-lethal-encounters (mapv #(n->c %) npath) my-snake other-snakes)) (do (println "INVALID PATH - MORTAL POTENTIAL ENCOUNTER DETECTED for " (last rpath))
                                                                                              false)
+      ; if some encouters before ifi are lethal, then return false
+      (some #(>= ifi (.indexOf rpath (c->n (:e %)))) (list-of-lethal-encounters (mapv #(n->c %) npath) my-snake other-snakes)) (do (println "INVALID PATH - MORTAL ENCOUNTER DETECTED for " (last rpath))
+                                                                                                                                   false)
+      
       ; if doesn't contain center and less than 9 (changed to 8 for a starter position at the top to still aim for the center) and less than 3, false -> to look ahead as far as possible if don't go through the center
       ; back to 2 intersections min to avoid leaving the center automatically when too big
-      (and (not (in? "9 11" rpath)) (< (count rpath) 8) (< (count int-list) 2)) (do (println "INVALID PATH - TOO SHORT OR NOT ENOUGH INTERSECTION NOT GOING THROUGH THE CENTER for " (last rpath))
+      #_#_(and (not (in? "9 11" rpath)) (< (count rpath) 8) (< (count int-list) 2)) (do (println "INVALID PATH - TOO SHORT OR NOT ENOUGH INTERSECTION NOT GOING THROUGH THE CENTER for " (last rpath))
                                                                                     false)
       ; if rpath is not longer than 9 (changed to 8, see above) and rpath doesn't contain 2 intersections, false -> it's the `don't aim to closely` fix
-      (and (< (count rpath) 8) (< (count int-list) 2)) (do (println "INVALID PATH - TOO SHORT OR NOT ENOUGH INTERSECTIONS GOING THROUGH THE CENTER for " (last rpath))
+      #_#_(and (< (count rpath) 8) (< (count int-list) 2)) (do (println "INVALID PATH - TOO SHORT OR NOT ENOUGH INTERSECTIONS GOING THROUGH THE CENTER for " (last rpath))
                                                            false)
+      (< (count rpath) 8) (do (println "INVALID PATH - too short for " (last rpath))
+                              false)
       :else true)))
 
 
@@ -495,7 +511,7 @@
 (defn first-hug
   "Returns the path to the first valid intersection"
   [my-snake my-asp other-snakes other-asp]
-  (loop [ints (nmshuffle 6 8 am-intersections)]
+  (loop [ints (nmshuffle 6 6 am-intersections)]
     #_(println "first-hug next int/remaining ints: " (first ints) " / " (count ints))
     (let [npath (alg/nodes-in-path (alg/path-to my-asp (c->n (first ints))))]
       (cond
