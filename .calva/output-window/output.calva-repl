@@ -578,4 +578,461 @@ clj꞉hench.utils꞉> (nmshuffle 0 0 [1 2 3 4 5])
 clj꞉hench.utils꞉> 
 (nmshuffle 2 2 [1 2 3 4 5])
 [2 1 5 4 3]
+clj꞉hench.utils꞉> (n->c "")
+; Syntax error compiling at (.calva/output-window/output.calva-repl:581:19).
+; Unable to resolve symbol: n->c in this context
 clj꞉hench.utils꞉> 
+; Evaluating file: utils.clj
+#'hench.utils/shortest
+clj꞉hench.utils꞉> 
+; Evaluating file: path.clj
+#'hench.path/strategize
+clj꞉hench.path꞉> (list-intersections [])
+[]
+clj꞉hench.path꞉> 
+; Evaluating file: path.clj
+#'hench.path/strategize
+clj꞉hench.path꞉> 
+#'hench.path/fasp
+clj꞉hench.path꞉> (fasp (:you am-sample) am-sample 8 12)
+; Execution error (ArityException) at hench.path/eval20150 (REPL:597).
+; Wrong number of args (4) passed to: hench.path/fasp
+clj꞉hench.path꞉> 
+(fasp (:you am-sample) (create-base-graph am-sample) am-sample 8 12)
+nil
+clj꞉hench.path꞉> 
+(fasp (:you am-sample) (create-base-graph am-sample) am-sample 8 100)
+nil
+clj꞉hench.path꞉> 
+(fasp (:you am-sample) (create-base-graph am-sample) am-sample 0 100)
+({:list-of-edges #<Delay@709d5bbf: :not-delivered>, :cost 0, :end "2 1", :last-edge ()}
+ {:list-of-edges #<Delay@4a0e49db: :not-delivered>,
+  :cost 1,
+  :end "1 1",
+  :last-edge {:id #uuid "cc414536-49ef-4404-b94f-a99fb3bc6876", :src "2 1", :dest "1 1", :mirror? false}})
+clj꞉hench.path꞉> (mapv #(c->n %) am-intersections)
+["4 11"
+ "14 11"
+ "4 7"
+ "14 7"
+ "4 17"
+ "14 17"
+ "8 11"
+ "10 11"
+ "8 13"
+ "10 13"
+ "8 9"
+ "10 9"
+ "1 1"
+ "8 1"
+ "10 1"
+ "17 1"
+ "2 3"
+ "16 3"
+ "4 5"
+ "6 5"
+ "8 5"
+ "10 5"
+ "12 5"
+ "14 5"
+ "1 7"
+ "6 7"
+ "12 7"
+ "17 7"
+ "6 9"
+ "12 9"
+ "6 11"
+ "12 11"
+ "1 15"
+ "4 15"
+ "14 15"
+ "17 15"
+ "1 17"
+ "6 17"
+ "8 17"
+ "10 17"
+ "12 17"
+ "17 17"
+ "1 19"
+ "4 19"
+ "14 19"
+ "17 19"]
+clj꞉hench.path꞉> 
+#'hench.path/fasp
+clj꞉hench.path꞉> 
+(fasp (:you am-sample) (create-base-graph am-sample) am-sample 0 100)
+({:list-of-edges #<Delay@3521faa4: :not-delivered>, :cost 0, :end "2 1", :last-edge ()}
+ {:list-of-edges #<Delay@6e592f64: :not-delivered>,
+  :cost 1,
+  :end "1 1",
+  :last-edge {:id #uuid "de471ab2-8f25-4024-939e-3b083d2e2161", :src "2 1", :dest "1 1", :mirror? false}}
+ {:list-of-edges #<Delay@50912459: :not-delivered>,
+  :cost 2,
+  :end "1 2",
+  :last-edge {:id #uuid "474ba418-b8c0-4ff7-8d00-93864a05c49e", :src "1 1", :dest "1 2", :mirror? true}}
+ {:list-of-edges #<Delay@5332f816: :not-delivered>,
+  :cost 2,
+  :end "1 0",
+  :last-edge {:id #uuid "636c6574-b687-450a-a17d-0d4abd4cf2b2", :src "1 1", :dest "1 0", :mirror? true}}
+ {:list-of-edges #<Delay@33f2722e: :not-delivered>,
+  :cost 3,
+  :end "1 3",
+  :last-edge {:id #uuid "21630611-87e3-45ac-9da6-901f3e622f75", :src "1 2", :dest "1 3", :mirror? false}}
+ {:list-of-edges #<Delay@71674b5f: :not-delivered>,
+  :cost 3,
+  :end "1 20",
+  :last-edge {:id #uuid "e003c0b5-afa1-4e29-80e4-aad33c4d86b1", :src "1 0", :dest "1 20", :mirror? false}}
+ {:list-of-edges #<Delay@4c5efdbf: :not-delivered>,
+  :cost 4,
+  :end "2 3",
+  :last-edge {:id #uuid "a215f4e9-6479-443d-82ad-61b345a3d5ff", :src "1 3", :dest "2 3", :mirror? true}})
+clj꞉hench.path꞉> 
+#'hench.path/fasp
+clj꞉hench.path꞉> 
+(fasp (:you am-sample) (create-base-graph am-sample) am-sample 0 100)
+({:list-of-edges #<Delay@7c1ffe8a: :not-delivered>, :cost 0, :end "2 1", :last-edge ()}
+ {:list-of-edges #<Delay@4c67d30e: :not-delivered>,
+  :cost 1,
+  :end "1 1",
+  :last-edge {:id #uuid "79c14934-1e1c-4000-b73f-a3c3338c9373", :src "2 1", :dest "1 1", :mirror? false}}
+ {:list-of-edges #<Delay@548d2bc7: :not-delivered>,
+  :cost 2,
+  :end "1 2",
+  :last-edge {:id #uuid "46985c3e-8845-4602-9ea8-9dd8fa034986", :src "1 1", :dest "1 2", :mirror? true}}
+ {:list-of-edges #<Delay@10a441bc: :not-delivered>,
+  :cost 2,
+  :end "1 0",
+  :last-edge {:id #uuid "6d842a56-df07-4fb1-af43-60addc9d7f70", :src "1 1", :dest "1 0", :mirror? true}}
+ {:list-of-edges #<Delay@65c55a8: :not-delivered>,
+  :cost 3,
+  :end "1 3",
+  :last-edge {:id #uuid "06d6c199-a576-4b8d-8885-3f6de3a50511", :src "1 2", :dest "1 3", :mirror? false}}
+ {:list-of-edges #<Delay@7e6b5722: :not-delivered>,
+  :cost 3,
+  :end "1 20",
+  :last-edge {:id #uuid "a9c32de1-b308-4839-9329-d4c31bf39723", :src "1 0", :dest "1 20", :mirror? false}}
+ {:list-of-edges #<Delay@36b1f395: :not-delivered>,
+  :cost 4,
+  :end "2 3",
+  :last-edge {:id #uuid "33ca8f58-9582-4fd8-a811-58bf4673db5f", :src "1 3", :dest "2 3", :mirror? true}}
+ {:list-of-edges #<Delay@69efc6e2: :not-delivered>,
+  :cost 4,
+  :end "1 19",
+  :last-edge {:id #uuid "01c2b289-631f-46af-b5cf-aa0f6c015c69", :src "1 20", :dest "1 19", :mirror? true}}
+ {:list-of-edges #<Delay@2fc95812: :not-delivered>,
+  :cost 5,
+  :end "3 3",
+  :last-edge {:id #uuid "9d0e0f05-f073-491b-b31d-97babbe7028b", :src "2 3", :dest "3 3", :mirror? true}}
+ {:list-of-edges #<Delay@176cbc4d: :not-delivered>,
+  :cost 5,
+  :end "2 4",
+  :last-edge {:id #uuid "3bcb3744-99e0-4d10-8fb6-5e4c9f58d640", :src "2 3", :dest "2 4", :mirror? true}}
+ {:list-of-edges #<Delay@599289d3: :not-delivered>,
+  :cost 5,
+  :end "1 18",
+  :last-edge {:id #uuid "84507472-c43b-4da4-bd89-a65f2adc9980", :src "1 19", :dest "1 18", :mirror? true}}
+ {:list-of-edges #<Delay@23c7861: :not-delivered>,
+  :cost 5,
+  :end "2 19",
+  :last-edge {:id #uuid "d04ee752-4575-49ea-8d78-0de749aa0f86", :src "1 19", :dest "2 19", :mirror? true}}
+ {:list-of-edges #<Delay@38f0893e: :not-delivered>,
+  :cost 6,
+  :end "4 3",
+  :last-edge {:id #uuid "784c4916-6a32-4764-a646-ca2dabb9f3c3", :src "3 3", :dest "4 3", :mirror? false}}
+ {:list-of-edges #<Delay@30937fc0: :not-delivered>,
+  :cost 6,
+  :end "2 5",
+  :last-edge {:id #uuid "801decb1-71e7-40ce-91d0-782e845446ab", :src "2 4", :dest "2 5", :mirror? true}}
+ {:list-of-edges #<Delay@627e63d9: :not-delivered>,
+  :cost 6,
+  :end "1 17",
+  :last-edge {:id #uuid "f7b1d465-16a5-4d54-8766-8ca99e59d7a9", :src "1 18", :dest "1 17", :mirror? true}}
+ {:list-of-edges #<Delay@731bd724: :not-delivered>,
+  :cost 6,
+  :end "3 19",
+  :last-edge {:id #uuid "f79281e8-67b1-44b8-b167-a3eee9f35798", :src "2 19", :dest "3 19", :mirror? true}}
+ {:list-of-edges #<Delay@5d98d3bc: :not-delivered>,
+  :cost 7,
+  :end "4 4",
+  :last-edge {:id #uuid "8a1bb901-278f-4b83-9867-a4ada44a0e18", :src "4 3", :dest "4 4", :mirror? false}}
+ {:list-of-edges #<Delay@7d7fc1e1: :not-delivered>,
+  :cost 7,
+  :end "1 5",
+  :last-edge {:id #uuid "cd589302-c34b-483e-a970-3b686a4a0c5e", :src "2 5", :dest "1 5", :mirror? false}}
+ {:list-of-edges #<Delay@447fd45e: :not-delivered>,
+  :cost 7,
+  :end "2 17",
+  :last-edge {:id #uuid "d7a0e8c5-2861-4bda-92e6-b6fa89464f24", :src "1 17", :dest "2 17", :mirror? false}}
+ {:list-of-edges #<Delay@21daf09c: :not-delivered>,
+  :cost 7,
+  :end "1 16",
+  :last-edge {:id #uuid "e52515be-ff41-4de9-9935-30f7339026aa", :src "1 17", :dest "1 16", :mirror? false}}
+ {:list-of-edges #<Delay@4780bbfc: :not-delivered>,
+  :cost 7,
+  :end "4 19",
+  :last-edge {:id #uuid "79066412-6e49-448e-b5ef-2ccd5b761e97", :src "3 19", :dest "4 19", :mirror? false}}
+ {:list-of-edges #<Delay@5ed17379: :not-delivered>,
+  :cost 8,
+  :end "4 5",
+  :last-edge {:id #uuid "6d1890d2-92b7-4948-98c6-651c6939fa6a", :src "4 4", :dest "4 5", :mirror? false}}
+ {:list-of-edges #<Delay@4536529: :not-delivered>,
+  :cost 8,
+  :end "1 6",
+  :last-edge {:id #uuid "158175e5-6ecb-4892-bc88-e8eab9fc326b", :src "1 5", :dest "1 6", :mirror? true}}
+ {:list-of-edges #<Delay@55397127: :not-delivered>,
+  :cost 8,
+  :end "3 17",
+  :last-edge {:id #uuid "44785ef6-9232-420b-9a2e-47f5d02aa546", :src "2 17", :dest "3 17", :mirror? true}}
+ {:list-of-edges #<Delay@48726eac: :not-delivered>,
+  :cost 8,
+  :end "1 15",
+  :last-edge {:id #uuid "fe6fdfb5-c698-4381-817c-8c0166826fda", :src "1 16", :dest "1 15", :mirror? false}}
+ {:list-of-edges #<Delay@26de0e0: :not-delivered>,
+  :cost 8,
+  :end "4 18",
+  :last-edge {:id #uuid "0ae728c1-8cc6-4801-ba92-38961a4d7987", :src "4 19", :dest "4 18", :mirror? true}}
+ {:list-of-edges #<Delay@b76f738: :not-delivered>,
+  :cost 8,
+  :end "5 19",
+  :last-edge {:id #uuid "423537d4-83ba-4386-a5e3-7917a42dc2da", :src "4 19", :dest "5 19", :mirror? false}}
+ {:list-of-edges #<Delay@a18795d: :not-delivered>,
+  :cost 9,
+  :end "5 5",
+  :last-edge {:id #uuid "2be13873-99e5-4bb7-8643-efacbdeed69c", :src "4 5", :dest "5 5", :mirror? true}}
+ {:list-of-edges #<Delay@49fb73af: :not-delivered>,
+  :cost 9,
+  :end "4 6",
+  :last-edge {:id #uuid "309df8b5-e198-4e48-bab5-a27684f047c9", :src "4 5", :dest "4 6", :mirror? true}}
+ {:list-of-edges #<Delay@5ff1d3d6: :not-delivered>,
+  :cost 9,
+  :end "1 7",
+  :last-edge {:id #uuid "b134a200-a3ff-4f66-9b38-421200ae9caf", :src "1 6", :dest "1 7", :mirror? true}}
+ {:list-of-edges #<Delay@340ce040: :not-delivered>,
+  :cost 9,
+  :end "4 17",
+  :last-edge {:id #uuid "7a3a0598-0add-43e5-a7e5-35e68872bb12", :src "3 17", :dest "4 17", :mirror? false}}
+ {:list-of-edges #<Delay@753514c4: :not-delivered>,
+  :cost 9,
+  :end "1 14",
+  :last-edge {:id #uuid "d30af0fa-8595-4bfe-9248-a4094d0392c8", :src "1 15", :dest "1 14", :mirror? true}}
+ {:list-of-edges #<Delay@7008474: :not-delivered>,
+  :cost 9,
+  :end "2 15",
+  :last-edge {:id #uuid "46dcdb24-5832-4f2a-8153-9e7f87a70e4f", :src "1 15", :dest "2 15", :mirror? false}}
+ {:list-of-edges #<Delay@c55361c: :not-delivered>,
+  :cost 9,
+  :end "6 19",
+  :last-edge {:id #uuid "0582edb8-135a-4e12-a5b5-2ec63112ef3c", :src "5 19", :dest "6 19", :mirror? true}}
+ {:list-of-edges #<Delay@55a1ccdc: :not-delivered>,
+  :cost 10,
+  :end "6 5",
+  :last-edge {:id #uuid "8cfb63b6-f8d1-4af7-a624-7af80628af3a", :src "5 5", :dest "6 5", :mirror? true}}
+ {:list-of-edges #<Delay@482f1d53: :not-delivered>,
+  :cost 10,
+  :end "4 7",
+  :last-edge {:id #uuid "fc67bf73-128f-4936-a6f9-3da0b89631b9", :src "4 6", :dest "4 7", :mirror? false}}
+ {:list-of-edges #<Delay@1a53b4d4: :not-delivered>,
+  :cost 10,
+  :end "1 8",
+  :last-edge {:id #uuid "f4a22f85-6c4f-4ca2-b0cb-d21a66f3de63", :src "1 7", :dest "1 8", :mirror? false}}
+ {:list-of-edges #<Delay@15e06a1c: :not-delivered>,
+  :cost 10,
+  :end "2 7",
+  :last-edge {:id #uuid "2df0e0c4-4833-4031-a67b-31f0fa6da7de", :src "1 7", :dest "2 7", :mirror? false}}
+ {:list-of-edges #<Delay@2c9730ac: :not-delivered>,
+  :cost 10,
+  :end "5 17",
+  :last-edge {:id #uuid "910c7efc-3ca7-46d2-a367-06504b1ba61b", :src "4 17", :dest "5 17", :mirror? true}}
+ {:list-of-edges #<Delay@7ecf0552: :not-delivered>,
+  :cost 10,
+  :end "4 16",
+  :last-edge {:id #uuid "b90b929e-68b9-40fa-a435-95728418d114", :src "4 17", :dest "4 16", :mirror? false}}
+ {:list-of-edges #<Delay@79cd85fc: :not-delivered>,
+  :cost 10,
+  :end "2 14",
+  :last-edge {:id #uuid "40d3e859-48d4-4732-be04-c13006bb343f", :src "1 14", :dest "2 14", :mirror? false}}
+ {:list-of-edges #<Delay@21612d70: :not-delivered>,
+  :cost 10,
+  :end "1 13",
+  :last-edge {:id #uuid "aa5f703c-84e9-4ea0-9331-55ed5b0eca8b", :src "1 14", :dest "1 13", :mirror? false}}
+ {:list-of-edges #<Delay@3de0b0ed: :not-delivered>,
+  :cost 10,
+  :end "3 15",
+  :last-edge {:id #uuid "5f076588-a496-46c1-bf14-41109b2571f4", :src "2 15", :dest "3 15", :mirror? true}}
+ {:list-of-edges #<Delay@33c3f348: :not-delivered>,
+  :cost 10,
+  :end "7 19",
+  :last-edge {:id #uuid "9c970927-64a3-4f07-8eb7-62efaba3e379", :src "6 19", :dest "7 19", :mirror? true}}
+ {:list-of-edges #<Delay@62dc2514: :not-delivered>,
+  :cost 11,
+  :end "7 5",
+  :last-edge {:id #uuid "11c9345c-c5ff-4021-9333-1de9ebf04b79", :src "6 5", :dest "7 5", :mirror? false}}
+ {:list-of-edges #<Delay@68758285: :not-delivered>,
+  :cost 11,
+  :end "6 4",
+  :last-edge {:id #uuid "50e2986d-d5d9-4e15-9c41-071b5cbdd180", :src "6 5", :dest "6 4", :mirror? false}}
+ {:list-of-edges #<Delay@367546f7: :not-delivered>,
+  :cost 11,
+  :end "5 7",
+  :last-edge {:id #uuid "a9496b45-c39b-42c3-9b83-31ffbf88f991", :src "4 7", :dest "5 7", :mirror? false}}
+ {:list-of-edges #<Delay@770b7417: :not-delivered>,
+  :cost 11,
+  :end "4 8",
+  :last-edge {:id #uuid "e05ca284-a28b-4ab9-8d05-7bb1ff12868a", :src "4 7", :dest "4 8", :mirror? false}}
+ {:list-of-edges #<Delay@22a5ad1d: :not-delivered>,
+  :cost 11,
+  :end "3 7",
+  :last-edge {:id #uuid "49f810db-77d0-40d6-8db0-3339d980447a", :src "4 7", :dest "3 7", :mirror? false}}
+ {:list-of-edges #<Delay@296e23cc: :not-delivered>,
+  :cost 11,
+  :end "2 8",
+  :last-edge {:id #uuid "1390814c-e48a-4da0-9ee8-5d312414469b", :src "1 8", :dest "2 8", :mirror? true}}
+ ...)
+clj꞉hench.path꞉> 
+(fasp (:you am-sample) (create-base-graph am-sample) am-sample 8 10)
+({:list-of-edges #<Delay@6031e360: :not-delivered>,
+  :cost 8,
+  :end "4 5",
+  :last-edge {:id #uuid "6b270ba8-962b-4df9-8484-4b1d3edc4d41", :src "4 4", :dest "4 5", :mirror? false}}
+ {:list-of-edges #<Delay@440da395: :not-delivered>,
+  :cost 8,
+  :end "1 6",
+  :last-edge {:id #uuid "61311a32-0390-4eb6-91d3-19c911503ed6", :src "1 5", :dest "1 6", :mirror? true}}
+ {:list-of-edges #<Delay@343ecfda: :not-delivered>,
+  :cost 8,
+  :end "3 17",
+  :last-edge {:id #uuid "cad6f132-27f3-4aa4-b284-5131ca7e5cf0", :src "2 17", :dest "3 17", :mirror? true}}
+ {:list-of-edges #<Delay@c296260: :not-delivered>,
+  :cost 8,
+  :end "1 15",
+  :last-edge {:id #uuid "4316fa6e-0fa2-438b-a5bb-91809b0e61ba", :src "1 16", :dest "1 15", :mirror? false}}
+ {:list-of-edges #<Delay@c83d199: :not-delivered>,
+  :cost 8,
+  :end "4 18",
+  :last-edge {:id #uuid "f9214114-10e6-4d27-a450-55f507eecc38", :src "4 19", :dest "4 18", :mirror? true}}
+ {:list-of-edges #<Delay@3f6941b4: :not-delivered>,
+  :cost 8,
+  :end "5 19",
+  :last-edge {:id #uuid "676f1651-3f08-4c42-82ec-4e55ec647efa", :src "4 19", :dest "5 19", :mirror? false}}
+ {:list-of-edges #<Delay@2570c12: :not-delivered>,
+  :cost 9,
+  :end "5 5",
+  :last-edge {:id #uuid "50773409-e526-42e3-a064-c328e118884c", :src "4 5", :dest "5 5", :mirror? true}}
+ {:list-of-edges #<Delay@45764497: :not-delivered>,
+  :cost 9,
+  :end "4 6",
+  :last-edge {:id #uuid "bde4ecfc-2b03-43ff-a89e-5ae4c70e0631", :src "4 5", :dest "4 6", :mirror? true}}
+ {:list-of-edges #<Delay@5cc9c5b9: :not-delivered>,
+  :cost 9,
+  :end "1 7",
+  :last-edge {:id #uuid "5ef3a30e-d073-48fb-b520-005deb51d855", :src "1 6", :dest "1 7", :mirror? true}}
+ {:list-of-edges #<Delay@1decac7a: :not-delivered>,
+  :cost 9,
+  :end "4 17",
+  :last-edge {:id #uuid "7e321f9f-6333-4fd0-8c28-bd6299bca359", :src "3 17", :dest "4 17", :mirror? false}}
+ {:list-of-edges #<Delay@63ef5966: :not-delivered>,
+  :cost 9,
+  :end "1 14",
+  :last-edge {:id #uuid "1435ebbc-7700-4209-97d7-03483bd8acc1", :src "1 15", :dest "1 14", :mirror? true}}
+ {:list-of-edges #<Delay@58e83594: :not-delivered>,
+  :cost 9,
+  :end "2 15",
+  :last-edge {:id #uuid "3eb29adb-a6d5-489d-b75f-1acfc873be4e", :src "1 15", :dest "2 15", :mirror? false}}
+ {:list-of-edges #<Delay@63ec8075: :not-delivered>,
+  :cost 9,
+  :end "6 19",
+  :last-edge {:id #uuid "48b746a8-7576-46a3-886e-6dc716bb6b42", :src "5 19", :dest "6 19", :mirror? true}}
+ {:list-of-edges #<Delay@6871ed07: :not-delivered>,
+  :cost 10,
+  :end "6 5",
+  :last-edge {:id #uuid "96c4448e-453f-4cff-92c6-94be207250df", :src "5 5", :dest "6 5", :mirror? true}}
+ {:list-of-edges #<Delay@2e978ecb: :not-delivered>,
+  :cost 10,
+  :end "4 7",
+  :last-edge {:id #uuid "c6578fe3-98cc-4404-9e5c-96914d6091d4", :src "4 6", :dest "4 7", :mirror? false}}
+ {:list-of-edges #<Delay@48d15b70: :not-delivered>,
+  :cost 10,
+  :end "1 8",
+  :last-edge {:id #uuid "a1401b8a-8420-4d05-8389-d81cdf0102ed", :src "1 7", :dest "1 8", :mirror? false}}
+ {:list-of-edges #<Delay@771ac8f5: :not-delivered>,
+  :cost 10,
+  :end "2 7",
+  :last-edge {:id #uuid "73a32bac-f976-4b20-a960-5625ff5436d1", :src "1 7", :dest "2 7", :mirror? false}}
+ {:list-of-edges #<Delay@214ef187: :not-delivered>,
+  :cost 10,
+  :end "5 17",
+  :last-edge {:id #uuid "dd5c4db4-c2ad-43f8-9503-0e34009ae884", :src "4 17", :dest "5 17", :mirror? true}}
+ {:list-of-edges #<Delay@79221374: :not-delivered>,
+  :cost 10,
+  :end "4 16",
+  :last-edge {:id #uuid "203a126b-a8e1-455a-b62a-b423f3826340", :src "4 17", :dest "4 16", :mirror? false}}
+ {:list-of-edges #<Delay@59892727: :not-delivered>,
+  :cost 10,
+  :end "2 14",
+  :last-edge {:id #uuid "a474d482-be00-4ffc-825f-f400ad6d6c44", :src "1 14", :dest "2 14", :mirror? false}}
+ {:list-of-edges #<Delay@7150a301: :not-delivered>,
+  :cost 10,
+  :end "1 13",
+  :last-edge {:id #uuid "5306c54f-c27f-4505-9fd3-c04cd0ba1074", :src "1 14", :dest "1 13", :mirror? false}}
+ {:list-of-edges #<Delay@6b8cca56: :not-delivered>,
+  :cost 10,
+  :end "3 15",
+  :last-edge {:id #uuid "059febd3-2eb3-4ee9-a195-3317065ff398", :src "2 15", :dest "3 15", :mirror? true}}
+ {:list-of-edges #<Delay@5cf60347: :not-delivered>,
+  :cost 10,
+  :end "7 19",
+  :last-edge {:id #uuid "d0c510fc-3491-4595-a0d9-f91a6a0b87a5", :src "6 19", :dest "7 19", :mirror? true}})
+clj꞉hench.path꞉> 
+(fasp (:you am-sample) (create-base-graph am-sample) am-sample 8 10)
+#'hench.path/fasp
+clj꞉hench.path꞉> 
+(fasp (:you am-sample) (create-base-graph am-sample) am-sample 0 100)
+({:list-of-edges #<Delay@51170893: :not-delivered>, :cost 0, :end "2 1", :last-edge ()}
+ {:list-of-edges #<Delay@16728645: :not-delivered>,
+  :cost 1,
+  :end "1 1",
+  :last-edge {:id #uuid "a943a9c4-e250-4387-a134-f48933ac949a", :src "2 1", :dest "1 1", :mirror? false}}
+ {:list-of-edges #<Delay@2ab7a696: :not-delivered>,
+  :cost 2,
+  :end "1 2",
+  :last-edge {:id #uuid "f8366855-922f-423d-9380-6c0ed793bbd6", :src "1 1", :dest "1 2", :mirror? true}}
+ {:list-of-edges #<Delay@49298a0e: :not-delivered>,
+  :cost 2,
+  :end "1 0",
+  :last-edge {:id #uuid "58822547-d50d-4181-bba3-8cb144ed8c80", :src "1 1", :dest "1 0", :mirror? true}}
+ {:list-of-edges #<Delay@228439d7: :not-delivered>,
+  :cost 3,
+  :end "1 3",
+  :last-edge {:id #uuid "868dbc99-da42-41bf-adb1-f5c27db20e19", :src "1 2", :dest "1 3", :mirror? false}}
+ {:list-of-edges #<Delay@76ebde59: :not-delivered>,
+  :cost 3,
+  :end "1 20",
+  :last-edge {:id #uuid "45282316-9b18-433c-b4c1-5f8ac4903bbb", :src "1 0", :dest "1 20", :mirror? false}}
+ {:list-of-edges #<Delay@1b039609: :not-delivered>,
+  :cost 4,
+  :end "2 3",
+  :last-edge {:id #uuid "ddc52b4a-766b-46a5-8f34-5c2217f5dd7b", :src "1 3", :dest "2 3", :mirror? true}})
+clj꞉hench.path꞉> 
+#'hench.path/fasp
+clj꞉hench.path꞉> 
+(fasp (:you am-sample) (create-base-graph am-sample) am-sample 0 100)
+({:list-of-edges #<Delay@564ac076: :not-delivered>, :cost 0, :end "2 1", :last-edge ()}
+ {:list-of-edges #<Delay@3aee176: :not-delivered>,
+  :cost 1,
+  :end "1 1",
+  :last-edge {:id #uuid "b34af5a5-6b8e-49b4-a620-1dfab7642579", :src "2 1", :dest "1 1", :mirror? false}})
+clj꞉hench.path꞉> 
+(fasp (:you am-sample) (create-base-graph am-sample) am-sample 3 5)
+nil
+clj꞉hench.path꞉> 
+(fasp (:you am-sample) (create-base-graph am-sample) am-sample 1 9)
+({:list-of-edges #<Delay@4a88c8e1: :not-delivered>,
+  :cost 1,
+  :end "1 1",
+  :last-edge {:id #uuid "36db472c-4763-494c-b5fa-3eb8c5c9ff63", :src "2 1", :dest "1 1", :mirror? false}})
+clj꞉hench.path꞉> 
+(fasp (:you am-sample) (create-base-graph am-sample) am-sample 2 9)
+nil
+clj꞉hench.path꞉> (.indexOf [1 2 3] 4)
+-1
+clj꞉hench.path꞉> 

@@ -38,13 +38,14 @@
         base-graph base-graph
         other-snakes (other-snakes body-params)
         my-asp (asp (:you body-params) base-graph body-params)
+        my-fasp (fasp (:you body-params) base-graph body-params 8 16)
         other-asp (mapv #(asp % base-graph body-params) other-snakes)]
     {:body {:move (->> {:up 1 :down 1 :right 1 :left 1}
                        (begin-turn body-params)
                        (avoid-hazards body-params) ; OK - means avoid walls really
                        (avoid-self-direct-hits body-params) ; OK
                        (avoid-other-snakes body-params) ; OK             
-                       (strategize body-params my-asp other-snakes other-asp)
+                       (strategize body-params my-asp my-fasp other-snakes other-asp)
                        (choose-move body-params))
             :shout (random-shout sfquotes)}}))
 

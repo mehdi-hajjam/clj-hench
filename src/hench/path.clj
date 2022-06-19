@@ -203,6 +203,21 @@
     (alg/shortest-path g {:start-node (c->n head)
                           #_#_:heuristic-fn #(d (n->c %) head w h)})))
 
+(defn fasp
+  "Flexible asp uses :traverse true and :min-cost :max-cost options to output a lazy sequence of paths matching these constraints"
+  [snake base-graph body-params mn mx]
+  (let [turn (-> body-params :turn)
+        g (apply uber/graph (if (= turn 0) base-graph (remove-point-from-graph (second (:body snake)) base-graph)))
+        #_#_w (-> body-params :board :width)
+        #_#_h (-> body-params :board :height)
+        head (:head snake)]
+    (alg/shortest-path g {:start-node (c->n head)
+                          #_#_:end-nodes ["2 3" "4 7"]
+                          #_#_:end-nodes (mapv #(c->n %) am-intersections)
+                          :traverse true
+                          :min-cost mn
+                          :max-cost mx})))
+
 (comment
   (time (asp (:you am-sample) am-sample))
   "Elapsed time: 36.792916 msecs"
@@ -231,9 +246,9 @@
 
 (defn valid-intersection?
   "Returns true if the intersection is safe for snake"
-  [i my-snake my-asp other-snakes other-asp]
+  [i my-snake my-d other-snakes other-asp]
   (let [my-length (:length my-snake)
-        my-dist (count (alg/nodes-in-path (alg/path-to my-asp (c->n i))))]
+        my-dist my-d #_(count (alg/nodes-in-path (alg/path-to my-asp (c->n i))))]
     (loop [s other-snakes
            asps other-asp]
       (let [his-dist (count (alg/nodes-in-path (alg/path-to (first asps) (c->n i))))]
@@ -336,34 +351,44 @@
   (let [rpath (rest npath)
         int-list (list-intersections rpath)
         ifi (.indexOf rpath (c->n (first int-list))) ;index of first intersection in rpath
+        isi (.indexOf rpath (c->n (second int-list))) ;index of second intersection in rpath
         ]
     (cond
       ; if a path is empty, say it's invalid!
       (= [] rpath) (do (println "INVALID PATH - empty path for " (last rpath))
                        false)
+      ; if the last node of a path isn't an intersection, false
+      (not (in? (n->c (last rpath)) am-intersections)) false
+
+      ; if there is not at least two intersection, false
+      (= isi -1) false
       ; if even one intersection is invalid, return false
       #_#_(some false? (mapv #(valid-intersection? % my-snake my-asp other-snakes other-asp) int-list)) (do (println "INVALID PATH - INVALID INTERSECTION for " (last rpath))
                                                                                                             false)
-      ; if the first intersection is invalid, return false
-      (false? (first (mapv #(valid-intersection? % my-snake my-asp other-snakes other-asp) int-list))) (do (println "INVALID PATH - FIRST INTERSECTION INVALID for " (last rpath))
-                                                                                                           false)
-
+      ; the 2 conditions below could be rewritten more efficiently by applying the fn in map to the first resp second element of int-list
+      ; if the first intersection is invalid, return false (ifi + 2 because of how his-dist is defined in valid-intersection?
+      (false? (first (mapv #(valid-intersection? % my-snake (+ ifi 2) other-snakes other-asp) int-list))) (do (println "INVALID PATH - FIRST INTERSECTION INVALID for " (last rpath))
+                                                                                                              false)
+      ; if the second intersection is invalid, return false
+      (false? (second (mapv #(valid-intersection? % my-snake (+ isi 2) other-snakes other-asp) int-list))) (do (println "INVALID PATH - SECOND INTERSECTION INVALID for " (last rpath))
+                                                                                                               false)
       ; if some encounters are lethal, return false
       #_#_(not= [] (list-of-lethal-encounters (mapv #(n->c %) npath) my-snake other-snakes)) (do (println "INVALID PATH - MORTAL POTENTIAL ENCOUNTER DETECTED for " (last rpath))
-                                                                                             false)
-      ; if some encouters before ifi are lethal, then return false
-      (some #(>= ifi (.indexOf rpath (c->n (:e %)))) (list-of-lethal-encounters (mapv #(n->c %) npath) my-snake other-snakes)) (do (println "INVALID PATH - MORTAL ENCOUNTER DETECTED for " (last rpath))
+                                                                                                 false)
+      ; if some encouters before isi are lethal, then return false
+      (some #(>= isi (.indexOf rpath (c->n (:e %)))) (list-of-lethal-encounters (mapv #(n->c %) npath) my-snake other-snakes)) (do (println "INVALID PATH - MORTAL ENCOUNTER DETECTED for " (last rpath))
                                                                                                                                    false)
-      
+
       ; if doesn't contain center and less than 9 (changed to 8 for a starter position at the top to still aim for the center) and less than 3, false -> to look ahead as far as possible if don't go through the center
       ; back to 2 intersections min to avoid leaving the center automatically when too big
       #_#_(and (not (in? "9 11" rpath)) (< (count rpath) 8) (< (count int-list) 2)) (do (println "INVALID PATH - TOO SHORT OR NOT ENOUGH INTERSECTION NOT GOING THROUGH THE CENTER for " (last rpath))
-                                                                                    false)
+                                                                                        false)
       ; if rpath is not longer than 9 (changed to 8, see above) and rpath doesn't contain 2 intersections, false -> it's the `don't aim to closely` fix
       #_#_(and (< (count rpath) 8) (< (count int-list) 2)) (do (println "INVALID PATH - TOO SHORT OR NOT ENOUGH INTERSECTIONS GOING THROUGH THE CENTER for " (last rpath))
-                                                           false)
-      (< (count rpath) 8) (do (println "INVALID PATH - too short for " (last rpath))
-                              false)
+                                                               false)
+      ; is now obsolete when I use the :traverse true and :min-cost option in shortest path alg
+      #_#_(< (count rpath) 8) (do (println "INVALID PATH - too short for " (last rpath))
+                                  false)
       :else true)))
 
 
@@ -513,23 +538,22 @@
 ;;
 
 (defn first-hug
-  "Returns the path to the first valid intersection"
-  [my-snake my-asp other-snakes other-asp]
-  (loop [ints (nmshuffle 6 6 am-intersections)]
-    #_(println "first-hug next int/remaining ints: " (first ints) " / " (count ints))
-    (let [npath (alg/nodes-in-path (alg/path-to my-asp (c->n (first ints))))]
-      (cond
-        (= ints []) (do (println "No point choosing anything, no intersection is free...")
-                        []) ;I guess it's a bit wrong for head to head between last two snakes alive but then shouldn't even happen
-        (valid? npath my-snake my-asp other-snakes other-asp) (mapv #(n->c %) npath)
-        :else (recur (rest ints))))))
+  "Returns the first path from my-fasp (lazy seq of paths meeting certain conditions) that is valid"
+  [my-snake my-fasp other-snakes other-asp]
+  (println "first my-fasp: " (alg/nodes-in-path (first my-fasp)))
+  (loop [npaths my-fasp]
+    (cond
+      (= npaths []) (do (println "No path long enough possible left")
+                        [])
+      (valid? (alg/nodes-in-path (first npaths)) my-snake "my-asp" other-snakes other-asp) (mapv #(n->c %) (alg/nodes-in-path (first npaths))) ;"my asp" is no longer used in valid? so I put whatever as placeholder, to be removed if it works
+      :else (recur (rest npaths)))))
 
 ;;
 ; Strategize
 ;;
 
 (defn choose-path
-  "Chooses path by weighting the second point of a path to a random > 1 number"
+  "Chooses path by weighting the second point of a path with a factor f, high when you want to choose, low (below 1) when you don't want to go that road"
   [cpath f moves w h message]
   (println message)
   (probabilise-movements (first cpath) [(second cpath)] f moves w h))
@@ -537,7 +561,7 @@
 ; Remember the first elem of a path is where my head is I think!!!!!!!
 (defn strategize
   "Responsible for choosing amongst feasible moves"
-  [body-params my-asp other-snakes other-asp moves]
+  [body-params my-asp my-fasp other-snakes other-asp moves]
   (let [w (-> body-params :board :width)
         h (-> body-params :board :height)
         my-snake (-> body-params :you)
@@ -548,7 +572,7 @@
         rank-in-snakes (count (filterv #(<= my-length (:length %)) snakes))
         e (eatables body-params my-snake my-asp other-snakes other-asp)
         k (killables my-snake my-asp other-snakes other-asp)
-        f (first-hug my-snake my-asp other-snakes other-asp)]
+        f (first-hug my-snake my-fasp other-snakes other-asp)]
     #_(println "f: " f)
     (println "rank-in-snakes: " rank-in-snakes)
     (println "path to hug: " (second f) " to " (last f))
@@ -558,10 +582,10 @@
       ; si on est multiway et que je suis à moins de 65 en health ou je suis pas le plus grand snake et que j’ai de la food safe -> mange
       (and (not= [] e) (> nb-snakes 2) (or (<= my-health 65) (> rank-in-snakes 1))) (choose-path e 10 moves w h "Going for a snack!")
       ; si on est en 1v1 et que ma santé est plus basse que la sienne, manger
-      (and (not= [] e) (= nb-snakes 2) (< my-health (:health (first other-snakes)))) (choose-path e 10 moves w h "I'll eat to survive you!")
+      (and (not= [] e) (= nb-snakes 2) (<= my-health (:health (first other-snakes)))) (choose-path e 10 moves w h "I'll eat to survive you!")
       ; si il y a à tuer et qu'il me reste plus de 23 de health après -> tuer
       (and (not= [] k) (<= 23 (- my-health (- (count k) 1)))) (choose-path k 10 moves w h "Going for the kill!")
       ; sinon hug the center for now
       (not= [] f) (choose-path f 10 moves w h "Hugging the center, waiting for food or kill")
-      ; if nothing works follow tail as is the best move I got - may not always work and if not need to review this whole "its too short a path" thing
-      :else (choose-path (mapv #(n->c %) (alg/nodes-in-path (alg/path-to my-asp (c->n (last (:body my-snake)))))) 10 moves w h "Well I guess I'll follow my tail then - or die."))))
+      ; if nothing works, say no to the first path you'd have hugged (following tail is not the good default route)
+      :else (choose-path (mapv #(n->c %) (alg/nodes-in-path (first my-fasp))) 0.01 moves w h "Don't go down a broken path"))))
