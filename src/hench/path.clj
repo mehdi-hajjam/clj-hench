@@ -299,10 +299,14 @@
     (= e nil) true
     ; si c'est sa tête et qu'il est plus petit que moi c'est ok
     (and (= (:head other-snake) e)
-         (< (:length other-snake) (:length my-snake))) true
+         (< (:length other-snake) (:length my-snake))
+         (even? (.indexOf path e)) ; this is to make sure the head won't be next to each other and produce a neck butt
+         ) true
     ; si c'est sa tête et qu'il est plus grand ou égal à moi c'est mort (le cas égal est débattable)
     (and (= (:head other-snake) e)
-         (>= (:length other-snake) (:length my-snake))) false
+         (>= (:length other-snake) (:length my-snake))
+         (even? (.indexOf path e)) ; si c'est odd il osera pas m'affronter donc faut pas que ça mette false
+         ) false
     ; si l’indice dans son corps à l’envers de sa case que je rencontre est plus petit ou égal à l’indice de cette rencontre dans mon path c'est bon
     (<= (reverse-index e other-snake) (index-in-path e (rest path))) true
     :else false))
