@@ -258,6 +258,9 @@
           ; si j'arrive avant le serpent qqsoit sa taille je peux recur
           (< my-dist his-dist) (recur (rest s)
                                       (rest asps))
+          ; si on arrive en même temps et qu'on fait la même taille je dois me dire que c'est bon
+          (and (= my-dist his-dist) (>= my-length (:length (first s)))) (recur (rest s)
+                                                                               (rest asps))
           ; si j'arrive après la queue du serpent et il est plus petit, recur (pas besoin de refaire la comparaison des distances) 
           ; s'il est plus grand que moi et qu'il arrive avant c'est faux
           ; je mets le cas d'égalité des tailles ici pour qu'il ne soit pas dans la négation
@@ -370,7 +373,7 @@
       (false? (first (mapv #(valid-intersection? % my-snake (+ ifi 2) other-snakes other-asp) int-list))) (do (println "INVALID PATH - FIRST INTERSECTION INVALID for " (last rpath))
                                                                                                               false)
       ; if the second intersection is invalid in 1v1, return false
-      (and (= 1 (count other-snakes)) (false? (second (mapv #(valid-intersection? % my-snake (+ isi 2) other-snakes other-asp) int-list)))) (do (println "INVALID PATH - SECOND INTERSECTION INVALID for " (last rpath))
+      (false? (second (mapv #(valid-intersection? % my-snake (+ isi 2) other-snakes other-asp) int-list))) (do (println "INVALID PATH - SECOND INTERSECTION INVALID for " (last rpath))
                                                                                                                false)
       ; if some encounters are lethal, return false
       #_#_(not= [] (list-of-lethal-encounters (mapv #(n->c %) npath) my-snake other-snakes)) (do (println "INVALID PATH - MORTAL POTENTIAL ENCOUNTER DETECTED for " (last rpath))
