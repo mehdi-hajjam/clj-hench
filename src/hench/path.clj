@@ -369,8 +369,8 @@
       ; if the first intersection is invalid, return false (ifi + 2 because of how his-dist is defined in valid-intersection?
       (false? (first (mapv #(valid-intersection? % my-snake (+ ifi 2) other-snakes other-asp) int-list))) (do (println "INVALID PATH - FIRST INTERSECTION INVALID for " (last rpath))
                                                                                                               false)
-      ; if the second intersection is invalid, return false
-      (false? (second (mapv #(valid-intersection? % my-snake (+ isi 2) other-snakes other-asp) int-list))) (do (println "INVALID PATH - SECOND INTERSECTION INVALID for " (last rpath))
+      ; if the second intersection is invalid in 1v1, return false
+      (and (= 1 (count other-snakes)) (false? (second (mapv #(valid-intersection? % my-snake (+ isi 2) other-snakes other-asp) int-list)))) (do (println "INVALID PATH - SECOND INTERSECTION INVALID for " (last rpath))
                                                                                                                false)
       ; if some encounters are lethal, return false
       #_#_(not= [] (list-of-lethal-encounters (mapv #(n->c %) npath) my-snake other-snakes)) (do (println "INVALID PATH - MORTAL POTENTIAL ENCOUNTER DETECTED for " (last rpath))
