@@ -192,31 +192,45 @@
   [p vv]
   (filterv #(not (in? (c->n p) %)) vv))
 
+(defn remove-edge-from-graph
+  "Removes the edge in vv"
+  [edge vv]
+  (let [e (mapv #(c->n %) edge)]
+    (filterv #(not (= e %)) vv)))
+
 (defn asp
   "All shortest paths from p"
   [snake base-graph body-params]
   (let [turn (-> body-params :turn)
         g (apply uber/graph (if (= turn 0) base-graph (remove-point-from-graph (second (:body snake)) base-graph)))
-        #_#_w (-> body-params :board :width)
-        #_#_h (-> body-params :board :height)
         head (:head snake)]
     (alg/shortest-path g {:start-node (c->n head)
                           #_#_:heuristic-fn #(d (n->c %) head w h)})))
 
 (defn fasp
-  "Flexible asp uses :traverse true and :min-cost :max-cost options to output a lazy sequence of paths matching these constraints"
-  [snake base-graph body-params mn mx]
-  (let [turn (-> body-params :turn)
-        g (apply uber/graph (if (= turn 0) base-graph (remove-point-from-graph (second (:body snake)) base-graph)))
-        #_#_w (-> body-params :board :width)
-        #_#_h (-> body-params :board :height)
-        head (:head snake)]
-    (alg/shortest-path g {:start-node (c->n head)
-                          #_#_:end-nodes ["2 3" "4 7"]
-                          #_#_:end-nodes (mapv #(c->n %) am-intersections)
-                          :traverse true
-                          :min-cost mn
-                          :max-cost mx})))
+  "Flexible asp uses :traverse true and :min-cost :max-cost options to output a lazy sequence of paths matching these constraints.
+   It uses 4 different graphs where for each one one direction has been forbidden (in case we are at a 4 way intersection)"
+  [snake base-graph body-params mn]
+  (let [w (-> body-params :board :width)
+        h (-> body-params :board :height)
+        turn (-> body-params :turn)
+        head (:head snake)
+        gnoforward (apply uber/graph (if (= turn 0) base-graph (->> base-graph
+                                                                    (remove-point-from-graph (second (:body snake)))
+                                                                    (remove-edge-from-graph [head (add head {:x 1 :y 0} w h)]))))
+        gnobackward (apply uber/graph (if (= turn 0) base-graph (->> base-graph
+                                                                     (remove-point-from-graph (second (:body snake)))
+                                                                     (remove-edge-from-graph [head (add head {:x -1 :y 0} w h)]))))
+        gnoup (apply uber/graph (if (= turn 0) base-graph (->> base-graph
+                                                               (remove-point-from-graph (second (:body snake)))
+                                                               (remove-edge-from-graph [head (add head {:x 0 :y 1} w h)]))))
+        gnodown (apply uber/graph (if (= turn 0) base-graph (->> base-graph
+                                                                 (remove-point-from-graph (second (:body snake)))
+                                                                 (remove-edge-from-graph [head (add head {:x 0 :y -1} w h)]))))
+        all (mapv #(vec (alg/shortest-path % {:start-node (c->n head)
+                                              :traverse true
+                                              :min-cost mn})) [gnoforward gnobackward gnoup gnodown])]
+    (flatten all)))
 
 (comment
   (time (asp (:you am-sample) am-sample))
@@ -224,8 +238,9 @@
   ; of which building the ubergraph is longest!
   (time (apply uber/graph (board->ubergraph (:you am-sample) am-sample)))
   "Elapsed time: 39.049167 msecs"
-  (time (asp (:you am-sample) base-graph am-sample))
+  (time (asp (:you am-sample) (create-base-graph am-sample) am-sample))
   "Elapsed time: 6.671958 msecs" ; much better with base graph out
+  (fasp (:you am-sample) (create-base-graph am-sample) am-sample 11)
   )
 
 ;;
