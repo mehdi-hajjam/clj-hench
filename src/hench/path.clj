@@ -207,6 +207,12 @@
     (alg/shortest-path g {:start-node (c->n head)
                           #_#_:heuristic-fn #(d (n->c %) head w h)})))
 
+(comment
+  (def base-graph (create-base-graph am-sample))
+  (time (def asp1 (asp (:you am-sample) base-graph am-sample)))
+
+  )
+
 (defn fasp
   "Flexible asp uses :traverse true and :min-cost :max-cost options to output a lazy sequence of paths matching these constraints.
    It uses 4 different graphs where for each one one direction has been forbidden (in case we are at a 4 way intersection)"
@@ -240,8 +246,7 @@
   "Elapsed time: 39.049167 msecs"
   (time (asp (:you am-sample) (create-base-graph am-sample) am-sample))
   "Elapsed time: 6.671958 msecs" ; much better with base graph out
-  (fasp (:you am-sample) (create-base-graph am-sample) am-sample 11)
-  )
+  (fasp (:you am-sample) (create-base-graph am-sample) am-sample 11))
 
 ;;
 ; Path validation
@@ -354,8 +359,7 @@
     #_(println "lole/enc-list: " (mapv #(str (:e %) " ; " (:name (:snake %))) enc-list))
     #_(println "lole/leth-enc-list: " leth-enc-list)
     (filterv #(not (non-lethal? (:e %) path my-snake (:snake %))) enc-list)
-    #_(filterv false? leth-enc-list)
-    ))
+    #_(filterv false? leth-enc-list)))
 
 ; path validation using all three fns above
 ; must apply to all intersections in path, and all first obstacles in path
@@ -457,8 +461,7 @@
       (= "9 17" food) (cond
                         (= {:x 8 :y 17} last-int) (valid? (into (into [] path) ["10 17"]) my-snake my-asp other-snakes other-asp)
                         (= {:x 10 :y 17} last-int) (valid? (into (into [] path) ["8 17"]) my-snake my-asp other-snakes other-asp))
-      :else (valid? path my-snake my-asp other-snakes other-asp)
-      )))
+      :else (valid? path my-snake my-asp other-snakes other-asp))))
 
 
 
@@ -574,6 +577,14 @@
                         [])
       (valid? (alg/nodes-in-path (first npaths)) my-snake "my-asp" other-snakes other-asp) (mapv #(n->c %) (alg/nodes-in-path (first npaths))) ;"my asp" is no longer used in valid? so I put whatever as placeholder, to be removed if it works
       :else (recur (rest npaths)))))
+
+;;
+; Refine the graph by eliminating the lethal transitions through an intersection
+;;
+
+
+
+
 
 ;;
 ; Strategize
