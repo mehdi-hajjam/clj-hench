@@ -112,6 +112,9 @@
    {:x 14 :y 19}
    {:x 17 :y 19}])
 
+(def am-mesh
+  {})
+
 ; used to derive which intersection after the food should be free for a path to food to be valid
 (def food-intersections
   {"3 11" [{:x 4 :y 11} {:x 14 :y 11}]
@@ -156,7 +159,7 @@
                    (into res [[p (first n)]])))))
 
 (defn board->ubergraph
-  [snake body-params]
+  [snake exclude body-params]
   (let [board (-> body-params :board)
         w (-> board :width)
         h (-> board :height)
@@ -164,7 +167,9 @@
         turn (-> body-params :turn)
         hazards (-> board :hazards)
         neck (neck (-> snake :body))
-        forbidden (into hazards (if (= turn 0) [] [neck]))
+        forbidden (into hazards (into [] (concat
+                                          exclude
+                                          (if (= turn 0) [] [neck]))))
         whole-graph (into {} (for [x (range 0 w)
                                    y (range 0 h)]
                                (let [n (neighbours #(not (in? % forbidden)) {:x x :y y} w h)]
@@ -173,7 +178,7 @@
     (into [] (apply concat (vals whole-map)))))
 
 (comment
-  (def g (apply uber/graph (board->ubergraph (:you am-sample) am-sample)))
+  (def g (apply uber/graph (board->ubergraph (:you am-sample) [] am-sample)))
   (uber/pprint g)
   ;without end node, gives recipe for whole board
   (def outof21 (alg/shortest-path g {:start-node "2 1"}))
@@ -185,7 +190,7 @@
 
 (defn create-base-graph
   [body-params]
-  (board->ubergraph {:body []} body-params))
+  (board->ubergraph {:body []} [] body-params))
 
 (defn remove-point-from-graph
   "Removes all vectors containing p either first or second"
@@ -193,23 +198,24 @@
   (filterv #(not (in? (c->n p) %)) vv))
 
 (defn remove-edge-from-graph
-  "Removes the edge in vv"
+  "Removes the edge in vv. BEWARE! Both e and reverse e needs filtering otherwise the digraph is still reconstructed in the same way somehow..."
   [edge vv]
   (let [e (mapv #(c->n %) edge)]
-    (filterv #(not (= e %)) vv)))
+    (filterv #(and (not= e %)
+                   (not= (into [] (reverse e)) %)) vv)))
 
 (defn asp
-  "All shortest paths from p"
-  [snake base-graph body-params]
+  "All shortest paths from the head of snake"
+  [snake graph body-params]
   (let [turn (-> body-params :turn)
-        g (apply uber/graph (if (= turn 0) base-graph (remove-point-from-graph (second (:body snake)) base-graph)))
+        g (apply uber/graph (if (= turn 0) graph (remove-point-from-graph (second (:body snake)) graph)))
         head (:head snake)]
     (alg/shortest-path g {:start-node (c->n head)
                           #_#_:heuristic-fn #(d (n->c %) head w h)})))
 
 (comment
-  (def base-graph (create-base-graph am-sample))
-  (time (def asp1 (asp (:you am-sample) base-graph am-sample)))
+  (def b-graph (create-base-graph am-sample))
+  (time (def asp1 (asp (:you am-sample) b-graph am-sample)))
 
   )
 
@@ -221,28 +227,16 @@
         h (-> body-params :board :height)
         turn (-> body-params :turn)
         head (:head snake)
-        gnoforward (apply uber/graph (if (= turn 0) base-graph (->> base-graph
-                                                                    (remove-point-from-graph (second (:body snake)))
-                                                                    (remove-edge-from-graph [head (add head {:x 1 :y 0} w h)]))))
-        gnobackward (apply uber/graph (if (= turn 0) base-graph (->> base-graph
-                                                                     (remove-point-from-graph (second (:body snake)))
-                                                                     (remove-edge-from-graph [head (add head {:x -1 :y 0} w h)]))))
-        gnoup (apply uber/graph (if (= turn 0) base-graph (->> base-graph
-                                                               (remove-point-from-graph (second (:body snake)))
-                                                               (remove-edge-from-graph [head (add head {:x 0 :y 1} w h)]))))
-        gnodown (apply uber/graph (if (= turn 0) base-graph (->> base-graph
-                                                                 (remove-point-from-graph (second (:body snake)))
-                                                                 (remove-edge-from-graph [head (add head {:x 0 :y -1} w h)]))))
-        all (mapv #(vec (alg/shortest-path % {:start-node (c->n head)
-                                              :traverse true
-                                              :min-cost mn})) [gnoforward gnobackward gnoup gnodown])]
-    (flatten all)))
+        g (apply uber/graph (if (= turn 0) base-graph (remove-point-from-graph (second (:body snake)) base-graph)))]
+    (alg/shortest-path g {:start-node (c->n head)
+                          :traverse true
+                          :min-cost mn})))
 
 (comment
   (time (asp (:you am-sample) am-sample))
   "Elapsed time: 36.792916 msecs"
   ; of which building the ubergraph is longest!
-  (time (apply uber/graph (board->ubergraph (:you am-sample) am-sample)))
+  (time (apply uber/graph (board->ubergraph (:you am-sample) [] am-sample)))
   "Elapsed time: 39.049167 msecs"
   (time (asp (:you am-sample) (create-base-graph am-sample) am-sample))
   "Elapsed time: 6.671958 msecs" ; much better with base graph out
@@ -310,16 +304,10 @@
   [path other-snake]
   (let [rpath (rest path)
         common (into [] (clojure.set/intersection (set rpath) (set (:body other-snake))))]
-    #_(println "rpath: " rpath)
-    #_(println "body other snake: " (:body other-snake))
-    #_(println "common: " common)
     (cond
       (= [] common) false
       :else (let [indexes (mapv #(.indexOf rpath %) common)
-                  minval (apply min indexes)]
-              #_(println "indexes: " indexes)
-              #_(println "minval: " minval)
-              #_(println "encounters?/e: " {:e (nth rpath minval) :snake other-snake})
+                  minval (apply min indexes)] 
               {:e (nth rpath minval) :snake other-snake}))))
 
 (defn list-encounters
@@ -352,14 +340,12 @@
 ;BE CAREFUL IF I DON'T GET A VECTOR OF 1 OTHER SNAKE I COULD RUN INTO TYPE ISSUES, getting one element instead of a vector of 1 element
 (defn list-of-lethal-encounters
   "Returns the list of lethal encounters
-   TAKES A PATH OF COORDINATES (for list of encouters to work)"
+   TAKES A PATH OF COORDINATES (for list of encounters to work)"
   [path my-snake other-snakes]
   (let [enc-list (filterv #(not= false %) (list-encounters path (conj other-snakes my-snake)))
-        leth-enc-list (mapv #(non-lethal? (:e %) path my-snake (:snake %)) enc-list)]
-    #_(println "lole/enc-list: " (mapv #(str (:e %) " ; " (:name (:snake %))) enc-list))
-    #_(println "lole/leth-enc-list: " leth-enc-list)
-    (filterv #(not (non-lethal? (:e %) path my-snake (:snake %))) enc-list)
-    #_(filterv false? leth-enc-list)))
+        res (filterv #(not (non-lethal? (:e %) path my-snake (:snake %))) enc-list)]
+    (println "first mortal encounter: " (:e (first res)))
+    res))
 
 ; path validation using all three fns above
 ; must apply to all intersections in path, and all first obstacles in path
@@ -385,20 +371,20 @@
       ; if there is not at least two intersection, false
       (= isi -1) false
       ; if even one intersection is invalid, return false
-      #_#_(some false? (mapv #(valid-intersection? % my-snake my-asp other-snakes other-asp) int-list)) (do (println "INVALID PATH - INVALID INTERSECTION for " (last rpath))
+      (some false? (mapv #(valid-intersection? % my-snake (+ 2 (.indexOf rpath (c->n %))) other-snakes other-asp) int-list)) (do (println "INVALID PATH - INVALID INTERSECTION for " (last rpath))
                                                                                                             false)
       ; the 2 conditions below could be rewritten more efficiently by applying the fn in map to the first resp second element of int-list
       ; if the first intersection is invalid, return false (ifi + 2 because of how his-dist is defined in valid-intersection?
-      (false? (first (mapv #(valid-intersection? % my-snake (+ ifi 2) other-snakes other-asp) int-list))) (do (println "INVALID PATH - FIRST INTERSECTION INVALID for " (last rpath))
+      #_#_(false? (first (mapv #(valid-intersection? % my-snake (+ ifi 2) other-snakes other-asp) int-list))) (do #_(println "INVALID PATH - FIRST INTERSECTION INVALID for " (last rpath))
                                                                                                               false)
       ; if the second intersection is invalid in 1v1, return false
-      (false? (second (mapv #(valid-intersection? % my-snake (+ isi 2) other-snakes other-asp) int-list))) (do (println "INVALID PATH - SECOND INTERSECTION INVALID for " (last rpath))
+      #_#_(false? (second (mapv #(valid-intersection? % my-snake (+ isi 2) other-snakes other-asp) int-list))) (do #_(println "INVALID PATH - SECOND INTERSECTION INVALID for " (last rpath))
                                                                                                                false)
       ; if some encounters are lethal, return false
-      #_#_(not= [] (list-of-lethal-encounters (mapv #(n->c %) npath) my-snake other-snakes)) (do (println "INVALID PATH - MORTAL POTENTIAL ENCOUNTER DETECTED for " (last rpath))
+      (not= [] (list-of-lethal-encounters (mapv #(n->c %) npath) my-snake other-snakes)) (do (println "INVALID PATH - MORTAL POTENTIAL ENCOUNTER DETECTED for " (last rpath))
                                                                                                  false)
       ; if some encouters before isi are lethal, then return false
-      (some #(>= isi (.indexOf rpath (c->n (:e %)))) (list-of-lethal-encounters (mapv #(n->c %) npath) my-snake other-snakes)) (do (println "INVALID PATH - MORTAL ENCOUNTER DETECTED for " (last rpath))
+      #_#_(some #(>= isi (.indexOf rpath (c->n (:e %)))) (list-of-lethal-encounters (mapv #(n->c %) npath) my-snake other-snakes)) (do (println "INVALID PATH - MORTAL ENCOUNTER DETECTED for " (last rpath))
                                                                                                                                    false)
 
       ; if doesn't contain center and less than 9 (changed to 8 for a starter position at the top to still aim for the center) and less than 3, false -> to look ahead as far as possible if don't go through the center
@@ -440,8 +426,6 @@
         last-int (last list) ; last intersection traversed by path
         #_#_next-int (vector-difference (food-intersections food) list) ;it's a vector with one coordinate at this point
         ]
-    (println "fvalid?/food: " food)
-    (println "fvalid?/last-int: " last-int)
     (cond
       ; if it's 3 11 or 15 11, check the validity of the shortest path till the next intersection, it should go through the food.
       (= "3 11" food) (valid? (complete-path-to-side-food path) my-snake my-asp other-snakes other-asp)
@@ -469,12 +453,12 @@
   "Returns the path to the closest food that can be started during the turn"
   [body-params my-snake my-asp other-snakes other-asp]
   (let [available-food (-> body-params :board :food)]
-    (println "eatables/AVAILABLE-FOOD: " available-food)
+    #_(println "eatables/AVAILABLE-FOOD: " available-food)
     (cond
       (= available-food []) []
       :else (let [paths (mapv #(alg/nodes-in-path (alg/path-to my-asp (c->n %))) available-food)
                   valid-paths (filterv #(fvalid? % my-snake my-asp other-snakes other-asp) paths)]
-              (println "eatables/paths: " paths)
+              #_(println "eatables/paths: " paths)
               (cond
                 (= valid-paths []) []
                 ; I have paths of names here
@@ -582,9 +566,70 @@
 ; Refine the graph by eliminating the lethal transitions through an intersection
 ;;
 
+;; i:  {:x 10, :y 13}
+;; path to i:  (12 11 12 12 12 13 11 13 10 13)
+;; lethal-e nil
+;; le-index:  1
 
 
 
+(defn better-graph
+  "Returns a graph where forbidden intersections are taken out"
+  [my-snake my-asp other-snakes other-asp graph body-params]
+  (let [w (-> body-params :board :width)
+        h (-> body-params :board :height)
+        head (:head my-snake)
+        sorted (sort-by #(sd my-snake % w h) am-intersections)
+        closest (into [] (take 12 sorted)) ; I need to use core.async to do floodfill and find first n intersections (building the mesh of the map basically)
+        ]
+    (println "@@@ closest: " closest)
+    (if (in? head am-intersections)
+      (loop [c closest
+             the-asp my-asp
+             the-graph graph]
+        (cond
+          (empty? c) the-graph
+          :else (let [i (first c)
+                      path-to-i (alg/nodes-in-path (alg/path-to the-asp (c->n i)))
+                      my-d (count path-to-i)
+                      lethal-e (:e (first (list-of-lethal-encounters (mapv #(n->c %) path-to-i) my-snake other-snakes)))
+                      ] 
+                  (cond
+                    (not (valid-intersection? i my-snake my-d other-snakes other-asp)) (let [new-graph (remove-edge-from-graph (mapv #(n->c %) [(last (butlast path-to-i)) (last path-to-i)]) the-graph)]
+                                                                                         (println "intersection: " i " is invalid!")
+                                                                                         (recur (rest c)
+                                                                                                (asp my-snake new-graph body-params)
+                                                                                                new-graph))
+                    (not= nil lethal-e) (let [le-index (index-in-path (c->n lethal-e) path-to-i)
+                                              new-graph (remove-edge-from-graph (mapv #(n->c %) [(nth path-to-i (- le-index 1)) (nth path-to-i le-index)]) the-graph)
+                                              new-asp (asp my-snake new-graph body-params)]
+                                          (println "encouter at " lethal-e " would be lethal!")
+                                          (println "le-index: " le-index)
+                                          (println "removing from graph: " [(nth path-to-i (- le-index 1)) (nth path-to-i le-index)])
+                                          (println "in graph? " (in? [(nth path-to-i (- le-index 1)) (nth path-to-i le-index)] the-graph))
+                                          (println "in new graph? " (in? [(nth path-to-i (- le-index 1)) (nth path-to-i le-index)] new-graph))
+                                          (println "equality of asp? " (= the-asp new-asp))
+                                          (println "equality of path? " (= path-to-i (alg/nodes-in-path (alg/path-to new-asp (c->n i)))))
+                                          (recur (rest c)
+                                                 new-asp
+                                                 new-graph))
+                    :else (recur (rest c)
+                                 the-asp
+                                 the-graph)))))
+      graph)))
+
+
+(comment
+  (def body-params am-sample)
+  (def b-graph (create-base-graph am-sample))
+  (def other-snakes1 (other-snakes body-params))
+  (def me (:you body-params))
+  (def base-asp (asp me b-graph body-params))
+  (def other-asp (mapv #(asp % b-graph body-params) other-snakes1))
+  (def bg (better-graph me base-asp other-snakes1 other-asp b-graph body-params))
+  (asp me b-graph body-params)
+  
+  ,)
 
 ;;
 ; Strategize
@@ -611,19 +656,25 @@
         e (eatables body-params my-snake my-asp other-snakes other-asp)
         k (killables my-snake my-asp other-snakes other-asp)
         f (first-hug my-snake my-fasp other-snakes other-asp)]
-    #_(println "f: " f)
-    (println "rank-in-snakes: " rank-in-snakes)
+ 
     (println "path to hug: " (second f) " to " (last f))
     (println "path to kill: " (second k) " to " (last k))
     (println "path to eat: " (second e) " to " (last e))
     (cond
       ; si on est multiway et que je suis à moins de 65 en health ou je suis pas le plus grand snake et que j’ai de la food safe -> mange
-      (and (not= [] e) (> nb-snakes 2) (or (<= my-health 65) (> rank-in-snakes 1))) (choose-path e 10 moves w h "Going for a snack!")
+      #_#_(and (not= [] e) (> nb-snakes 2) (or (<= my-health 65) (> rank-in-snakes 1))) (choose-path e 10 moves w h "Going for a snack!")
       ; si on est en 1v1 et que ma santé est plus basse que la sienne, manger
-      (and (not= [] e) (= nb-snakes 2) (<= my-health (:health (first other-snakes)))) (choose-path e 10 moves w h "I'll eat to survive you!")
+      #_#_(and (not= [] e) (= nb-snakes 2) (<= my-health (:health (first other-snakes)))) (choose-path e 10 moves w h "I'll eat to survive you!")
+      ; si on est à moins de 35 en health, manger
+      (and (not= [] e) (<= my-health 35)) (choose-path e 10 moves w h "Going for a snack!")
       ; si il y a à tuer et qu'il me reste plus de 23 de health après -> tuer
       (and (not= [] k) (<= 23 (- my-health (- (count k) 1)))) (choose-path k 10 moves w h "Going for the kill!")
       ; sinon hug the center for now
       (not= [] f) (choose-path f 10 moves w h "Hugging the center, waiting for food or kill")
       ; if nothing works, say no to the first path you'd have hugged (following tail is not the good default route)
-      :else (choose-path (mapv #(n->c %) (alg/nodes-in-path (first my-fasp))) 0.01 moves w h "Don't go down a broken path"))))
+      #_#_:else (choose-path (mapv #(n->c %) (alg/nodes-in-path (first my-fasp))) 0.01 moves w h "Don't go down a broken path") 
+      ; if nothing works, trying follow tail again now that I'm using better-graph in my-asp in core
+      :else (do (println "path to tail: " (alg/nodes-in-path (alg/path-to my-asp (c->n (last (:body my-snake))))))
+                (choose-path (mapv #(n->c %) (alg/nodes-in-path (alg/path-to my-asp (c->n (last (:body my-snake)))))) 10 moves w h "Follow your tail when in doubt!"))
+      )))
+

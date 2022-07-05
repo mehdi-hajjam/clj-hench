@@ -38,9 +38,12 @@
         base-graph base-graph
         other-snakes (other-snakes body-params)
         me (:you body-params)
-        my-asp (asp me base-graph body-params)
-        my-fasp (fasp me base-graph body-params 11) ;10 is chosen for specific cases that happen. Should work for all that I have seen so far.
-        other-asp (mapv #(asp % base-graph body-params) other-snakes)]
+        base-asp (asp me base-graph body-params)
+        other-asp (mapv #(asp % base-graph body-params) other-snakes)
+        bg (better-graph me base-asp other-snakes other-asp base-graph body-params)
+        my-asp (asp me bg body-params)
+        my-fasp (fasp me bg body-params 14) ;10 is chosen for specific cases that happen. Should work for all that I have seen so far.
+        ]
     {:body {:move (->> {:up 1 :down 1 :right 1 :left 1}
                        (begin-turn body-params)
                        (avoid-hazards body-params) ; OK - means avoid walls really
