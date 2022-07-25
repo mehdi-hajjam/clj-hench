@@ -655,7 +655,8 @@
         rank-in-snakes (count (filterv #(<= my-length (:length %)) snakes))
         e (eatables body-params my-snake my-asp other-snakes other-asp)
         k (killables my-snake my-asp other-snakes other-asp)
-        f (first-hug my-snake my-fasp other-snakes other-asp)]
+        f (first-hug my-snake my-fasp other-snakes other-asp)
+        p (alg/nodes-in-path (alg/path-to my-asp (c->n (last (:body my-snake)))))]
  
     (println "path to hug: " (second f) " to " (last f))
     (println "path to kill: " (second k) " to " (last k))
@@ -672,9 +673,9 @@
       ; sinon hug the center for now
       (not= [] f) (choose-path f 10 moves w h "Hugging the center, waiting for food or kill")
       ; if nothing works, say no to the first path you'd have hugged (following tail is not the good default route)
-      #_#_:else (choose-path (mapv #(n->c %) (alg/nodes-in-path (first my-fasp))) 0.01 moves w h "Don't go down a broken path") 
+      #_#_:else (choose-path (mapv #(n->c %) (alg/nodes-in-path (first my-fasp))) 0.01 moves w h "Don't go down a broken path")
       ; if nothing works, trying follow tail again now that I'm using better-graph in my-asp in core
-      :else (do (println "path to tail: " (alg/nodes-in-path (alg/path-to my-asp (c->n (last (:body my-snake))))))
-                (choose-path (mapv #(n->c %) (alg/nodes-in-path (alg/path-to my-asp (c->n (last (:body my-snake)))))) 10 moves w h "Follow your tail when in doubt!"))
-      )))
+      (not= [] p) (do (println "path to tail: " p)
+                      (choose-path (mapv #(n->c %) p) 10 moves w h "Follow your tail when in doubt!"))
+      :else (println "Nowhere to go, this is to avoid timeouting"))))
 
