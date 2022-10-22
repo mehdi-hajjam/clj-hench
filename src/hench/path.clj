@@ -568,12 +568,12 @@
         nb-snakes (count snakes)
         rank-in-snakes (count (filterv #(<= my-length (:length %)) snakes))
         e (eatables body-params my-snake my-asp other-snakes other-asp)
-        k (killables my-snake my-asp other-snakes other-asp)
+        #_#_k (killables my-snake my-asp other-snakes other-asp)
         f (first-hug my-snake my-fasp other-snakes other-asp)
         p (alg/nodes-in-path (alg/path-to my-asp (c->n (last (:body my-snake)))))]
  
     (println "path to hug: " (second f) " to " (last f))
-    (println "path to kill: " (second k) " to " (last k))
+    #_(println "path to kill: " (second k) " to " (last k))
     (println "path to eat: " (second e) " to " (last e))
     (cond
       ; si on est multiway et que je suis à moins de 65 en health ou je suis pas le plus grand snake et que j’ai de la food safe -> mange
@@ -583,7 +583,7 @@
       ; si on est à moins de 35 en health, manger
       (and (not= [] e) (<= my-health 35)) (choose-path e 10 moves w h "Going for a snack!")
       ; si il y a à tuer et qu'il me reste plus de 23 de health après -> tuer
-      (and (not= [] k) (<= 23 (- my-health (- (count k) 1)))) (choose-path k 10 moves w h "Going for the kill!")
+      #_#_(and (not= [] k) (<= 23 (- my-health (- (count k) 1)))) (choose-path k 10 moves w h "Going for the kill!")
       ; sinon hug the center for now
       (not= [] f) (choose-path f 10 moves w h "Hugging the center, waiting for food or kill")
       ; if nothing works, say no to the first path you'd have hugged (following tail is not the good default route)
