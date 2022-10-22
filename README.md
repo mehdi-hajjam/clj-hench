@@ -13,5 +13,8 @@ Placed 26th in the league (platinum)
 https://play.battlesnake.com/league/summer-league-2022/arenas/summer-league-2022/
 Semifinalist of the Summer League Platinum Tournament (top 8)
 https://play.battlesnake.com/league/summer-league-2022/tournaments/summer-league-2022-platinum/
+
+### 2022 FALL LEAGUE
+Late registration with less than a week to go.
 ### HOSTING
 Hosted on Digital Ocean Droplet (the basic one is enough in computing power)
