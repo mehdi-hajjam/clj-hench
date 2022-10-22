@@ -30,7 +30,7 @@
   {:status 200 :body {}})
 
 ; Created once and for all to avoid calculating during the game (not even once I think)
-(def base-graph (create-base-graph am-sample))
+(def base-graph (create-base-graph ib-sample))
 
 (defn move-handler
   [req]
@@ -42,8 +42,7 @@
         other-asp (mapv #(asp % base-graph body-params) other-snakes)
         bg (better-graph me base-asp other-snakes other-asp base-graph body-params)
         my-asp (asp me bg body-params)
-        my-fasp (fasp me bg body-params 14) ;10 is chosen for specific cases that happen. Should work for all that I have seen so far.
-        ]
+        my-fasp (fasp me bg body-params 10)]
     {:body {:move (->> {:up 1 :down 1 :right 1 :left 1}
                        (begin-turn body-params)
                        (avoid-hazards body-params) ; OK - means avoid walls really

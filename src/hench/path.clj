@@ -53,67 +53,27 @@
 ; Intersections
 ;; 
 
-;; Should be a function later to adapt to any map
-;; An intersection is a point that has strictly more than 2 neighbours that are not hazards
-;; but that def doesn't work for groups of free cases (comme en y 8 x 1 par exemple)
-;; am-intersections has been ordered for central, 4 escape routes intersections first
-;; it will be nshuffled for a certain n to avoid obvious looping that'd be detrimental
-
-(def am-intersections
-  [;most options to escape
-   {:x 4 :y 11}
-   {:x 14 :y 11}
-   {:x 4 :y 7}
-   {:x 14 :y 7}
-   {:x 4 :y 17}
-   {:x 14 :y 17}
-  ;centermost ones
-   {:x 8 :y 11}
-   {:x 10 :y 11}
-   {:x 8 :y 13}
-   {:x 10 :y 13}
-   {:x 8 :y 9}
-   {:x 10 :y 9}
-   ;other key ones, but less key
-
-   ;others, mostly 3 escape routes ones, and will be shuffled as well
-   {:x 1 :y 1}
-   {:x 8 :y 1}
-   {:x 10 :y 1}
-   {:x 17 :y 1}
-   {:x 2 :y 3}
-   {:x 16 :y 3}
-   {:x 4 :y 5}
-   {:x 6 :y 5}
-   {:x 8 :y 5}
-   {:x 10 :y 5}
-   {:x 12 :y 5}
-   {:x 14 :y 5}
-   {:x 1 :y 7}
-   {:x 6 :y 7}
-   {:x 12 :y 7}
-   {:x 17 :y 7}
-   {:x 6 :y 9}
-   {:x 12 :y 9}
-   {:x 6 :y 11}
-   {:x 12 :y 11}
-   {:x 1 :y 15}
-   {:x 4 :y 15}
-   {:x 14 :y 15}
-   {:x 17 :y 15}
-   {:x 1 :y 17}
-   {:x 6 :y 17}
-   {:x 8 :y 17}
-   {:x 10 :y 17}
-   {:x 12 :y 17}
-   {:x 17 :y 17}
-   {:x 1 :y 19}
-   {:x 4 :y 19}
-   {:x 14 :y 19}
-   {:x 17 :y 19}])
-
-(def am-mesh
-  {})
+(def ib-intersections
+  [{:x 0 :y 2}
+   {:x 0 :y 3}
+   {:x 0 :y 7}
+   {:x 0 :y 8}
+   {:x 2 :y 0}
+   {:x 3 :y 0}
+   {:x 7 :y 0}
+   {:x 8 :y 0}
+   {:x 10 :y 2}
+   {:x 10 :y 3}
+   {:x 10 :y 7}
+   {:x 10 :y 8}
+   {:x 2 :y 10}
+   {:x 3 :y 10}
+   {:x 7 :y 10}
+   {:x 8 :y 10}
+   {:x 2 :y 5}
+   {:x 5 :y 2}
+   {:x 5 :y 8}
+   {:x 8 :y 5}])
 
 ; used to derive which intersection after the food should be free for a path to food to be valid
 (def food-intersections
@@ -253,7 +213,7 @@
    TAKES A PATH OF NAMES
    RETURNS A VECTOR OF COORDINATES OF INTERSECTIONS"
   [path]
-  (let [named-intersections (filterv #(in? (n->c %) am-intersections) path)]
+  (let [named-intersections (filterv #(in? (n->c %) ib-intersections) path)]
     (mapv #(n->c %) named-intersections)))
 
 ; intersection validation
@@ -357,46 +317,21 @@
    TAKES A PATH OF NAMES BECAUSE OF LIST-INTERSECTIONS (could be changed if needed)"
   [npath my-snake my-asp other-snakes other-asp]
   (let [rpath (rest npath)
-        int-list (list-intersections rpath)
-        ifi (.indexOf rpath (c->n (first int-list))) ;index of first intersection in rpath
-        isi (.indexOf rpath (c->n (second int-list))) ;index of second intersection in rpath
-        ]
+        int-list (list-intersections rpath)]
     (cond
       ; if a path is empty, say it's invalid!
       (= [] rpath) (do (println "INVALID PATH - empty path for " (last rpath))
                        false)
       ; if the last node of a path isn't an intersection, false
-      (not (in? (n->c (last rpath)) am-intersections)) false
+      ;(not (in? (n->c (last rpath)) ib-intersections)) false
 
-      ; if there is not at least two intersection, false
-      (= isi -1) false
       ; if even one intersection is invalid, return false
       (some false? (mapv #(valid-intersection? % my-snake (+ 2 (.indexOf rpath (c->n %))) other-snakes other-asp) int-list)) (do (println "INVALID PATH - INVALID INTERSECTION for " (last rpath))
-                                                                                                            false)
-      ; the 2 conditions below could be rewritten more efficiently by applying the fn in map to the first resp second element of int-list
-      ; if the first intersection is invalid, return false (ifi + 2 because of how his-dist is defined in valid-intersection?
-      #_#_(false? (first (mapv #(valid-intersection? % my-snake (+ ifi 2) other-snakes other-asp) int-list))) (do #_(println "INVALID PATH - FIRST INTERSECTION INVALID for " (last rpath))
-                                                                                                              false)
-      ; if the second intersection is invalid in 1v1, return false
-      #_#_(false? (second (mapv #(valid-intersection? % my-snake (+ isi 2) other-snakes other-asp) int-list))) (do #_(println "INVALID PATH - SECOND INTERSECTION INVALID for " (last rpath))
-                                                                                                               false)
+                                                                                                                                 false)
       ; if some encounters are lethal, return false
       (not= [] (list-of-lethal-encounters (mapv #(n->c %) npath) my-snake other-snakes)) (do (println "INVALID PATH - MORTAL POTENTIAL ENCOUNTER DETECTED for " (last rpath))
-                                                                                                 false)
-      ; if some encouters before isi are lethal, then return false
-      #_#_(some #(>= isi (.indexOf rpath (c->n (:e %)))) (list-of-lethal-encounters (mapv #(n->c %) npath) my-snake other-snakes)) (do (println "INVALID PATH - MORTAL ENCOUNTER DETECTED for " (last rpath))
-                                                                                                                                   false)
+                                                                                             false)
 
-      ; if doesn't contain center and less than 9 (changed to 8 for a starter position at the top to still aim for the center) and less than 3, false -> to look ahead as far as possible if don't go through the center
-      ; back to 2 intersections min to avoid leaving the center automatically when too big
-      #_#_(and (not (in? "9 11" rpath)) (< (count rpath) 8) (< (count int-list) 2)) (do (println "INVALID PATH - TOO SHORT OR NOT ENOUGH INTERSECTION NOT GOING THROUGH THE CENTER for " (last rpath))
-                                                                                        false)
-      ; if rpath is not longer than 9 (changed to 8, see above) and rpath doesn't contain 2 intersections, false -> it's the `don't aim to closely` fix
-      #_#_(and (< (count rpath) 8) (< (count int-list) 2)) (do (println "INVALID PATH - TOO SHORT OR NOT ENOUGH INTERSECTIONS GOING THROUGH THE CENTER for " (last rpath))
-                                                               false)
-      ; is now obsolete when I use the :traverse true and :min-cost option in shortest path alg
-      #_#_(< (count rpath) 8) (do (println "INVALID PATH - too short for " (last rpath))
-                                  false)
       :else true)))
 
 
@@ -418,34 +353,14 @@
 
 (defn fvalid?
   "Returns true if a path to food is valid, false otherwise.
-   A valid path to food is firstly a valid path, and then depending on the food there are some additional conditions
+   A valid path to food is simply a valid path
    TAKES A PATH OF NAMES BECAUSE OF VALID?"
   [path my-snake my-asp other-snakes other-asp]
   (let [food (last path)
         list (list-intersections path)
         last-int (last list) ; last intersection traversed by path
-        #_#_next-int (vector-difference (food-intersections food) list) ;it's a vector with one coordinate at this point
         ]
-    (cond
-      ; if it's 3 11 or 15 11, check the validity of the shortest path till the next intersection, it should go through the food.
-      (= "3 11" food) (valid? (complete-path-to-side-food path) my-snake my-asp other-snakes other-asp)
-      (= "15 11" food) (valid? (complete-path-to-side-food path) my-snake my-asp other-snakes other-asp)
-      ; if it's 9 11, check if I can escape top or bottom, left or right depending on which way I'm coming at 9 11
-      (= "9 11" food) (cond
-                        (= {:x 8 :y 11} last-int) (or (valid? (into (into [] path) out-top-right) my-snake my-asp other-snakes other-asp)
-                                                      (valid? (into (into [] path) out-bottom-right) my-snake my-asp other-snakes other-asp))
-                        (= {:x 10 :y 11} last-int) (or (valid? (into (into [] path) out-top-left) my-snake my-asp other-snakes other-asp)
-                                                       (valid? (into (into [] path) out-bottom-left) my-snake my-asp other-snakes other-asp)))
-      (= "9 1" food) (cond
-                       (= {:x 8 :y 1} last-int) (valid? (into (into [] path) ["10 1"]) my-snake my-asp other-snakes other-asp)
-                       (= {:x 10 :y 1} last-int) (valid? (into (into [] path) ["8 1"]) my-snake my-asp other-snakes other-asp))
-      (= "9 5" food) (cond
-                       (= {:x 8 :y 5} last-int) (valid? (into (into [] path) ["10 5"]) my-snake my-asp other-snakes other-asp)
-                       (= {:x 10 :y 5} last-int) (valid? (into (into [] path) ["8 5"]) my-snake my-asp other-snakes other-asp))
-      (= "9 17" food) (cond
-                        (= {:x 8 :y 17} last-int) (valid? (into (into [] path) ["10 17"]) my-snake my-asp other-snakes other-asp)
-                        (= {:x 10 :y 17} last-int) (valid? (into (into [] path) ["8 17"]) my-snake my-asp other-snakes other-asp))
-      :else (valid? path my-snake my-asp other-snakes other-asp))))
+    (valid? path my-snake my-asp other-snakes other-asp)))
 
 
 
@@ -470,9 +385,9 @@
 ;;
 
 (defn not-at-xroads
-  "Returns the snakes which head is not at a crossroads or 9 11, amongst other-snakes"
+  "Returns the snakes which head is not at a crossroads amongst other-snakes"
   [other-snakes]
-  (filterv #(not (in? (:head %) (into am-intersections [{:x 9 :y 11}]))) other-snakes))
+  (filterv #(not (in? (:head %) ib-intersections)) other-snakes))
 
 (defn next-int
   "Returns the next intersection a snake not at an intersection will go through"
@@ -480,9 +395,9 @@
   (let [i (.indexOf other-snakes snake)
         sasp (nth other-asp i)
         cpath (mapv #(n->c %) (alg/nodes-in-path (alg/path-to sasp "9 11"))) ;cpath is path of coordinates
-        ints (filterv #(in? % am-intersections) cpath)]
+        ints (filterv #(in? % ib-intersections) cpath)]
     (cond
-      (= ints []) (println "ERROR in next-int - cpath doesn't contain any intersection from am-intersections")
+      (= ints []) (println "ERROR in next-int - cpath doesn't contain any intersection from ib-intersections")
       :else {:intersection (first ints) :turns (.indexOf cpath (first ints)) :slength (:length snake)})))
 
 (defn in-window?
@@ -579,11 +494,10 @@
   (let [w (-> body-params :board :width)
         h (-> body-params :board :height)
         head (:head my-snake)
-        sorted (sort-by #(sd my-snake % w h) am-intersections)
-        closest (into [] (take 12 sorted)) ; I need to use core.async to do floodfill and find first n intersections (building the mesh of the map basically)
-        ]
+        sorted (sort-by #(sd my-snake % w h) ib-intersections)
+        closest (into [] (take 12 sorted))]
     (println "@@@ closest: " closest)
-    (if (in? head am-intersections)
+    (if (in? head ib-intersections)
       (loop [c closest
              the-asp my-asp
              the-graph graph]
