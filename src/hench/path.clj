@@ -522,41 +522,38 @@
         head (:head my-snake)
         sorted (sort-by #(sd my-snake % w h) ib-intersections)
         closest (into [] (take 12 sorted))]
-    (println "@@@ closest: " closest)
-    (if (in? head ib-intersections)
-      (loop [c closest
-             the-asp my-asp
-             the-graph graph]
-        (cond
-          (empty? c) the-graph
-          :else (let [i (first c)
-                      path-to-i (alg/nodes-in-path (alg/path-to the-asp (c->n i)))
-                      my-d (count path-to-i)
-                      lethal-e (:e (first (list-of-lethal-encounters (mapv #(n->c %) path-to-i) my-snake other-snakes)))
-                      ] 
-                  (cond
-                    (not (valid-intersection? i my-snake my-d other-snakes other-asp)) (let [new-graph (remove-edge-from-graph (mapv #(n->c %) [(last (butlast path-to-i)) (last path-to-i)]) the-graph)]
-                                                                                         (println "intersection: " i " is invalid!")
-                                                                                         (recur (rest c)
-                                                                                                (asp my-snake new-graph body-params)
-                                                                                                new-graph))
-                    (not= nil lethal-e) (let [le-index (index-in-path (c->n lethal-e) path-to-i)
-                                              new-graph (remove-edge-from-graph (mapv #(n->c %) [(nth path-to-i (- le-index 1)) (nth path-to-i le-index)]) the-graph)
-                                              new-asp (asp my-snake new-graph body-params)]
-                                          (println "encouter at " lethal-e " would be lethal!")
-                                          (println "le-index: " le-index)
-                                          (println "removing from graph: " [(nth path-to-i (- le-index 1)) (nth path-to-i le-index)])
-                                          (println "in graph? " (in? [(nth path-to-i (- le-index 1)) (nth path-to-i le-index)] the-graph))
-                                          (println "in new graph? " (in? [(nth path-to-i (- le-index 1)) (nth path-to-i le-index)] new-graph))
-                                          (println "equality of asp? " (= the-asp new-asp))
-                                          (println "equality of path? " (= path-to-i (alg/nodes-in-path (alg/path-to new-asp (c->n i)))))
-                                          (recur (rest c)
-                                                 new-asp
-                                                 new-graph))
-                    :else (recur (rest c)
-                                 the-asp
-                                 the-graph)))))
-      graph)))
+    (println "@@@ closest: " closest) 
+    (loop [c closest
+           the-asp my-asp
+           the-graph graph]
+      (cond
+        (empty? c) the-graph
+        :else (let [i (first c)
+                    path-to-i (alg/nodes-in-path (alg/path-to the-asp (c->n i)))
+                    my-d (count path-to-i)
+                    lethal-e (:e (first (list-of-lethal-encounters (mapv #(n->c %) path-to-i) my-snake other-snakes)))]
+                (cond
+                  (not (valid-intersection? i my-snake my-d other-snakes other-asp)) (let [new-graph (remove-edge-from-graph (mapv #(n->c %) [(last (butlast path-to-i)) (last path-to-i)]) the-graph)]
+                                                                                       (println "intersection: " i " is invalid!")
+                                                                                       (recur (rest c)
+                                                                                              (asp my-snake new-graph body-params)
+                                                                                              new-graph))
+                  (not= nil lethal-e) (let [le-index (index-in-path (c->n lethal-e) path-to-i)
+                                            new-graph (remove-edge-from-graph (mapv #(n->c %) [(nth path-to-i (- le-index 1)) (nth path-to-i le-index)]) the-graph)
+                                            new-asp (asp my-snake new-graph body-params)]
+                                        (println "encouter at " lethal-e " would be lethal!")
+                                        (println "le-index: " le-index)
+                                        (println "removing from graph: " [(nth path-to-i (- le-index 1)) (nth path-to-i le-index)])
+                                        (println "in graph? " (in? [(nth path-to-i (- le-index 1)) (nth path-to-i le-index)] the-graph))
+                                        (println "in new graph? " (in? [(nth path-to-i (- le-index 1)) (nth path-to-i le-index)] new-graph))
+                                        (println "equality of asp? " (= the-asp new-asp))
+                                        (println "equality of path? " (= path-to-i (alg/nodes-in-path (alg/path-to new-asp (c->n i)))))
+                                        (recur (rest c)
+                                               new-asp
+                                               new-graph))
+                  :else (recur (rest c)
+                               the-asp
+                               the-graph)))))))
 
 
 (comment
