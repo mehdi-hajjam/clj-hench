@@ -47,7 +47,8 @@
                        (begin-turn body-params)
                        (avoid-hazards body-params) ; OK - means avoid walls really
                        (avoid-self-direct-hits body-params) ; OK
-                       (avoid-other-snakes body-params) ; OK             
+                       (avoid-other-snakes body-params) ; OK  
+                       (eat body-params)
                        (strategize body-params my-asp my-fasp other-snakes other-asp)
                        (choose-move body-params))
             :shout (random-shout sfquotes)}}))

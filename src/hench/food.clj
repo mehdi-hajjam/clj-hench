@@ -78,8 +78,9 @@
     (println "foods: " foods)
     (cond
       (= foods []) moves
-      (or (> 90 my-health)
+      #_(or (> 90 my-health)
           (<= my-length (+ 1 (apply max snakes-length))))
+      (> 65 my-health)
       (let [food (first foods)
             head (-> body-params :you :head)
             chull (convex-hull [head food] w h)]

@@ -204,8 +204,7 @@
   )
 
 (defn fasp
-  "Flexible asp uses :traverse true and :min-cost :max-cost options to output a lazy sequence of paths matching these constraints.
-   It uses 4 different graphs where for each one one direction has been forbidden (in case we are at a 4 way intersection)"
+  "Flexible asp uses :traverse true and :min-cost :max-cost options to output a lazy sequence of paths matching these constraints."
   [snake base-graph body-params mn]
   (let [w (-> body-params :board :width)
         h (-> body-params :board :height)
@@ -594,29 +593,29 @@
         snakes (-> body-params :board :snakes)
         nb-snakes (count snakes)
         rank-in-snakes (count (filterv #(<= my-length (:length %)) snakes))
-        e (eatables body-params my-snake my-asp other-snakes other-asp w h)
+        #_#_e (eatables body-params my-snake my-asp other-snakes other-asp w h)
         #_#_k (killables my-snake my-asp other-snakes other-asp w h)
         f (first-hug my-snake my-fasp other-snakes other-asp w h)
         p (alg/nodes-in-path (alg/path-to my-asp (c->n (last (:body my-snake)))))]
  
     (println "path to hug: " (second f) " to " (last f))
     #_(println "path to kill: " (second k) " to " (last k))
-    (println "path to eat: " (second e) " to " (last e))
+    #_(println "path to eat: " (second e) " to " (last e))
     (cond
       ; si on est multiway et que je suis à moins de 65 en health ou je suis pas le plus grand snake et que j’ai de la food safe -> mange
       #_#_(and (not= [] e) (> nb-snakes 2) (or (<= my-health 65) (> rank-in-snakes 1))) (choose-path e 10 moves w h "Going for a snack!")
       ; si on est en 1v1 et que ma santé est plus basse que la sienne, manger
       #_#_(and (not= [] e) (= nb-snakes 2) (<= my-health (:health (first other-snakes)))) (choose-path e 10 moves w h "I'll eat to survive you!")
       ; si on est à moins de 35 en health, manger
-      (and (not= [] e) (<= my-health 35)) (choose-path e 10 moves w h "Going for a snack!")
+      #_#_(and (not= [] e) (<= my-health 35)) (choose-path e 10 moves w h "Going for a snack!")
       ; si il y a à tuer et qu'il me reste plus de 23 de health après -> tuer
       #_#_(and (not= [] k) (<= 23 (- my-health (- (count k) 1)))) (choose-path k 10 moves w h "Going for the kill!")
       ; sinon hug the center for now
-      (not= [] f) (choose-path f 10 moves w h "Hugging the center, waiting for food or kill")
+      (and (not= [] f) (> my-health 35)) (choose-path f 10 moves w h "Hugging the center, waiting for food or kill")
       ; if nothing works, say no to the first path you'd have hugged (following tail is not the good default route)
       #_#_:else (choose-path (mapv #(n->c %) (alg/nodes-in-path (first my-fasp))) 0.01 moves w h "Don't go down a broken path")
       ; if nothing works, trying follow tail again now that I'm using better-graph in my-asp in core
       (not= [] p) (do (println "path to tail: " p)
-                      (choose-path (mapv #(n->c %) p) 9 moves w h "Follow your tail when in doubt!"))
+                      (choose-path (mapv #(n->c %) p) 5 moves w h "Follow your tail when in doubt!"))
       :else (println "Nowhere to go, this is to avoid timeouting"))))
 
