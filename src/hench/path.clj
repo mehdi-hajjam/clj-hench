@@ -614,5 +614,6 @@
       ; if nothing works, trying follow tail again now that I'm using better-graph in my-asp in core
       (not= [] p) (do (println "path to tail: " p)
                       (choose-path (mapv #(n->c %) p) 5 moves w h "Follow your tail when in doubt!"))
-      :else (println "Nowhere to go, this is to avoid timeouting"))))
+      :else (do (println "Stay in your square, some intersections will get free hopefully")
+                moves))))
 
