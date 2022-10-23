@@ -56,24 +56,48 @@
 (def ib-intersections
   [{:x 0 :y 2}
    {:x 0 :y 3}
+   {:x 1 :y 2}
+   {:x 1 :y 3}
    {:x 0 :y 7}
    {:x 0 :y 8}
+   {:x 1 :y 7}
+   {:x 1 :y 8}
    {:x 2 :y 0}
    {:x 3 :y 0}
+   {:x 2 :y 1}
+   {:x 3 :y 1}
    {:x 7 :y 0}
    {:x 8 :y 0}
+   {:x 7 :y 1}
+   {:x 8 :y 1}
    {:x 10 :y 2}
    {:x 10 :y 3}
+   {:x 9 :y 2}
+   {:x 9 :y 3}
    {:x 10 :y 7}
    {:x 10 :y 8}
+   {:x 9 :y 7}
+   {:x 9 :y 8}
    {:x 2 :y 10}
    {:x 3 :y 10}
+   {:x 2 :y 9}
+   {:x 3 :y 9}
    {:x 7 :y 10}
    {:x 8 :y 10}
+   {:x 7 :y 9}
+   {:x 8 :y 9}
    {:x 2 :y 5}
+   {:x 2 :y 4}
+   {:x 2 :y 6}
    {:x 5 :y 2}
+   {:x 4 :y 2}
+   {:x 6 :y 2}
    {:x 5 :y 8}
-   {:x 8 :y 5}])
+   {:x 4 :y 8}
+   {:x 6 :y 8}
+   {:x 8 :y 5}
+   {:x 8 :y 4}
+   {:x 8 :y 6}])
 
 ; used to derive which intersection after the food should be free for a path to food to be valid
 (def food-intersections

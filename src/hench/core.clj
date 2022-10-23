@@ -42,7 +42,7 @@
         other-asp (mapv #(asp % base-graph body-params) other-snakes)
         bg (better-graph me base-asp other-snakes other-asp base-graph body-params)
         my-asp (asp me bg body-params)
-        my-fasp (fasp me bg body-params 10)]
+        my-fasp (fasp me bg body-params 6)]
     {:body {:move (->> {:up 1 :down 1 :right 1 :left 1}
                        (begin-turn body-params)
                        (avoid-hazards body-params) ; OK - means avoid walls really

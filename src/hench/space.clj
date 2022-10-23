@@ -55,7 +55,7 @@
 
 ; Same comment as above on the corner cases of food just eaten by opposing snake
 (defn avoid-other-snakes
-  "Avoids direct hits with other snakes"
+  "Avoids direct hits with other snakes on next move"
   [body-params moves]
   (println "AVOID OTHER SNAKES")
   (let [snakes (other-snakes body-params)
