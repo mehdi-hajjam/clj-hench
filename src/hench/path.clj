@@ -339,7 +339,7 @@
 (defn valid?
   "Returns true if a path is valid, false otherwise
    TAKES A PATH OF NAMES BECAUSE OF LIST-INTERSECTIONS (could be changed if needed)"
-  [npath my-snake my-asp other-snakes other-asp]
+  [npath my-snake my-asp other-snakes other-asp w h]
   (let [rpath (rest npath)
         int-list (list-intersections rpath)]
     (cond
@@ -347,7 +347,7 @@
       (= [] rpath) (do (println "INVALID PATH - empty path for " (last rpath))
                        false)
       ; if the last node of a path isn't an intersection, false
-      ;(not (in? (n->c (last rpath)) ib-intersections)) false
+      (not (in? (n->c (last rpath)) ib-intersections)) false
 
       ; if even one intersection is invalid, return false
       (some false? (mapv #(valid-intersection? % my-snake (+ 2 (.indexOf rpath (c->n %))) other-snakes other-asp) int-list)) (do (println "INVALID PATH - INVALID INTERSECTION for " (last rpath))
@@ -355,6 +355,9 @@
       ; if some encounters are lethal, return false
       (not= [] (list-of-lethal-encounters (mapv #(n->c %) npath) my-snake other-snakes)) (do (println "INVALID PATH - MORTAL POTENTIAL ENCOUNTER DETECTED for " (last rpath))
                                                                                              false)
+      ; if the first step of a path is an obstacle, it's not valid
+      (in? (n->c (first rpath)) (obstacles-2 my-snake other-snakes w h)) (do (println "INVALID PATH - FIRST STEP IS TROUBLE for " (last rpath))
+                                                                             false)
 
       :else true)))
 
@@ -379,24 +382,24 @@
   "Returns true if a path to food is valid, false otherwise.
    A valid path to food is simply a valid path
    TAKES A PATH OF NAMES BECAUSE OF VALID?"
-  [path my-snake my-asp other-snakes other-asp]
+  [path my-snake my-asp other-snakes other-asp w h]
   (let [food (last path)
         list (list-intersections path)
         last-int (last list) ; last intersection traversed by path
         ]
-    (valid? path my-snake my-asp other-snakes other-asp)))
+    (valid? path my-snake my-asp other-snakes other-asp w h)))
 
 
 
 (defn eatables
   "Returns the path to the closest food that can be started during the turn"
-  [body-params my-snake my-asp other-snakes other-asp]
+  [body-params my-snake my-asp other-snakes other-asp w h]
   (let [available-food (-> body-params :board :food)]
     #_(println "eatables/AVAILABLE-FOOD: " available-food)
     (cond
       (= available-food []) []
       :else (let [paths (mapv #(alg/nodes-in-path (alg/path-to my-asp (c->n %))) available-food)
-                  valid-paths (filterv #(fvalid? % my-snake my-asp other-snakes other-asp) paths)]
+                  valid-paths (filterv #(fvalid? % my-snake my-asp other-snakes other-asp w h) paths)]
               #_(println "eatables/paths: " paths)
               (cond
                 (= valid-paths []) []
@@ -469,7 +472,7 @@
 
 (defn killables
   "Returns the valid path to the closest killable snake"
-  [my-snake my-asp other-snakes other-asp]
+  [my-snake my-asp other-snakes other-asp w h]
   (let [targets (not-at-xroads other-snakes)]
     (println "killables/TARGETS: " targets)
     (cond
@@ -479,7 +482,7 @@
                   ints (mapv #(next-int % targets their-asp) targets)
                   my-npaths-to-ints (mapv #(alg/nodes-in-path (alg/path-to my-asp (c->n (:intersection %)))) ints)
                   possible-kills (paths-in-window (:length my-snake) my-npaths-to-ints ints)
-                  valid-kills (filterv #(valid? % my-snake my-asp other-snakes other-asp) possible-kills)
+                  valid-kills (filterv #(valid? % my-snake my-asp other-snakes other-asp w h) possible-kills)
                   closest-kill (shortest valid-kills)]
               (println "killables/possible-kills: " possible-kills)
               (println "killables/valid-kills: " valid-kills)
@@ -492,13 +495,13 @@
 
 (defn first-hug
   "Returns the first path from my-fasp (lazy seq of paths meeting certain conditions) that is valid"
-  [my-snake my-fasp other-snakes other-asp]
+  [my-snake my-fasp other-snakes other-asp w h]
   (println "first my-fasp: " (alg/nodes-in-path (first my-fasp)))
   (loop [npaths my-fasp]
     (cond
       (= npaths []) (do (println "No path long enough possible left")
                         [])
-      (valid? (alg/nodes-in-path (first npaths)) my-snake "my-asp" other-snakes other-asp) (mapv #(n->c %) (alg/nodes-in-path (first npaths))) ;"my asp" is no longer used in valid? so I put whatever as placeholder, to be removed if it works
+      (valid? (alg/nodes-in-path (first npaths)) my-snake "my-asp" other-snakes other-asp w h) (mapv #(n->c %) (alg/nodes-in-path (first npaths))) ;"my asp" is no longer used in valid? so I put whatever as placeholder, to be removed if it works
       :else (recur (rest npaths)))))
 
 ;;
@@ -591,9 +594,9 @@
         snakes (-> body-params :board :snakes)
         nb-snakes (count snakes)
         rank-in-snakes (count (filterv #(<= my-length (:length %)) snakes))
-        e (eatables body-params my-snake my-asp other-snakes other-asp)
-        #_#_k (killables my-snake my-asp other-snakes other-asp)
-        f (first-hug my-snake my-fasp other-snakes other-asp)
+        e (eatables body-params my-snake my-asp other-snakes other-asp w h)
+        #_#_k (killables my-snake my-asp other-snakes other-asp w h)
+        f (first-hug my-snake my-fasp other-snakes other-asp w h)
         p (alg/nodes-in-path (alg/path-to my-asp (c->n (last (:body my-snake)))))]
  
     (println "path to hug: " (second f) " to " (last f))

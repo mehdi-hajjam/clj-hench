@@ -110,6 +110,17 @@
         ]
     (vec (remove #(= % neck) all-squares))))
 
+(defn obstacles-2
+  "Returns the obstacles based on a different set of inputs as obstacles"
+  [my-snake other-snakes w h]
+  (let [length (-> my-snake :length)
+        projected-heads (into [] (apply concat
+                                        (mapv #(if (< (:length %) length)
+                                                 []
+                                                 (project-head % w h)) other-snakes)))
+        all-bodies (into [] (apply concat (mapv #(vec (butlast (:body %))) other-snakes)))]
+    (into [] (concat all-bodies projected-heads))))
+
 (defn obstacles
   "Returns all the obstacles on the board game in one vector : namely all the other snakes's projected bodies (ie no tail but all projected heads"
   [body-params s]
