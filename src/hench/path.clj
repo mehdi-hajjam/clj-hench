@@ -617,6 +617,6 @@
       #_#_:else (choose-path (mapv #(n->c %) (alg/nodes-in-path (first my-fasp))) 0.01 moves w h "Don't go down a broken path")
       ; if nothing works, trying follow tail again now that I'm using better-graph in my-asp in core
       (not= [] p) (do (println "path to tail: " p)
-                      (choose-path (mapv #(n->c %) p) 10 moves w h "Follow your tail when in doubt!"))
+                      (choose-path (mapv #(n->c %) p) 9 moves w h "Follow your tail when in doubt!"))
       :else (println "Nowhere to go, this is to avoid timeouting"))))
 
