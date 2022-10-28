@@ -35,6 +35,8 @@
 (defn move-handler
   [req]
   (let [body-params (:body-params req)
+        w (-> body-params :board :width)
+        h (-> body-params :board :height)
         base-graph base-graph
         other-snakes (other-snakes body-params)
         me (:you body-params)
@@ -49,7 +51,8 @@
                        (avoid-self-direct-hits body-params) ; OK
                        (avoid-other-snakes body-params) ; OK  
                        (eat body-params)
-                       (strategize body-params my-asp my-fasp other-snakes other-asp)
+                       (roam body-params me w h)
+                       #_(strategize body-params my-asp my-fasp other-snakes other-asp)
                        (choose-move body-params))
             :shout (random-shout sfquotes)}}))
 

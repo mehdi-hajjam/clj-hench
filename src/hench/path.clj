@@ -569,6 +569,16 @@
   ,)
 
 ;;
+; New function replacing first-hug and better-graph (need to change core to take bg out)
+; Basically:
+; - check closest intersections and calculates when they'll be free
+; - calculates shortest path to them
+; - lengthen that path and choose the first one that can be lengthened enough
+; so that the intersection can be reached unscathed
+;; 
+
+
+;;
 ; Strategize
 ;;
 
