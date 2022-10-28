@@ -542,9 +542,16 @@
         all-obs (into [] (concat obstacles hazard (vec (butlast (:body me)))))
         pheads (filterv #(not-obstacle? % all-obs) (project-head me w h))
         horizons (mapv #(floodfill % all-obs w h) pheads)
-        best (first (apply max-key count horizons)) ;works because floodfill returns next head position first
+        hsizes (mapv count horizons)
+        maxsize (apply max hsizes)
+        allmaxh (filterv #(= maxsize (count %)) horizons)
+        best (first (rand-nth allmaxh)) ;works because floodfill returns next head position first
         ]
-    (probabilise-movements (:head me) best 8 moves w h)))
+    (println "ROAM")
+    (println "pheads: " pheads)
+    (println "horizons sizes: " (mapv count horizons))
+    (println "best: " best)
+    (probabilise-movements (:head me) [best] 8 moves w h)))
 
 (comment
   (floodfill {:x 2 :y 2} (into [] (concat (obstacles ib-sample (:you ib-sample)) (hazard ib-sample))) 11 11)
