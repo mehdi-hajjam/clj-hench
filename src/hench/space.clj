@@ -514,4 +514,24 @@
             chull (convex-hull [head closest-free-cell] w h)]
         (probabilise-movements head chull 1.55 moves w h)))))
 
+(defn floodfill
+  "Returns the vector of reachable freepoints at a certain point in time.
+   c is a case in the map.
+   obstacles is a vector of forbidden cases."
+  [c obstacles w h]
+  (loop [queue [c]
+         obs obstacles
+         res []]
+    (cond
+      (= queue []) res
+      (in? (first queue) (vec (concat obstacles res))) (recur (rest queue)
+                                                              obs
+                                                              res)
+      :else (recur (into [] (concat (vec (rest queue)) [(add c {:x 1 :y 0} w h)
+                                                        (add c {:x 0 :y 1} w h)
+                                                        (add c {:x -1 :y 0} w h)
+                                                        (add c {:x 0 :y -1} w h)]))
+                   obs
+                   (conj res (first queue))))))
+
 
