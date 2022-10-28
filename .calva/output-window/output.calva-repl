@@ -23,3 +23,394 @@ clj꞉user꞉>
 ; Syntax error compiling at (.calva/output-window/output.calva-repl:0:0).
 ; Unable to resolve symbol: clj꞉user꞉> in this context
 clj꞉user꞉> 
+; Evaluating file: space.clj
+; Syntax error compiling at (src/hench/space.clj:54:5).
+; Unable to resolve symbol: probabilise-movements in this context
+; Evaluation of file space.clj failed: class clojure.lang.Compiler$CompilerException
+clj꞉hench.space꞉> 
+; Evaluating file: utils.clj
+#'hench.utils/shortest
+clj꞉hench.utils꞉> 
+; Evaluating file: space.clj
+#'hench.space/floodfill
+clj꞉hench.space꞉> (def ib-sample {:game {:id "game-00fe20da-94ad-11ea-bb37"
+                                         :ruleset {:name "standard"
+                                                   :version "v.1.2.3"}
+                                         :timeout 500}
+                                  :turn 14
+                                  :board {:height 11
+                                          :width 11
+                                          :food [{:x 3, :y 11} {:x 9 :y 11} {:x 15 :y 11}]
+                                          :hazards [{:y 10, :x 5}
+                                                    {:y 9, :x 5}
+                                                    {:y 7, :x 5}
+                                                    {:y 6, :x 5}
+                                                    {:y 5, :x 5}
+                                                    {:y 4, :x 5}
+                                                    {:y 3, :x 5}
+                                                    {:y 0, :x 5}
+                                                    {:y 1, :x 5}
+                                                    {:y 5, :x 6}
+                                                    {:y 5, :x 7}
+                                                    {:y 5, :x 9}
+                                                    {:y 5, :x 10}
+                                                    {:y 5, :x 4}
+                                                    {:y 5, :x 3}
+                                                    {:y 5, :x 1}
+                                                    {:y 5, :x 0}
+                                                    {:y 10, :x 1}
+                                                    {:y 10, :x 9}
+                                                    {:y 0, :x 1}
+                                                    {:y 0, :x 9}
+                                                    {:y 1, :x 10}
+                                                    {:y 0, :x 10}
+                                                    {:y 10, :x 10}
+                                                    {:y 9, :x 10}
+                                                    {:y 10, :x 0}
+                                                    {:y 9, :x 0}
+                                                    {:y 1, :x 0}
+                                                    {:y 0, :x 0}
+                                                    {:y 6, :x 0}
+                                                    {:y 4, :x 0}
+                                                    {:y 6, :x 10}
+                                                    {:y 4, :x 10}
+                                                    {:y 10, :x 6}
+                                                    {:y 10, :x 4}
+                                                    {:y 0, :x 6}
+                                                    {:y 0, :x 4}]
+                                          :snakes [{:id "snake-508e96ac-94ad-11ea-bb37"
+                                                    :name "My Snake"
+                                                    :health 86
+                                                    :body [{:x 2, :y 1}
+                                                           {:x 3, :y 1}
+                                                           {:x 4, :y 1}]
+                                                    :latency "111"
+                                                    :head {:x 2, :y 1}
+                                                    :length 3
+                                                    :shout "why are we shouting??"
+                                                    :squad ""}
+                                                   {:id "snake-b67f4906-94ae-11ea-bb37"
+                                                    :name "Another Snake"
+                                                    :health 56
+                                                    :body [{:x 5, :y 4}
+                                                           {:x 5, :y 3}
+                                                           {:x 6, :y 3}
+                                                           {:x 6, :y 2}]
+                                                    :latency "222"
+                                                    :head {:x 5, :y 4}
+                                                    :length 4
+                                                    :shout "I'm not really sure..."
+                                                    :squad ""}]}
+                                  :you {:id "snake-508e96ac-94ad-11ea-bb37"
+                                        :name "My Snake"
+                                        :health 86
+                                        :body [{:x 2, :y 1}
+                                               {:x 3, :y 1}
+                                               {:x 4, :y 1}]
+                                        :latency "111"
+                                        :head {:x 2, :y 1}
+                                        :length 3
+                                        :shout "why are we shouting??"
+                                        :squad ""}})
+#'hench.space/ib-sample
+clj꞉hench.space꞉> (obstacles ib-sample (:you ib-sample))
+; Syntax error compiling at (.calva/output-window/output.calva-repl:116:19).
+; Unable to resolve symbol: obstacles in this context
+clj꞉hench.space꞉> 
+; Evaluating file: utils.clj
+#'hench.utils/shortest
+clj꞉hench.utils꞉> 
+; Evaluating file: space.clj
+#'hench.space/floodfill
+clj꞉hench.space꞉> (obstacles ib-sample (:you ib-sample))
+[{:x 5, :y 4} {:x 5, :y 3} {:x 6, :y 3} {:x 6, :y 4} {:x 4, :y 4} {:x 5, :y 5}]
+clj꞉hench.space꞉> (floodfill {:x 2 :y 2} (obstacles ib-sample (:you ib-sample)) 11 11)
+[{:x 2, :y 2} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+clj꞉hench.space꞉> 
+; Evaluating file: space.clj
+#'hench.space/floodfill
+clj꞉hench.space꞉> 
+(floodfill {:x 2 :y 2} (obstacles ib-sample (:you ib-sample)) 11 11)
+[{:x 2, :y 2} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+clj꞉hench.space꞉> 
+; Evaluating file: space.clj
+#'hench.space/floodfill
+clj꞉hench.space꞉> 
+(floodfill {:x 2 :y 2} (obstacles ib-sample (:you ib-sample)) 11 11)
+queue:  [{:x 2, :y 2}]
+res:  []
+queue:  [{:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+res:  [{:x 2, :y 2}]
+queue:  [{:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+res:  [{:x 2, :y 2} {:x 3, :y 2}]
+queue:  [{:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+res:  [{:x 2, :y 2} {:x 3, :y 2} {:x 2, :y 3}]
+queue:  [{:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+res:  [{:x 2, :y 2} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2}]
+queue:  [{:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+res:  [{:x 2, :y 2} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+queue:  [{:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+res:  [{:x 2, :y 2} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+queue:  [{:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+res:  [{:x 2, :y 2} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+queue:  [{:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+res:  [{:x 2, :y 2} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+queue:  [{:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+res:  [{:x 2, :y 2} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+queue:  [{:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+res:  [{:x 2, :y 2} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+queue:  [{:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+res:  [{:x 2, :y 2} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+queue:  [{:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+res:  [{:x 2, :y 2} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+queue:  [{:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+res:  [{:x 2, :y 2} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+queue:  [{:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+res:  [{:x 2, :y 2} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+queue:  [{:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+res:  [{:x 2, :y 2} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+queue:  [{:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+res:  [{:x 2, :y 2} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+queue:  [{:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+res:  [{:x 2, :y 2} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+queue:  [{:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+res:  [{:x 2, :y 2} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+queue:  [{:x 1, :y 2} {:x 2, :y 1}]
+res:  [{:x 2, :y 2} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+queue:  [{:x 2, :y 1}]
+res:  [{:x 2, :y 2} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+queue:  []
+res:  [{:x 2, :y 2} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+[{:x 2, :y 2} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+clj꞉hench.space꞉> 
+; Evaluating file: space.clj
+#'hench.space/floodfill
+clj꞉hench.space꞉> 
+(floodfill {:x 2 :y 2} (obstacles ib-sample (:you ib-sample)) 11 11)
+queue:  [{:x 2, :y 2}]
+count queue:  1
+res:  []
+queue:  [{:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+count queue:  4
+res:  [{:x 2, :y 2}]
+queue:  [{:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+count queue:  7
+res:  [{:x 2, :y 2} {:x 3, :y 2}]
+queue:  [{:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+count queue:  10
+res:  [{:x 2, :y 2} {:x 3, :y 2} {:x 2, :y 3}]
+queue:  [{:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+count queue:  13
+res:  [{:x 2, :y 2} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2}]
+queue:  [{:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+count queue:  16
+res:  [{:x 2, :y 2} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+queue:  [{:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+count queue:  15
+res:  [{:x 2, :y 2} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+queue:  [{:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+count queue:  14
+res:  [{:x 2, :y 2} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+queue:  [{:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+count queue:  13
+res:  [{:x 2, :y 2} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+queue:  [{:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+count queue:  12
+res:  [{:x 2, :y 2} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+queue:  [{:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+count queue:  11
+res:  [{:x 2, :y 2} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+queue:  [{:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+count queue:  10
+res:  [{:x 2, :y 2} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+queue:  [{:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+count queue:  9
+res:  [{:x 2, :y 2} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+queue:  [{:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+count queue:  8
+res:  [{:x 2, :y 2} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+queue:  [{:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+count queue:  7
+res:  [{:x 2, :y 2} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+queue:  [{:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+count queue:  6
+res:  [{:x 2, :y 2} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+queue:  [{:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+count queue:  5
+res:  [{:x 2, :y 2} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+queue:  [{:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+count queue:  4
+res:  [{:x 2, :y 2} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+queue:  [{:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+count queue:  3
+res:  [{:x 2, :y 2} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+queue:  [{:x 1, :y 2} {:x 2, :y 1}]
+count queue:  2
+res:  [{:x 2, :y 2} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+queue:  [{:x 2, :y 1}]
+count queue:  1
+res:  [{:x 2, :y 2} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+queue:  []
+count queue:  0
+res:  [{:x 2, :y 2} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+[{:x 2, :y 2} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+clj꞉hench.space꞉> 
+; Evaluating file: space.clj
+#'hench.space/floodfill
+clj꞉hench.space꞉> 
+(floodfill {:x 2 :y 2} (obstacles ib-sample (:you ib-sample)) 11 11)
+queue:  [{:x 2, :y 2}]
+count queue:  1
+res:  []
+count res:  0
+queue:  [{:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+count queue:  4
+res:  [{:x 2, :y 2}]
+count res:  1
+queue:  [{:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+count queue:  7
+res:  [{:x 2, :y 2} {:x 3, :y 2}]
+count res:  2
+queue:  [{:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+count queue:  10
+res:  [{:x 2, :y 2} {:x 3, :y 2} {:x 2, :y 3}]
+count res:  3
+queue:  [{:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+count queue:  13
+res:  [{:x 2, :y 2} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2}]
+count res:  4
+queue:  [{:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+count queue:  16
+res:  [{:x 2, :y 2} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+count res:  5
+queue:  [{:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+count queue:  15
+res:  [{:x 2, :y 2} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+count res:  5
+queue:  [{:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+count queue:  14
+res:  [{:x 2, :y 2} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+count res:  5
+queue:  [{:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+count queue:  13
+res:  [{:x 2, :y 2} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+count res:  5
+queue:  [{:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+count queue:  12
+res:  [{:x 2, :y 2} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+count res:  5
+queue:  [{:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+count queue:  11
+res:  [{:x 2, :y 2} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+count res:  5
+queue:  [{:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+count queue:  10
+res:  [{:x 2, :y 2} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+count res:  5
+queue:  [{:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+count queue:  9
+res:  [{:x 2, :y 2} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+count res:  5
+queue:  [{:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+count queue:  8
+res:  [{:x 2, :y 2} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+count res:  5
+queue:  [{:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+count queue:  7
+res:  [{:x 2, :y 2} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+count res:  5
+queue:  [{:x 1, :y 2} {:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+count queue:  6
+res:  [{:x 2, :y 2} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+count res:  5
+queue:  [{:x 2, :y 1} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+count queue:  5
+res:  [{:x 2, :y 2} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+count res:  5
+queue:  [{:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+count queue:  4
+res:  [{:x 2, :y 2} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+count res:  5
+queue:  [{:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+count queue:  3
+res:  [{:x 2, :y 2} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+count res:  5
+queue:  [{:x 1, :y 2} {:x 2, :y 1}]
+count queue:  2
+res:  [{:x 2, :y 2} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+count res:  5
+queue:  [{:x 2, :y 1}]
+count queue:  1
+res:  [{:x 2, :y 2} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+count res:  5
+queue:  []
+count queue:  0
+res:  [{:x 2, :y 2} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+count res:  5
+[{:x 2, :y 2} {:x 3, :y 2} {:x 2, :y 3} {:x 1, :y 2} {:x 2, :y 1}]
+clj꞉hench.space꞉> 
+; Evaluating file: space.clj
+#'hench.space/floodfill
+clj꞉hench.space꞉> 
+; Evaluating file: space.clj
+#'hench.space/floodfill
+clj꞉hench.space꞉> 
+(floodfill {:x 2 :y 2} (into [] (concat (obstacles ib-sample (:you ib-sample)) (hazard ib-sample))) 11 11)
+[{:x 2, :y 2}
+ {:x 3, :y 2}
+ {:x 2, :y 3}
+ {:x 1, :y 2}
+ {:x 2, :y 1}
+ {:x 4, :y 2}
+ {:x 3, :y 3}
+ {:x 3, :y 1}
+ {:x 2, :y 4}
+ {:x 1, :y 3}
+ {:x 0, :y 2}
+ {:x 1, :y 1}
+ {:x 2, :y 0}
+ {:x 5, :y 2}
+ {:x 4, :y 3}
+ {:x 4, :y 1}
+ {:x 3, :y 4}
+ {:x 3, :y 0}
+ {:x 2, :y 5}
+ {:x 1, :y 4}
+ {:x 0, :y 3}
+ {:x 10, :y 2}
+ {:x 2, :y 10}
+ {:x 6, :y 2}
+ {:x 3, :y 10}
+ {:x 2, :y 6}
+ {:x 10, :y 3}
+ {:x 9, :y 2}
+ {:x 2, :y 9}
+ {:x 7, :y 2}
+ {:x 6, :y 1}
+ {:x 3, :y 9}
+ {:x 3, :y 6}
+ {:x 2, :y 7}
+ {:x 1, :y 6}
+ {:x 9, :y 3}
+ {:x 8, :y 2}
+ {:x 9, :y 1}
+ {:x 1, :y 9}
+ {:x 2, :y 8}
+ {:x 7, :y 3}
+ {:x 7, :y 1}
+ {:x 4, :y 9}
+ {:x 3, :y 8}
+ {:x 4, :y 6}
+ {:x 3, :y 7}
+ {:x 1, :y 7}
+ {:x 9, :y 4}
+ {:x 8, :y 3}
+ {:x 8, :y 1}
+ ...]
+clj꞉hench.space꞉> 
+(count (floodfill {:x 2 :y 2} (into [] (concat (obstacles ib-sample (:you ib-sample)) (hazard ib-sample))) 11 11))
+81
+clj꞉hench.space꞉> 
+; Evaluating file: space.clj
+nil
+clj꞉hench.space꞉> 
