@@ -39,6 +39,7 @@
     "up"
     (let [max (apply max (vals moves))
           fmoves (filter-map moves max)]
+      (println "fmoves: " fmoves)
       (random-move fmoves))))
 
 ; Could use anticipating what happens if I eat food - if it happens that I collide with myself in those corner cases

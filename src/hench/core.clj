@@ -52,7 +52,7 @@
                        (avoid-other-snakes body-params) ; OK  
                        (eat body-params)
                        (roam body-params me w h)
-                       #_(strategize body-params my-asp my-fasp other-snakes other-asp)
+                       (strategize body-params my-asp my-fasp other-snakes other-asp)
                        (choose-move body-params))
             :shout (random-shout sfquotes)}}))
 

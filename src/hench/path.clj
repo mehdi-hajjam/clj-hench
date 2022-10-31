@@ -622,8 +622,9 @@
       ; if nothing works, say no to the first path you'd have hugged (following tail is not the good default route)
       #_#_:else (choose-path (mapv #(n->c %) (alg/nodes-in-path (first my-fasp))) 0.01 moves w h "Don't go down a broken path")
       ; if nothing works, trying follow tail again now that I'm using better-graph in my-asp in core
-      (not= [] p) (do (println "path to tail: " p)
-                      (choose-path (mapv #(n->c %) p) 5 moves w h "Follow your tail when in doubt!"))
+      (and (not= [] p)
+           (not= nil p)) (do (println "path to tail: " p)
+                             (choose-path (mapv #(n->c %) p) 5 moves w h "Follow your tail when in doubt!")) 
       :else (do (println "Stay in your square, some intersections will get free hopefully")
                 moves))))
 
