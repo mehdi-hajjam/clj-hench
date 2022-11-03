@@ -16,5 +16,7 @@ https://play.battlesnake.com/league/summer-league-2022/tournaments/summer-league
 
 ### 2022 FALL LEAGUE
 Late registration with less than a week to go.
+Finished 31st in the league and joined the Platinum tournament.
+Lost in quarterfinals C of said tournament.
 ### HOSTING
 Hosted on Digital Ocean Droplet (the basic one is enough in computing power)
